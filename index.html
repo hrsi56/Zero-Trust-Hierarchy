@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkpoint-Oriented Gauntlet Hierarchy</title>
+<meta name="description" content="How to run a Gauntlet Loop when the bar is a ratified plan, not a screenshot. A two-level authority split, an evidence contract, and eight boundary forms.">
+<meta name="author" content="Yarden Viktor Dejorno">
+<meta property="og:title" content="Checkpoint-Oriented Gauntlet Hierarchy">
+<meta property="og:description" content="How to run a Gauntlet Loop when the bar is a ratified plan, not a screenshot.">
+<meta property="og:type" content="article">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #fbfaf8;
+  --fg: #1a1917;
+  --muted: #6b6862;
+  --rule: #e2ded6;
+  --accent: #9a3412;
+  --code-bg: #f2efe9;
+  --card: #ffffff;
+  --measure: 36rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14140f;
+    --fg: #e8e5dd;
+    --muted: #9b978d;
+    --rule: #2e2d26;
+    --accent: #f0895a;
+    --code-bg: #1d1c16;
+    --card: #1a1913;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-serif, Charter, "Iowan Old Style", Georgia, Cambria, "Times New Roman", serif;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 4.5rem 1.5rem 6rem; }
+.wide { max-width: 52rem; margin-inline: auto; }
+
+header { margin-bottom: 3.5rem; }
+.eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .72rem;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 1.25rem;
+}
+h1 {
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+.standfirst {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0 0 1.75rem;
+}
+.byline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .8rem;
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+  margin: 0;
+}
+.byline a { color: var(--muted); }
+
+h2 {
+  font-size: 1.4rem;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  margin: 3.25rem 0 1rem;
+  font-weight: 600;
+}
+h3 {
+  font-size: 1.05rem;
+  margin: 2.25rem 0 .6rem;
+  font-weight: 600;
+}
+p { margin: 0 0 1.15rem; }
+a { color: var(--accent); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+strong { font-weight: 650; }
+
+ol.rules { margin: 0; padding: 0; list-style: none; counter-reset: r; }
+ol.rules > li {
+  counter-increment: r;
+  position: relative;
+  padding-left: 2.6rem;
+  margin-bottom: 1.35rem;
+}
+ol.rules > li::before {
+  content: counter(r);
+  position: absolute;
+  left: 0;
+  top: .15rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78rem;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  width: 1.85rem;
+  height: 1.85rem;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+}
+ul.plain { padding-left: 1.15rem; margin: 0 0 1.15rem; }
+ul.plain li { margin-bottom: .5rem; }
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1.1rem 1.15rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .765rem;
+  line-height: 1.6;
+  margin: 1.5rem 0 1.75rem;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .855em;
+  background: var(--code-bg);
+  padding: .1em .34em;
+  border-radius: 3px;
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+
+.tablewrap { overflow-x: auto; margin: 1.5rem 0 1.75rem; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+td:first-child { white-space: nowrap; }
+
+.note {
+  border-left: 2px solid var(--accent);
+  padding: .1rem 0 .1rem 1.15rem;
+  margin: 1.75rem 0;
+  color: var(--muted);
+}
+.note strong { color: var(--fg); }
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: .875rem;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Method note</p>
+  <h1>Checkpoint-Oriented Gauntlet&nbsp;Hierarchy</h1>
+  <p class="standfirst">How to run a Gauntlet Loop when the bar is a ratified plan, not a screenshot.</p>
+  <p class="byline">Yarden Viktor Dejorno · <a href="https://github.com/hrsi56/gauntlet-hierarchy">github.com/hrsi56/gauntlet-hierarchy</a></p>
+</header>
+
+<p>Matt Shumer's <a href="https://somethingbig.ai/gauntlet-loop">Gauntlet Loop</a> is the best short
+description of how to get real quality out of an agent: give it a bar it can't talk its way around,
+let it split the work, and never let the builder grade itself.</p>
+
+<p>It leaves three questions open, and a long engineering program runs into all three on day one.</p>
+
+<p><strong>Who decides when a loop starts, and when it is over?</strong> An agent that picks its own
+next objective will always pick one it can reach.</p>
+
+<p><strong>What is the bar when there is no screenshot?</strong> On a research or data project the
+bar is prose in a versioned document. Prose can be reinterpreted. A screenshot cannot.</p>
+
+<p><strong>What survives the run?</strong> A verdict that lives in a chat transcript is not evidence
+a month later, and it is certainly not evidence to anyone else.</p>
+
+<p>What follows is the answer I ended up with while building a probabilistic day-ahead electricity
+price forecaster across five checkpoints: <strong>a two-level authority split with a Gauntlet Loop
+inside the lower level.</strong> The loop is Shumer's. The hierarchy around it, and the evidence
+contract that makes a document usable as a bar, are the parts I had to build.</p>
+
+<h2>The shape</h2>
+
+<div class="wide">
+<pre><code>        Orchestrator          decides WHEN, which single checkpoint, and one
+             │                time ceiling. Owns program state.
+             │                Never looks inside the loop.
+             │  one brief
+             ▼
+          [ human ]           carries exactly two messages, and routes nothing
+             │
+             ▼
+      Engineering Lead        decides HOW. Decomposition, parallelism, agent
+             │                count, repair routing. Sole Git writer.
+   ┌─────────┼─────────┐
+   ▼         ▼         ▼
+Builder   Builder   Builder   isolated worktrees, disjoint path allowlists,
+   │         │         │      no Git access at all
+   └────► integrate ◄──┘      Lead imports allowlisted paths, commits serially
+             │
+             ▼
+       fresh Critic           clean detached worktree at the candidate SHA.
+             │                Gets the artifact, never the builder's story.
+             │                FAIL routes straight back to a Builder.
+             ▼
+    fresh Integration Critic  new clean worktree at the final SHA
+             │
+             ▼
+      Return Packet           one artifact upward, then a hard stop
+             │
+             ▼
+        Orchestrator</code></pre>
+</div>
+
+<p>The important line in that diagram is the one that isn't drawn. The Orchestrator has no arrow
+into the loop. It does not read the working notes, the verdicts, or any message between a Builder and
+a Critic. It reads one Return Packet. And the human standing between the two levels carries a brief
+down and a packet back — never a message between two agents.</p>
+
+<h2>The rules that carry the weight</h2>
+
+<ol class="rules">
+<li><strong>Separate WHEN from HOW.</strong> The brief states one repository, one checkpoint, one plan
+anchor, one observable goal, and one numeric time ceiling. It never states decomposition, file
+layout, agent count, or a fixed number of review rounds.</li>
+
+<li><strong>An invalid brief is returned before any edit.</strong> Missing anchor, missing checklist
+citation, missing ceiling, more than one checkpoint — stop and return the discrepancy.</li>
+
+<li><strong>Verify the state; never trust the brief's description of it.</strong> Branch, commit,
+working tree, environment, artifacts. A material mismatch is reported, not silently reconciled.</li>
+
+<li><strong>Make the bar checkable.</strong> The Critic brief carries the plan file, its version, the
+citation, and a <em>verbatim excerpt</em> — and the Critic must confirm that excerpt appears in that
+file at the candidate SHA. A citation the Critic cannot check against the real text is not a bar; it
+is a claim about a bar.</li>
+
+<li><strong>Give the critic the artifact, never the story.</strong> A clean
+<code>git worktree --detach</code> at the candidate SHA, created outside the builder's checkout. No
+uncommitted diff, no builder summary, no conversation history. Reviewing an uncommitted diff is
+invalid.</li>
+
+<li><strong>One Git writer.</strong> Builders never stage, commit, merge, switch branches, or update
+refs. They run in parallel only on disjoint path allowlists; the Lead imports exactly those paths and
+commits serially on a disposable branch. There is no shared index to race on.</li>
+
+<li><strong>Verdicts are commits.</strong> Markdown, committed <em>after</em> the review completes, so
+that recording a review never changes the SHA it judged. Every verdict names the candidate SHA, the
+bar excerpt, the commands actually run with exit codes, <em>the single largest gap</em>, and
+<em>the exact next acceptance test</em>.</li>
+
+<li><strong>Aim the criticism.</strong> Pre-register the few surfaces where a failure would be silent
+and expensive, and require independent review there. On those, the Critic materializes and hashes its
+own fixtures outside the candidate checkout and computes the expected result itself. A fixture the
+builder wrote proves nothing about the builder.</li>
+
+<li><strong>Compute staleness; don't assume it.</strong> Each verdict declares the paths its review
+actually covers. A <code>PASS</code> still binds if its candidate is an ancestor of the final
+candidate and <code>git diff --name-only &lt;component-sha&gt;..&lt;final-sha&gt; --
+&lt;reviewed-paths&gt;</code> is empty.</li>
+
+<li><strong>One clock, four exits.</strong>
+<code>consumed = terminal − start − eligible pauses</code>, measured as a single active elapsed wall
+clock; parallel contexts overlap and never sum. A run ends as <code>PASS</code>,
+<code>BLOCKED</code>, <code>PLATEAU</code>, or <code>BUDGET_EXHAUSTED</code>. Reaching the ceiling is
+a prioritization signal, never permission to weaken a criterion.</li>
+
+<li><strong>Context is a control.</strong> A role router decides which contract a session is under.
+The executor cannot read program state, so it cannot select its own next milestone — and no terminal
+status automatically opens the next checkpoint.</li>
+
+<li><strong>Publication belongs to the human.</strong> No agent pushes, and no agent commits to
+<code>main</code>.</li>
+</ol>
+
+<h3>On rule 9, because it is the one that decides whether this is affordable</h3>
+
+<p>The naïve version of verdict reuse is: any new commit invalidates every prior <code>PASS</code>.
+It sounds safer, and it is unusable. On a checkpoint with sixteen checklist items and three mandatory
+review surfaces, every integration commit forces a full re-review of all of them, and the loop never
+converges.</p>
+
+<p>The version that works is computed rather than assumed. A repair that touches a reviewed path
+makes exactly that verdict stale and reruns exactly that Critic. A repair elsewhere reruns nothing.
+Integration binds the exact final SHA; each component <code>PASS</code> binds its own SHA and only
+has to be <em>current</em> against the final one.</p>
+
+<div class="note">
+<strong>The soundness condition is honesty about scope.</strong> The rule is only sound if reviewed
+paths are declared broadly enough to cover what the verdict actually depends on. Understating them is
+the one way to break it — so the Integration Critic checks that every declared path exists in the
+candidate tree, and the reviewer is told plainly that under-declaring is the failure mode.
+</div>
+
+<h3>On rule 8, and saying exactly how blind a comparison was</h3>
+
+<p>One checkpoint in this project selects between four candidate feature catalogs. That selection is
+reviewed label-blind: a Critic recomputes identity-free metrics for <code>A/B/C/D</code> and is
+<em>never</em> allowed to identify the base, apply the eligibility rules, break a tie, or name a
+winner. Identification happens afterwards, in a fresh context, and must match the selection
+declaration that was committed before the blind review began.</p>
+
+<p>The blinding is procedural: the lead simply withholds the mapping file and reveals it after the
+verdict is written, and a revealed mapping is never reused. That is a real control against the
+failure it targets, and it is not cryptography. So the packet is required to carry the label
+<code>COOPERATIVE_PROCEDURAL</code>, and is forbidden from describing itself as cryptographically
+enforced. A control that overstates itself is worse than no control, because you stop looking at
+it.</p>
+
+<h2>The forms</h2>
+
+<p>Eight boundary forms, generalized from the ones in use. They are the method — the prose above is
+just the argument for them.</p>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>#</th><th>Form</th><th>Written by</th><th>Read by</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/1-checkpoint-brief.md">Checkpoint brief</a></td><td>Orchestrator</td><td>Engineering Lead</td></tr>
+<tr><td>2</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/2-workbench.md">Active workbench</a></td><td>Engineering Lead</td><td>Engineering Lead only</td></tr>
+<tr><td>3</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/3-builder-assignment.md">Builder assignment</a></td><td>Engineering Lead</td><td>Builder</td></tr>
+<tr><td>4</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/4-critic-assignment.md">Critic assignment</a></td><td>Engineering Lead</td><td>Critic</td></tr>
+<tr><td>5</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/5-critic-verdict.md">Critic verdict</a></td><td>Critic</td><td>Lead, and the record</td></tr>
+<tr><td>6</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/6-integration-critic.md">Integration Critic</a></td><td>Engineering Lead</td><td>Integration Critic</td></tr>
+<tr><td>7</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/7-return-packet.md">Return Packet</a></td><td>Engineering Lead</td><td>Orchestrator</td></tr>
+<tr><td>8</td><td><a href="https://github.com/hrsi56/gauntlet-hierarchy/blob/main/templates/8-orchestrator-receipt.md">Orchestrator receipt</a></td><td>Orchestrator</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Where this actually stands</h2>
+
+<p>The contract is written and the forms are in use. <strong>The first checkpoint run under it,
+CP-0, has not happened yet.</strong> What has been through this structure so far is a data-layer
+de-risking spike and the governance work itself.</p>
+
+<p>The full write-up publishes after CP-0, and it will report what the first run actually did —
+including whatever that run proves wrong about the contract. A method that survives its own first
+run unchanged is a weaker claim than one that gets corrected by it, so the first Return Packet is
+being read for protocol defects as well as for its checkpoint verdict.</p>
+
+<footer>
+<p>The Gauntlet Loop — and rules 4, 5, and "let it keep going" — are Matt Shumer's:
+<a href="https://somethingbig.ai/gauntlet-loop">How to Run a Gauntlet Loop</a>. The hierarchy, the
+evidence contract, and the staleness and clock rules are mine.</p>
+<p>Prose and templates licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+© Yarden Viktor Dejorno.</p>
+</footer>
+
+</div>
+</body>
+</html>
