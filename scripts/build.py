@@ -709,7 +709,14 @@ def build_outputs() -> dict[Path, str]:
         elif MARKER in fragment:
             raise BuildError(f"unexpected diagram sentinel in {spec.source.relative_to(ROOT)}")
         if spec.kind == "forms-index":
-            fragment = fragment.replace("<ol>", '<ol class="form-index">', 1)
+            fragment, ordered_lists = re.subn(
+                r"<ol\b[^>]*>", '<ol class="form-index">', fragment
+            )
+            if ordered_lists != 1:
+                raise BuildError(
+                    "the forms index must contain exactly one ordered list; "
+                    f"found {ordered_lists}"
+                )
         page = page_shell(spec, title, fragment, css)
         outputs[spec.output] = page
         scanners[spec.output] = validate_generated_page(spec.output, page)
