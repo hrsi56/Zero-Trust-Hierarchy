@@ -527,6 +527,7 @@ git worktree list
 git branch -vv
 git tag --list
 git cat-file -e <every_cited_sha>
+git status --porcelain
 ```
 
 Missing operands are recorded as `NOT_APPLICABLE — [specific reason]`, not passed. Under a non-Git
