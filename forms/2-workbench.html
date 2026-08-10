@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Zero-Trust Hierarchy form 2 — Active workbench</title>
+  <meta name="description" content="A boundary form for Zero-Trust Hierarchy: 2-workbench.">
+  <meta name="author" content="Yarden Viktor Dejorno">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Zero-Trust Hierarchy form 2 — Active workbench">
+  <meta property="og:description" content="A boundary form for Zero-Trust Hierarchy: 2-workbench.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hrsi56.github.io/gauntlet-hierarchy/forms/2-workbench.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://hrsi56.github.io/gauntlet-hierarchy/forms/2-workbench.html">
+  <link rel="icon" href="data:,">
+  <style>
+:root {
+  color-scheme: light dark;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --rule: #d9d4c9;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(35 28 19 / 4%);
+  --measure: 44rem;
+  --wide: 76rem;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino,
+    Georgia, serif;
+  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* The committed Mermaid rendering maps its palette to these semantic variables. */
+  --diagram-bg: transparent;
+  --diagram-panel: #f2eee5;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-line: #7f7669;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #101516;
+    --surface: #171d1f;
+    --surface-raised: #1c2325;
+    --ink: #f0eee8;
+    --ink-soft: #c2c8c8;
+    --ink-faint: #9ea8a9;
+    --accent: #ffad7a;
+    --accent-soft: #422b22;
+    --rule: #384143;
+    --code: #20282a;
+    --focus: #7fc3ff;
+    --shadow: 0 1rem 3rem rgb(0 0 0 / 24%);
+    --diagram-shadow: 0 .4rem 1.35rem rgb(0 0 0 / 10%);
+    --diagram-bg: transparent;
+    --diagram-panel: #222b2d;
+    --diagram-line: #98a3a4;
+  }
+}
+
+/* Stable hooks let accessibility tests force either palette without runtime JavaScript. */
+html[data-theme="light"] {
+  color-scheme: light;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --rule: #d9d4c9;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(35 28 19 / 4%);
+  --diagram-bg: transparent;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-panel: #f2eee5;
+  --diagram-line: #7f7669;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #101516;
+  --surface: #171d1f;
+  --surface-raised: #1c2325;
+  --ink: #f0eee8;
+  --ink-soft: #c2c8c8;
+  --ink-faint: #9ea8a9;
+  --accent: #ffad7a;
+  --accent-soft: #422b22;
+  --rule: #384143;
+  --code: #20282a;
+  --focus: #7fc3ff;
+  --shadow: 0 1rem 3rem rgb(0 0 0 / 24%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(0 0 0 / 10%);
+  --diagram-bg: transparent;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-panel: #222b2d;
+  --diagram-line: #98a3a4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  background:
+    radial-gradient(circle at 50% -14rem, color-mix(in srgb, var(--accent) 10%, transparent), transparent 35rem),
+    var(--page);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, .97rem + .16vw, 1.08rem);
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: .08em;
+  text-underline-offset: .17em;
+}
+
+a:hover {
+  text-decoration-thickness: .14em;
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  border-radius: .15rem;
+  outline: .18rem solid var(--focus);
+  outline-offset: .2rem;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  top: .75rem;
+  left: .75rem;
+  padding: .55rem .8rem;
+  transform: translateY(-180%);
+  border-radius: .35rem;
+  background: var(--ink);
+  color: var(--page);
+  font: 700 .85rem/1.2 var(--sans);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.site-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 72%, transparent);
+  background: color-mix(in srgb, var(--page) 88%, transparent);
+}
+
+.site-header__inner,
+.site-footer__inner {
+  display: flex;
+  width: min(calc(100% - 2rem), var(--wide));
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.site-header__inner {
+  min-height: 4rem;
+}
+
+.site-name {
+  color: var(--ink);
+  font: 750 .85rem/1.2 var(--sans);
+  letter-spacing: .035em;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .4rem 1rem;
+  font: 650 .78rem/1.35 var(--sans);
+}
+
+.site-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+main {
+  overflow: clip;
+}
+
+.article {
+  width: min(calc(100% - 2.25rem), var(--measure));
+  margin-inline: auto;
+  padding: clamp(3.5rem, 8vw, 6.75rem) 0 clamp(4.5rem, 9vw, 7rem);
+}
+
+.article > h1 {
+  max-width: 14ch;
+  margin: 0 0 1rem;
+  font-family: var(--sans);
+  font-size: clamp(2.65rem, 8vw, 5.9rem);
+  font-weight: 760;
+  letter-spacing: -.055em;
+  line-height: .96;
+  text-wrap: balance;
+}
+
+.article > h1 + p {
+  max-width: 35rem;
+  margin: 0 0 clamp(3rem, 7vw, 5.5rem);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: clamp(1.18rem, 1.02rem + .78vw, 1.58rem);
+  line-height: 1.42;
+  text-wrap: balance;
+}
+
+.article--reference,
+.article--form,
+.article--forms-index {
+  width: min(calc(100% - 2.25rem), 52rem);
+  padding-top: clamp(3rem, 6vw, 5rem);
+}
+
+.article--reference > h1,
+.article--form > h1,
+.article--forms-index > h1 {
+  max-width: 24ch;
+  font-size: clamp(2.15rem, 1.7rem + 2.3vw, 3.8rem);
+  line-height: 1.03;
+}
+
+.article--reference > h1 + p,
+.article--form > h1 + p,
+.article--forms-index > h1 + p {
+  max-width: 44rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem);
+  line-height: 1.55;
+}
+
+.form-index {
+  display: grid;
+  gap: .7rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: form;
+}
+
+.form-index li {
+  counter-increment: form;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: .8rem;
+  align-items: baseline;
+  margin: 0;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+
+.form-index li::before {
+  content: counter(form, decimal-leading-zero);
+  color: var(--ink-faint);
+  font: 700 .74rem/1 var(--mono);
+  letter-spacing: .04em;
+}
+
+h2,
+h3,
+h4 {
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+h2 {
+  margin: clamp(3.8rem, 8vw, 6rem) 0 1.25rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--rule);
+  font-size: clamp(1.65rem, 1.35rem + 1vw, 2.25rem);
+  letter-spacing: -.035em;
+}
+
+h3 {
+  margin: 2.8rem 0 .8rem;
+  font-size: clamp(1.2rem, 1.1rem + .35vw, 1.45rem);
+  letter-spacing: -.018em;
+}
+
+h4 {
+  margin: 2rem 0 .65rem;
+  font-size: 1rem;
+  letter-spacing: .015em;
+}
+
+p,
+ul,
+ol,
+blockquote,
+pre,
+table {
+  margin-top: 0;
+  margin-bottom: 1.35rem;
+}
+
+strong {
+  font-weight: 700;
+}
+
+ul,
+ol {
+  padding-left: 1.4rem;
+}
+
+li {
+  padding-left: .2rem;
+}
+
+li + li {
+  margin-top: .55rem;
+}
+
+li::marker {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-weight: 750;
+}
+
+blockquote {
+  margin-inline: 0;
+  padding: .15rem 0 .15rem 1.25rem;
+  border-left: .2rem solid var(--accent);
+  color: var(--ink-soft);
+  font-size: 1.06em;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--mono);
+}
+
+code {
+  padding: .08em .3em;
+  border: 1px solid color-mix(in srgb, var(--rule) 65%, transparent);
+  border-radius: .25rem;
+  background: var(--code);
+  font-size: .84em;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  max-width: 100%;
+  padding: 1.15rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: .55rem;
+  background: var(--code);
+  font-size: .8rem;
+  line-height: 1.55;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow-wrap: anywhere;
+  white-space: inherit;
+}
+
+table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+th,
+td {
+  min-width: 9rem;
+  padding: .72rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--ink-soft);
+  font-size: .74rem;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+hr {
+  margin: 4rem 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.hierarchy-diagram {
+  width: min(calc(100vw - 2rem), var(--wide));
+  margin: clamp(2.5rem, 6vw, 4rem) 0 clamp(3.5rem, 7vw, 5.25rem) 50%;
+  transform: translateX(-50%);
+}
+
+.diagram-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 .65rem;
+  font: 650 .72rem/1.25 var(--sans);
+}
+
+.diagram-navigation a {
+  padding: .35rem .6rem;
+  border: 1px solid color-mix(in srgb, var(--rule) 72%, transparent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.diagram-navigation a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.diagram-navigation a:focus-visible {
+  outline: .18rem solid var(--focus);
+  outline-offset: .15rem;
+}
+
+.diagram-frame {
+  max-height: min(70vh, 44rem);
+  padding: clamp(.45rem, 1.2vw, .85rem);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--rule) 56%, transparent);
+  border-radius: .55rem;
+  background: transparent;
+  box-shadow: var(--diagram-shadow);
+  overscroll-behavior: contain;
+  scrollbar-color: var(--diagram-line) transparent;
+}
+
+.diagram-frame:focus-visible {
+  outline: .2rem solid var(--focus);
+  outline-offset: .2rem;
+}
+
+.diagram-frame svg {
+  display: block;
+  width: var(--diagram-native-width, 46.5rem);
+  min-width: var(--diagram-native-width, 46.5rem);
+  max-width: none !important;
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+}
+
+.hierarchy-diagram figcaption {
+  width: min(100%, var(--measure));
+  margin: .8rem auto 0;
+  color: var(--ink-faint);
+  font: .78rem/1.5 var(--sans);
+  text-align: center;
+}
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font: .78rem/1.55 var(--sans);
+}
+
+.site-footer__inner {
+  align-items: flex-start;
+  padding-block: 1.5rem 2.25rem;
+}
+
+.site-footer p {
+  max-width: 46rem;
+  margin: 0;
+}
+
+.site-footer a {
+  color: inherit;
+}
+
+@media (max-width: 42rem) {
+  .site-header__inner,
+  .site-footer__inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .7rem;
+    padding-block: .85rem;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+
+  .article {
+    width: min(calc(100% - 1.5rem), var(--measure));
+    padding-top: 3.2rem;
+  }
+
+  .article--reference,
+  .article--form,
+  .article--forms-index {
+    width: min(calc(100% - 1.5rem), 52rem);
+  }
+
+  .article > h1 {
+    max-width: 11ch;
+  }
+
+  .article--reference > h1,
+  .article--form > h1,
+  .article--forms-index > h1 {
+    max-width: 22ch;
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .hierarchy-diagram {
+    width: calc(100vw - .75rem);
+  }
+
+  .diagram-navigation {
+    gap: .3rem;
+    padding-inline: .25rem;
+  }
+
+  .diagram-navigation a {
+    flex: 1 1 8rem;
+    padding-inline: .45rem;
+    text-align: center;
+  }
+
+  .diagram-frame {
+    max-height: 72vh;
+    padding: .3rem;
+    border-radius: .35rem;
+  }
+
+  .diagram-frame svg {
+    width: var(--diagram-native-width, 46.5rem);
+    min-width: var(--diagram-native-width, 46.5rem);
+  }
+
+  .hierarchy-diagram figcaption {
+    padding-inline: .75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  :root,
+  html[data-theme="light"],
+  html[data-theme="dark"] {
+    color-scheme: light;
+    --page: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #000000;
+    --ink-soft: #222222;
+    --ink-faint: #444444;
+    --accent: #5f210d;
+    --rule: #bbbbbb;
+    --code: #f4f4f4;
+    --shadow: none;
+    --diagram-shadow: none;
+    --diagram-bg: transparent;
+    --diagram-panel: #f2f2f2;
+    --diagram-ink: #000000;
+    --diagram-muted: #222222;
+    --diagram-accent: #5f210d;
+    --diagram-line: #555555;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .site-header,
+  .skip-link,
+  .diagram-navigation {
+    display: none;
+  }
+
+  .article {
+    width: 100%;
+    padding: 0;
+  }
+
+  .hierarchy-diagram {
+    width: 100%;
+    margin-inline: 0;
+    transform: none;
+    break-inside: avoid;
+  }
+
+  .diagram-frame {
+    max-height: none;
+    padding: 0;
+    overflow: visible;
+    border-color: #bbbbbb;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .diagram-frame svg {
+    width: 100%;
+    min-width: 0;
+    max-width: 100% !important;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the main content</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-name" href="../index.html">Zero-Trust Hierarchy</a>
+      <nav class="site-nav" aria-label="Publication">
+        <a href="../index.html">Article</a>
+        <a href="../RULEBOOK.html">Rulebook</a>
+        <a href="index.html" aria-current="page">Forms</a>
+        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main-content">
+    <article class="article article--form">
+<h1 id="zero-trust-hierarchy-form-2--active-workbench">Zero-Trust Hierarchy form 2 — Active workbench</h1>
+<p>The <strong>Engineering Lead</strong> may create this private, non-versioned file only after a brief has passed validation and the required first observable output has reported start time plus verified actual state. Under the Git reference profile, keep it Git-ignored.</p>
+<p>The workbench is temporary operational state. It is not program state, an acceptance bar, a verdict, or an upward handoff. Builders, Critics, the Orchestrator, and the human courier / development-management function do not receive it. Before terminal return, move any unique evidence deliberately into an authorized evidence artifact, then always remove the workbench. It never survives under the workbench name.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Active Workbench — [checkpoint id]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Authorization and clock</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>target workspace or repository:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>authorized checkpoint:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact ratified plan anchor:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>execution/evidence profile:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>candidate branch or equivalent version workspace: <span class="co">[</span><span class="ot">identity</span><span class="co">]</span> | NOT_CREATED — not yet created</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>active-elapsed ceiling:</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>started_at_utc:</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>last_updated_at_utc:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>consumed active seconds:</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>decimal hours (derived convenience only):</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## First observable state, already reported</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact starting artifact/workspace version:</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>modification state at start:</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Git full HEAD, branch, and working-tree state, if applicable:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>relevant environment / data state at start:</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>profile resources/topology at start:</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>expected-state mismatch: none / <span class="co">[</span><span class="ot">exact mismatch and disposition</span><span class="co">]</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>timestamp-acquisition mechanism selected by this implementation: [do not call it ratified unless</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  the governing documents do]</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Eligible pause ledger</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> paused_at_utc <span class="pp">|</span> resumed_at_utc <span class="pp">|</span> raw seconds <span class="pp">|</span> already-authorized reason / evidence <span class="pp">|</span> all contexts and tools stopped? <span class="pp">|</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---:|---|---|</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Authorized observable goal and complete bar</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Criterion and exact citation <span class="pp">|</span> Evidence required <span class="pp">|</span> State <span class="pp">|</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decomposition, dependencies, and repair routing</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Piece / surface <span class="pp">|</span> Depends on <span class="pp">|</span> Builder context <span class="pp">|</span> Acceptance oracle <span class="pp">|</span> Current gap <span class="pp">|</span> Next repair or review route <span class="pp">|</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Builder contexts and seeds</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Piece <span class="pp">|</span> Fresh or seeded <span class="pp">|</span> Exact seed source/version <span class="pp">|</span> Reason <span class="pp">|</span> Owned dependencies <span class="pp">|</span> Bounded workspace <span class="pp">|</span> Returned dependencies <span class="pp">|</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|---|</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decision-bearing provenance</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Source/input <span class="pp">|</span> Stable identity/version/hash <span class="pp">|</span> Accessed_at_utc <span class="pp">|</span> Role <span class="pp">|</span> Purpose <span class="pp">|</span> Decision or claim affected <span class="pp">|</span> Secret redaction, if any <span class="pp">|</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|---|</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>Use an explicit <span class="in">`none`</span> row if no source exists beyond the ratified bar and candidate. Include local</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>files, external references, datasets, prompts, tool outputs, supplied expected values, and seeded</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>context.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lead integration ledger</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Import/version <span class="pp">|</span> Ownership checked? <span class="pp">|</span> Candidate identity <span class="pp">|</span> Commands / result <span class="pp">|</span> Open gap <span class="pp">|</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mandatory surfaces and acceptance oracles</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Surface / oracle <span class="pp">|</span> Applicable? <span class="pp">|</span> Reason <span class="pp">|</span> Independent fixture / expected result <span class="pp">|</span> Critic verdict <span class="pp">|</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## Component verdict currency</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Verdict record <span class="pp">|</span> Candidate identity <span class="pp">|</span> Reviewed dependencies / Git reviewed_paths <span class="pp">|</span> Valid lineage? <span class="pp">|</span> Dependency change empty? <span class="pp">|</span> Current / stale <span class="pp">|</span> Rerun action <span class="pp">|</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|---|</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Integration and terminal identities</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>final candidate identity / Git final_candidate_sha: <span class="co">[</span><span class="ot">identity</span><span class="co">]</span> | NOT_CREATED — <span class="co">[</span><span class="ot">reason</span><span class="co">]</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Integration verdict file / result:</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>evidence identity / Git evidence_tip_sha: <span class="co">[</span><span class="ot">identity</span><span class="co">]</span> | NOT_CREATED — <span class="co">[</span><span class="ot">reason</span><span class="co">]</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>candidate/evidence linkage: yes / no / not yet / NOT_APPLICABLE — <span class="co">[</span><span class="ot">reason</span><span class="co">]</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>terminal changed dependencies / Git diff paths:</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>terminal delta is evidence-only: yes / no / not yet / NOT_APPLICABLE — <span class="co">[</span><span class="ot">reason</span><span class="co">]</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>cited identity resolution checked: yes / no / not yet / NOT_APPLICABLE — <span class="co">[</span><span class="ot">reason</span><span class="co">]</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Post-verdict or post-stop reads</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>terminal read boundary: <span class="co">[</span><span class="ot">Integration verdict time</span><span class="co">]</span> | <span class="co">[</span><span class="ot">non-PASS stop decision time</span><span class="co">]</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Source/input read after terminal read boundary <span class="pp">|</span> Stable identity/version/hash <span class="pp">|</span> Read_at_utc <span class="pp">|</span> Purpose <span class="pp">|</span> Decision-bearing? <span class="pp">|</span> Consequence / rereview <span class="pp">|</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`none`</span> if no later read occurred. A decision-bearing post-verdict read reopens the candidate</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>and requires fresh review; a non-PASS records later reads even if no verdict exists.</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## Current resources/topology</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Branch/worktree/tag or profile equivalent <span class="pp">|</span> Owner <span class="pp">|</span> Purpose <span class="pp">|</span> Exact version <span class="pp">|</span> Clean/unchanged? <span class="pp">|</span> Planned disposition <span class="pp">|</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Terminal reason, if not PASS</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>none / exact blocker, plateau evidence, or exhausted-budget state:</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>smallest exact Owner decision, authority, or resource change required:</span></code></pre></div>
+<p>An eligible pause exists only when every Lead, Builder, Critic, Integration, test, and tool context is stopped for an already-authorized external dependency or platform suspension. A newly required credential, authority, source, destructive/public act, or change to the bar is terminal <code>BLOCKED</code>, not an open pause.</p>
+    </article>
+  </main>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Written by Yarden Viktor Dejorno. Licensed under <a href="../LICENSE">CC BY 4.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

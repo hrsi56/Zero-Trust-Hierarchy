@@ -1,4 +1,4 @@
-Checkpoint-Oriented Gauntlet Hierarchy
+Zero-Trust Hierarchy
 Copyright (c) 2026 Yarden Viktor Dejorno
 
 Licensed under the Creative Commons Attribution 4.0 International License
@@ -7,5 +7,11 @@ Licensed under the Creative Commons Attribution 4.0 International License
 Attribution:
   Yarden Viktor Dejorno — https://github.com/hrsi56/gauntlet-hierarchy
 
-The Gauntlet Loop concept this work builds on is by Matt Shumer:
+Licensed artifacts:
+  The article, rulebook, README, boundary forms, site presentation, and diagram assets.
+
+The inner execution interface adapts ideas from Matt Shumer’s “How to Run a Gauntlet Loop”:
   https://somethingbig.ai/gauntlet-loop
+
+Zero-Trust Hierarchy’s surrounding authority, evidence, receipt, human-control, and lifecycle
+system is the work of Yarden Viktor Dejorno.

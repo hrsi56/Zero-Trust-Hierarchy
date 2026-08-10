@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Zero-Trust Hierarchy form 4 — Component Critic assignment</title>
+  <meta name="description" content="A boundary form for Zero-Trust Hierarchy: 4-critic-assignment.">
+  <meta name="author" content="Yarden Viktor Dejorno">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Zero-Trust Hierarchy form 4 — Component Critic assignment">
+  <meta property="og:description" content="A boundary form for Zero-Trust Hierarchy: 4-critic-assignment.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hrsi56.github.io/gauntlet-hierarchy/forms/4-critic-assignment.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://hrsi56.github.io/gauntlet-hierarchy/forms/4-critic-assignment.html">
+  <link rel="icon" href="data:,">
+  <style>
+:root {
+  color-scheme: light dark;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --rule: #d9d4c9;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(35 28 19 / 4%);
+  --measure: 44rem;
+  --wide: 76rem;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino,
+    Georgia, serif;
+  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* The committed Mermaid rendering maps its palette to these semantic variables. */
+  --diagram-bg: transparent;
+  --diagram-panel: #f2eee5;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-line: #7f7669;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #101516;
+    --surface: #171d1f;
+    --surface-raised: #1c2325;
+    --ink: #f0eee8;
+    --ink-soft: #c2c8c8;
+    --ink-faint: #9ea8a9;
+    --accent: #ffad7a;
+    --accent-soft: #422b22;
+    --rule: #384143;
+    --code: #20282a;
+    --focus: #7fc3ff;
+    --shadow: 0 1rem 3rem rgb(0 0 0 / 24%);
+    --diagram-shadow: 0 .4rem 1.35rem rgb(0 0 0 / 10%);
+    --diagram-bg: transparent;
+    --diagram-panel: #222b2d;
+    --diagram-line: #98a3a4;
+  }
+}
+
+/* Stable hooks let accessibility tests force either palette without runtime JavaScript. */
+html[data-theme="light"] {
+  color-scheme: light;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --rule: #d9d4c9;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(35 28 19 / 4%);
+  --diagram-bg: transparent;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-panel: #f2eee5;
+  --diagram-line: #7f7669;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #101516;
+  --surface: #171d1f;
+  --surface-raised: #1c2325;
+  --ink: #f0eee8;
+  --ink-soft: #c2c8c8;
+  --ink-faint: #9ea8a9;
+  --accent: #ffad7a;
+  --accent-soft: #422b22;
+  --rule: #384143;
+  --code: #20282a;
+  --focus: #7fc3ff;
+  --shadow: 0 1rem 3rem rgb(0 0 0 / 24%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(0 0 0 / 10%);
+  --diagram-bg: transparent;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-panel: #222b2d;
+  --diagram-line: #98a3a4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  background:
+    radial-gradient(circle at 50% -14rem, color-mix(in srgb, var(--accent) 10%, transparent), transparent 35rem),
+    var(--page);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, .97rem + .16vw, 1.08rem);
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: .08em;
+  text-underline-offset: .17em;
+}
+
+a:hover {
+  text-decoration-thickness: .14em;
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  border-radius: .15rem;
+  outline: .18rem solid var(--focus);
+  outline-offset: .2rem;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  top: .75rem;
+  left: .75rem;
+  padding: .55rem .8rem;
+  transform: translateY(-180%);
+  border-radius: .35rem;
+  background: var(--ink);
+  color: var(--page);
+  font: 700 .85rem/1.2 var(--sans);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.site-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 72%, transparent);
+  background: color-mix(in srgb, var(--page) 88%, transparent);
+}
+
+.site-header__inner,
+.site-footer__inner {
+  display: flex;
+  width: min(calc(100% - 2rem), var(--wide));
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.site-header__inner {
+  min-height: 4rem;
+}
+
+.site-name {
+  color: var(--ink);
+  font: 750 .85rem/1.2 var(--sans);
+  letter-spacing: .035em;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .4rem 1rem;
+  font: 650 .78rem/1.35 var(--sans);
+}
+
+.site-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+main {
+  overflow: clip;
+}
+
+.article {
+  width: min(calc(100% - 2.25rem), var(--measure));
+  margin-inline: auto;
+  padding: clamp(3.5rem, 8vw, 6.75rem) 0 clamp(4.5rem, 9vw, 7rem);
+}
+
+.article > h1 {
+  max-width: 14ch;
+  margin: 0 0 1rem;
+  font-family: var(--sans);
+  font-size: clamp(2.65rem, 8vw, 5.9rem);
+  font-weight: 760;
+  letter-spacing: -.055em;
+  line-height: .96;
+  text-wrap: balance;
+}
+
+.article > h1 + p {
+  max-width: 35rem;
+  margin: 0 0 clamp(3rem, 7vw, 5.5rem);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: clamp(1.18rem, 1.02rem + .78vw, 1.58rem);
+  line-height: 1.42;
+  text-wrap: balance;
+}
+
+.article--reference,
+.article--form,
+.article--forms-index {
+  width: min(calc(100% - 2.25rem), 52rem);
+  padding-top: clamp(3rem, 6vw, 5rem);
+}
+
+.article--reference > h1,
+.article--form > h1,
+.article--forms-index > h1 {
+  max-width: 24ch;
+  font-size: clamp(2.15rem, 1.7rem + 2.3vw, 3.8rem);
+  line-height: 1.03;
+}
+
+.article--reference > h1 + p,
+.article--form > h1 + p,
+.article--forms-index > h1 + p {
+  max-width: 44rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem);
+  line-height: 1.55;
+}
+
+.form-index {
+  display: grid;
+  gap: .7rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: form;
+}
+
+.form-index li {
+  counter-increment: form;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: .8rem;
+  align-items: baseline;
+  margin: 0;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+
+.form-index li::before {
+  content: counter(form, decimal-leading-zero);
+  color: var(--ink-faint);
+  font: 700 .74rem/1 var(--mono);
+  letter-spacing: .04em;
+}
+
+h2,
+h3,
+h4 {
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+h2 {
+  margin: clamp(3.8rem, 8vw, 6rem) 0 1.25rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--rule);
+  font-size: clamp(1.65rem, 1.35rem + 1vw, 2.25rem);
+  letter-spacing: -.035em;
+}
+
+h3 {
+  margin: 2.8rem 0 .8rem;
+  font-size: clamp(1.2rem, 1.1rem + .35vw, 1.45rem);
+  letter-spacing: -.018em;
+}
+
+h4 {
+  margin: 2rem 0 .65rem;
+  font-size: 1rem;
+  letter-spacing: .015em;
+}
+
+p,
+ul,
+ol,
+blockquote,
+pre,
+table {
+  margin-top: 0;
+  margin-bottom: 1.35rem;
+}
+
+strong {
+  font-weight: 700;
+}
+
+ul,
+ol {
+  padding-left: 1.4rem;
+}
+
+li {
+  padding-left: .2rem;
+}
+
+li + li {
+  margin-top: .55rem;
+}
+
+li::marker {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-weight: 750;
+}
+
+blockquote {
+  margin-inline: 0;
+  padding: .15rem 0 .15rem 1.25rem;
+  border-left: .2rem solid var(--accent);
+  color: var(--ink-soft);
+  font-size: 1.06em;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--mono);
+}
+
+code {
+  padding: .08em .3em;
+  border: 1px solid color-mix(in srgb, var(--rule) 65%, transparent);
+  border-radius: .25rem;
+  background: var(--code);
+  font-size: .84em;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  max-width: 100%;
+  padding: 1.15rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: .55rem;
+  background: var(--code);
+  font-size: .8rem;
+  line-height: 1.55;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow-wrap: anywhere;
+  white-space: inherit;
+}
+
+table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+th,
+td {
+  min-width: 9rem;
+  padding: .72rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--ink-soft);
+  font-size: .74rem;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+hr {
+  margin: 4rem 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.hierarchy-diagram {
+  width: min(calc(100vw - 2rem), var(--wide));
+  margin: clamp(2.5rem, 6vw, 4rem) 0 clamp(3.5rem, 7vw, 5.25rem) 50%;
+  transform: translateX(-50%);
+}
+
+.diagram-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 .65rem;
+  font: 650 .72rem/1.25 var(--sans);
+}
+
+.diagram-navigation a {
+  padding: .35rem .6rem;
+  border: 1px solid color-mix(in srgb, var(--rule) 72%, transparent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.diagram-navigation a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.diagram-navigation a:focus-visible {
+  outline: .18rem solid var(--focus);
+  outline-offset: .15rem;
+}
+
+.diagram-frame {
+  max-height: min(70vh, 44rem);
+  padding: clamp(.45rem, 1.2vw, .85rem);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--rule) 56%, transparent);
+  border-radius: .55rem;
+  background: transparent;
+  box-shadow: var(--diagram-shadow);
+  overscroll-behavior: contain;
+  scrollbar-color: var(--diagram-line) transparent;
+}
+
+.diagram-frame:focus-visible {
+  outline: .2rem solid var(--focus);
+  outline-offset: .2rem;
+}
+
+.diagram-frame svg {
+  display: block;
+  width: var(--diagram-native-width, 46.5rem);
+  min-width: var(--diagram-native-width, 46.5rem);
+  max-width: none !important;
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+}
+
+.hierarchy-diagram figcaption {
+  width: min(100%, var(--measure));
+  margin: .8rem auto 0;
+  color: var(--ink-faint);
+  font: .78rem/1.5 var(--sans);
+  text-align: center;
+}
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font: .78rem/1.55 var(--sans);
+}
+
+.site-footer__inner {
+  align-items: flex-start;
+  padding-block: 1.5rem 2.25rem;
+}
+
+.site-footer p {
+  max-width: 46rem;
+  margin: 0;
+}
+
+.site-footer a {
+  color: inherit;
+}
+
+@media (max-width: 42rem) {
+  .site-header__inner,
+  .site-footer__inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .7rem;
+    padding-block: .85rem;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+
+  .article {
+    width: min(calc(100% - 1.5rem), var(--measure));
+    padding-top: 3.2rem;
+  }
+
+  .article--reference,
+  .article--form,
+  .article--forms-index {
+    width: min(calc(100% - 1.5rem), 52rem);
+  }
+
+  .article > h1 {
+    max-width: 11ch;
+  }
+
+  .article--reference > h1,
+  .article--form > h1,
+  .article--forms-index > h1 {
+    max-width: 22ch;
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .hierarchy-diagram {
+    width: calc(100vw - .75rem);
+  }
+
+  .diagram-navigation {
+    gap: .3rem;
+    padding-inline: .25rem;
+  }
+
+  .diagram-navigation a {
+    flex: 1 1 8rem;
+    padding-inline: .45rem;
+    text-align: center;
+  }
+
+  .diagram-frame {
+    max-height: 72vh;
+    padding: .3rem;
+    border-radius: .35rem;
+  }
+
+  .diagram-frame svg {
+    width: var(--diagram-native-width, 46.5rem);
+    min-width: var(--diagram-native-width, 46.5rem);
+  }
+
+  .hierarchy-diagram figcaption {
+    padding-inline: .75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  :root,
+  html[data-theme="light"],
+  html[data-theme="dark"] {
+    color-scheme: light;
+    --page: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #000000;
+    --ink-soft: #222222;
+    --ink-faint: #444444;
+    --accent: #5f210d;
+    --rule: #bbbbbb;
+    --code: #f4f4f4;
+    --shadow: none;
+    --diagram-shadow: none;
+    --diagram-bg: transparent;
+    --diagram-panel: #f2f2f2;
+    --diagram-ink: #000000;
+    --diagram-muted: #222222;
+    --diagram-accent: #5f210d;
+    --diagram-line: #555555;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .site-header,
+  .skip-link,
+  .diagram-navigation {
+    display: none;
+  }
+
+  .article {
+    width: 100%;
+    padding: 0;
+  }
+
+  .hierarchy-diagram {
+    width: 100%;
+    margin-inline: 0;
+    transform: none;
+    break-inside: avoid;
+  }
+
+  .diagram-frame {
+    max-height: none;
+    padding: 0;
+    overflow: visible;
+    border-color: #bbbbbb;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .diagram-frame svg {
+    width: 100%;
+    min-width: 0;
+    max-width: 100% !important;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the main content</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-name" href="../index.html">Zero-Trust Hierarchy</a>
+      <nav class="site-nav" aria-label="Publication">
+        <a href="../index.html">Article</a>
+        <a href="../RULEBOOK.html">Rulebook</a>
+        <a href="index.html" aria-current="page">Forms</a>
+        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main-content">
+    <article class="article article--form">
+<h1 id="zero-trust-hierarchy-form-4--component-critic-assignment">Zero-Trust Hierarchy form 4 — Component Critic assignment</h1>
+<p>The <strong>Engineering Lead</strong> writes this form after freezing an immutable or uniquely versioned candidate. A <strong>component Critic</strong> reviews the real artifact in a fresh cooperative context at that exact candidate identity. Under the Git reference profile, the candidate is committed and reviewed in a clean detached worktree at its full SHA.</p>
+<p>Git reference-profile checkout:</p>
+<pre class="text"><code>git worktree add --detach ../critic-&lt;piece&gt; &lt;full_candidate_sha&gt;
+git -C ../critic-&lt;piece&gt; status --porcelain</code></pre>
+<p>The status output must be empty. A non-Git profile must provide its declared equivalent identity, immutability, and review-workspace checks. Reviewing a mutable or unversioned artifact is invalid.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Component Critic Assignment — [piece or mandatory surface]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>authorized workspace or repository:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>authorized checkpoint:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>execution/evidence profile:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>piece or surface:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact candidate identity / Git full candidate SHA:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>isolated review workspace / Git clean detached worktree:</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>artifact path:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>decision-bearing inputs and provenance:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Source/input <span class="pp">|</span> Stable identity/version/hash <span class="pp">|</span> Supplied by <span class="pp">|</span> Access method <span class="pp">|</span> Why decision-bearing <span class="pp">|</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>controlling plan: <span class="co">[</span><span class="ot">file/document</span><span class="co">]</span> · <span class="co">[</span><span class="ot">exact version</span><span class="co">]</span> · <span class="co">[</span><span class="ot">bar citation</span><span class="co">]</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>verbatim bar excerpt, to be verified in that independently resolvable plan version and bound in</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  the verdict to this candidate identity:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">  &gt; </span><span class="co">[</span><span class="ot">exact text</span><span class="co">]</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact reproduction commands:</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>bar-supplied result and tolerance for each command:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>expected reviewed dependencies, which the Critic must correct honestly (Git paths go in</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="in">`reviewed_paths`</span>):</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>independent fixture/oracle requirement, including what the Critic must derive independently:</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Procedural context declaration</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>This is a fresh-context, read-only, no-Builder-narrative review under cooperative procedural</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>controls. You receive the versioned artifact and acceptance bar, not the Builder&#39;s checkout, diff,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>reasoning, summary, conversation history, or the Engineering Lead&#39;s workbench. You MUST NOT inspect</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>a Builder workspace, edit or repair the candidate, or redesign the project. An ordinary detached</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>review workspace is not an operating-system or cryptographic sandbox.</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Review instruction</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>Confirm the exact candidate identity and unchanged review workspace. Confirm the verbatim excerpt</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>appears in the cited immutable/unique plan version; under Git, confirm the file at the candidate</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>SHA. Inspect and rerun the real artifact. You MAY run Builder-authored</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>tests as additional evidence, but independently derive every mandatory oracle fixture and expected</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>result from the ratified bar and independently identified inputs. Materialize independent fixtures</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>outside the candidate workspace when required. Before writing the verdict, reconfirm the same</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>candidate identity and unchanged workspace.</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>Return form 5 with <span class="in">`PASS`</span>, <span class="in">`FAIL`</span>, or <span class="in">`BLOCKED`</span>. Record exhaustive decision-bearing provenance,</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>actual reviewed dependencies (<span class="in">`reviewed_paths`</span> for Git paths), oracle derivation, commands,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>observed results, and one explicit largest remaining gap. On PASS write <span class="in">`None — bar met`</span>; never</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>omit the field. Do not accept a claim that you cannot reproduce from the artifact.</span></code></pre></div>
+<p>A comparison is called blind only if the relevant identity mapping was withheld until the verdict was written. Label such a comparison <code>COOPERATIVE_PROCEDURAL</code>; do not claim cryptographic enforcement.</p>
+    </article>
+  </main>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Written by Yarden Viktor Dejorno. Licensed under <a href="../LICENSE">CC BY 4.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

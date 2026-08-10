@@ -1,52 +1,70 @@
-# 4 — Independent Critic assignment
+# Zero-Trust Hierarchy form 4 — Component Critic assignment
 
-Written by the **Engineering Lead**, read by a **Critic** in a fresh context that has seen nothing
-else.
+The **Engineering Lead** writes this form after freezing an immutable or uniquely versioned
+candidate. A **component Critic** reviews the real artifact in a fresh cooperative context at that
+exact candidate identity. Under the Git reference profile, the candidate is committed and reviewed
+in a clean detached worktree at its full SHA.
 
-The Lead commits the candidate first, then creates a clean detached worktree at that exact SHA,
-outside the Builder's checkout:
+Git reference-profile checkout:
 
 ```text
-git worktree add --detach ../critic-<piece> <full-candidate-sha>
-git -C ../critic-<piece> status --porcelain     # must be empty
+git worktree add --detach ../critic-<piece> <full_candidate_sha>
+git -C ../critic-<piece> status --porcelain
 ```
 
-Reviewing an uncommitted diff is invalid.
+The status output must be empty. A non-Git profile must provide its declared equivalent identity,
+immutability, and review-workspace checks. Reviewing a mutable or unversioned artifact is invalid.
 
-```markdown
-# Independent Critic — [piece or mandatory surface]
+````markdown
+# Component Critic Assignment — [piece or mandatory surface]
 
-Authorized checkpoint:
-Piece:
-Full candidate commit SHA:
-Your worktree (clean, detached, read-only to you):
-Artifact path:
-Controlling plan: [repo-relative .md] · version [v] · bar citation [§x.y]
-Verbatim bar excerpt:
-> [exact text from that file at this SHA]
-Decision-bearing inputs:
-Exact reproduction commands:
-Expected output / tolerance:
+- authorized workspace or repository:
+- authorized checkpoint:
+- execution/evidence profile:
+- piece or surface:
+- exact candidate identity / Git full candidate SHA:
+- isolated review workspace / Git clean detached worktree:
+- artifact path:
+- decision-bearing inputs and provenance:
 
-Inspect and rerun the real artifact. You do not receive the Builder's checkout, diff, reasoning,
-summary, or history, and you may not edit anything or inspect a Builder workspace. Confirm the
-bar excerpt above appears verbatim in the cited plan at this SHA. Before writing your verdict,
-confirm the worktree is still clean and HEAD unchanged.
+| Source/input | Stable identity/version/hash | Supplied by | Access method | Why decision-bearing |
+|---|---|---|---|---|
+- controlling plan: [file/document] · [exact version] · [bar citation]
+- verbatim bar excerpt, to be verified in that independently resolvable plan version and bound in
+  the verdict to this candidate identity:
 
-Return the verdict in form 5. Do not redesign the project, and do not accept a claim you cannot
-reproduce from the artifact.
-```
+  > [exact text]
 
-## Notes
+- exact reproduction commands:
+- bar-supplied result and tolerance for each command:
+- expected reviewed dependencies, which the Critic must correct honestly (Git paths go in
+  `reviewed_paths`):
+- independent fixture/oracle requirement, including what the Critic must derive independently:
 
-- **The verbatim excerpt is the mechanism that turns a document into a bar.** Quote the bar into the
-  brief and require the Critic to confirm it appears in that file at that commit. A citation the
-  Critic cannot check against the real text is not a bar — it is a claim about a bar.
-- Route generated caches and outputs outside the worktree, so an ignored byproduct does not muddy the
-  post-review cleanliness check.
-- On a mandatory surface, the Critic materializes and hashes its fixtures **outside** the candidate
-  checkout and computes the expected result independently. A Builder may not issue these verdicts for
-  its own work.
-- On `FAIL`, the Lead routes the gap straight back to a Builder and later launches a **fresh** Critic.
-  The human never relays messages.
-- No comparison is called *blind* merely because labels were renamed.
+## Procedural context declaration
+
+This is a fresh-context, read-only, no-Builder-narrative review under cooperative procedural
+controls. You receive the versioned artifact and acceptance bar, not the Builder's checkout, diff,
+reasoning, summary, conversation history, or the Engineering Lead's workbench. You MUST NOT inspect
+a Builder workspace, edit or repair the candidate, or redesign the project. An ordinary detached
+review workspace is not an operating-system or cryptographic sandbox.
+
+## Review instruction
+
+Confirm the exact candidate identity and unchanged review workspace. Confirm the verbatim excerpt
+appears in the cited immutable/unique plan version; under Git, confirm the file at the candidate
+SHA. Inspect and rerun the real artifact. You MAY run Builder-authored
+tests as additional evidence, but independently derive every mandatory oracle fixture and expected
+result from the ratified bar and independently identified inputs. Materialize independent fixtures
+outside the candidate workspace when required. Before writing the verdict, reconfirm the same
+candidate identity and unchanged workspace.
+
+Return form 5 with `PASS`, `FAIL`, or `BLOCKED`. Record exhaustive decision-bearing provenance,
+actual reviewed dependencies (`reviewed_paths` for Git paths), oracle derivation, commands,
+observed results, and one explicit largest remaining gap. On PASS write `None — bar met`; never
+omit the field. Do not accept a claim that you cannot reproduce from the artifact.
+````
+
+A comparison is called blind only if the relevant identity mapping was withheld until the verdict
+was written. Label such a comparison `COOPERATIVE_PROCEDURAL`; do not claim cryptographic
+enforcement.

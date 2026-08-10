@@ -1,48 +1,147 @@
-# 8 — Orchestrator receipt and gate
+# Zero-Trust Hierarchy form 8 — Orchestrator receipt and gate
 
-Run by the **Orchestrator** on the Return Packet. This is a gate on the packet, not a re-derivation
-of the work, and not a second review. The Orchestrator has no shell and does not audit evidence
-files itself.
+The **Orchestrator** applies this bounded gate to a form-7 Return Packet and only the durable
+evidence records it cites. The result is an entry in the project's **existing durable program-state
+document or log**. It is not a new authority tier, a second technical verdict, a requirement to
+commit the Return Packet, an Owner disposition, or continuation authority.
 
-## The gate
+The Orchestrator MUST NOT inspect source/content as a second reviewer, rerun tests, rederive
+metrics, review generated technical outputs, inspect Builder workspaces, or read the Engineering
+Lead's workbench.
 
-Confirm that the packet:
+````markdown
+# Program-State Receipt Entry — [checkpoint id] — [entry id]
 
-1. names the authorized repository, the single checkpoint, and the exact ratified plan anchor;
-2. maps **every item** in the full named checklist — never a convenience extract — to direct
-   evidence, and hides no open item behind `PASS`;
-3. includes every applicable mandatory independent surface, and every required acceptance oracle;
-4. cites, for every required review, a committed verdict file naming its candidate SHA, its bar
-   citation and verbatim excerpt, and the commands actually run;
-5. shows a current fresh Integration `PASS` for any supported `PASS`, and uses `NOT_RUN` only in a
-   non-`PASS` return that names the exact terminal reason;
-6. labels any blind comparison `COOPERATIVE_PROCEDURAL`. Reject a packet claiming cryptographic
-   enforcement.
+- existing program-state document/log:
+- entry location or key:
+- received_at_utc:
+- decided_at_utc:
+- packet terminal status: PASS | BLOCKED | PLATEAU | BUDGET_EXHAUSTED
+- receipt result: SUPPORTED | REJECTED
+- authorized target workspace/repository:
+- authorized checkpoint:
+- exact ratified anchor:
+- execution/evidence profile: GIT_REFERENCE | DECLARED_EQUIVALENT — [mapping]
+- final candidate identity / Git final_candidate_sha: [identity] | NOT_CREATED — [packet reason]
+- evidence identity / Git evidence_tip_sha: [identity] | NOT_CREATED — [packet reason]
 
-Inspect the packet and the verdict files it names. Do not read the internal workbench.
+## A. Gates required for every valid-run packet
+| # | Receipt check | Evidence inspected | PASS / FAIL | Exact defect |
+|---:|---|---|---|---|
+| A1 | Right target, exactly one checkpoint, exact anchor, and unchanged eleven-field brief echo | | | |
+| A2 | Declared profile supplies identity, evidence linkage, dependency-change, isolation/write-ownership, preservation, and reclamation primitives | | | |
+| A3 | Actual start state, administrative/active timing, pauses, and terminal status are internally consistent | | | |
+| A4 | Checklist mapping is honest for the status: complete for PASS; every open item visible for non-PASS | | | |
+| A5 | Decision-bearing provenance is exhaustive; seeds, role boundaries, and every post-verdict read are declared | | | |
+| A6 | Live resource report matches reality, including every `NOT_CREATED` claim and unrelated resource | | | |
+| A7 | Every candidate, verdict, evidence, data, or source identity claimed to exist resolves under the declared profile | | | |
 
-## Disposition
+## B. PASS-only gates
 
-| Status | Action |
-|---|---|
-| Supported `PASS` | Close **only** that checkpoint in program state, summarize its evidence, then ask the owner explicitly whether to authorize the next stage. |
-| `BLOCKED` | Request only the exact owner action, authority, or resolution named. |
-| `PLATEAU` | Decide whether the remaining improvement warrants a new bounded brief. Never relabel it `PASS`. |
-| `BUDGET_EXHAUSTED` | Decide whether to issue a replacement brief with a numeric extension. A reduced bar first requires an owner-ratified amendment and a new exact anchor. |
+Complete every row when packet status is PASS. None may be `NOT_APPLICABLE`.
 
-**No terminal status automatically opens the next checkpoint.** The Orchestrator asks; the owner
-answers; only then does a new brief exist.
+| # | PASS-specific receipt check | Evidence inspected | PASS / FAIL | Exact defect |
+|---:|---|---|---|---|
+| P1 | Every complete-checklist criterion and mandatory independent surface has direct evidence | | | |
+| P2 | Every required component verdict is durable, binds an exact candidate, records provenance/reviewed dependencies, and is computed-current | | | |
+| P3 | A fresh Integration PASS binds the exact final candidate | | | |
+| P4 | Final candidate and evidence tip are distinct, independently resolvable, linked, and preserve every relied-on verdict | | | |
+| P5 | Terminal delta is evidence-only | | | |
+| P6 | Every post-verdict read is non-decision-bearing; no artifact or technical claim changed after Integration | | | |
 
-## Why the gate is deliberately shallow
+Packet is non-PASS: NOT_APPLICABLE — [BLOCKED / PLATEAU / BUDGET_EXHAUSTED]. Continue with section C.
 
-The Orchestrator holds strategic context no executor has, and it is the wrong entity to re-check
-engineering. If it re-derives the work it becomes a second Engineering Lead with worse information,
-and the authority split collapses.
+## C. Conditional non-PASS integrity gates
 
-What it checks is that the **evidence exists and is internally consistent** — that every claimed
-closure names a file, that no open item is hidden, that the run is honest about how blind it was.
-The record-level rules are enforced inside the loop and evidenced in the committed verdicts.
+Complete this section only for BLOCKED, PLATEAU, or BUDGET_EXHAUSTED. Do not demand a candidate,
+Critic, verdict, Integration review, branch, or evidence identity that the run never created.
 
-The first packet under a new contract is also the first operational test of that contract. Read it
-for protocol defects as well as for its checkpoint verdict, and route any contract fix as its own
-task.
+| # | Conditional check | PASS / FAIL / NOT_APPLICABLE | Evidence or specific reason |
+|---:|---|---|---|
+| N1 | Exact terminal reason and smallest next decision/action are present; no PASS is implied | | |
+| N2 | Existing candidate identity resolves, or `NOT_CREATED` reason is verified | | |
+| N3 | Existing verdict/evidence identity resolves, or `NOT_CREATED` reason is verified | | |
+| N4 | Candidate/evidence linkage and terminal delta are checked when both operands exist | | |
+| N5 | Existing evidence is preserved in the proposed lifecycle; no absent artifact was fabricated | | |
+| N6 | Integration result is truthful: actual verdict, or `NOT_RUN — reason` | | |
+
+Use `NOT_APPLICABLE — [specific reason]` only when a required operand does not exist or the declared
+profile uses a different named query. An absent PASS requirement is not a successful check.
+
+## D. Bounded profile queries
+
+Record exact query, exit/status, and output. Run a query only when its operands exist. Otherwise
+record `NOT_APPLICABLE — [specific missing operand]`.
+
+### Git reference profile
+
+```text
+git log --oneline main..<evidence_tip_sha>
+->
+
+git diff --stat main...<evidence_tip_sha>
+->
+
+git diff --name-only <final_candidate_sha>..<evidence_tip_sha>
+->
+
+git merge-base --is-ancestor <component_sha> <final_candidate_sha>
+->
+
+git diff --name-only <component_sha>..<final_candidate_sha> -- <reviewed_paths>
+->
+
+git worktree list
+->
+
+git branch -vv
+->
+
+git tag --list
+->
+
+git cat-file -e <every_cited_sha>
+->
+```
+
+### Declared equivalent profile
+
+| Universal query | Exact finite query named in form 1 | Status/output |
+|---|---|---|
+| Resolve candidate/evidence/source identity | | |
+| Verify candidate/evidence linkage | | |
+| Verify valid candidate lineage | | |
+| Detect changes to reviewed dependencies | | |
+| Inspect preservation state | | |
+| Inspect live checkpoint resources | | |
+
+## E. Receipt decision
+- result: SUPPORTED | REJECTED
+- every failed gate and exact correction required:
+- packet's terminal reason accepted as honest: yes / no / not applicable
+- technical PASS eligible for Owner disposition consideration: yes / no
+- exact Owner decision or action now requested:
+- program-state entry written at:
+
+## Authority declaration
+I did not inspect or evaluate source/content as a second reviewer, rerun a test, reproduce a metric,
+review a generated technical output, inspect a Builder workspace, read the Engineering Lead's
+workbench, choose LAND or DISCARD, or authorize another checkpoint.
+````
+
+## Result routing
+
+- A **supported PASS** is eligible for separate human judgment and disposition. It is not yet LAND,
+  lifecycle closure, or permission to continue.
+- A supported `BLOCKED`, `PLATEAU`, or `BUDGET_EXHAUSTED` is an honest terminal return whose named
+  decision may be presented to the Owner. It is never relabeled PASS.
+- A **rejected** packet returns only the gate defects. The Orchestrator does not repair engineering
+  artifacts or expand its review scope.
+- No receipt result automatically opens the next checkpoint.
+- `BRIEF_INVALID` never enters this packet gate. Form 10 returns before execution and the
+  Orchestrator records only the invalid-brief event in ordinary program state before deciding
+  whether to issue a corrected form 1.
+- Silence never enters this gate. Under the ratified liveness/ceiling rule, the Orchestrator
+  detects, declares, and records abandonment in durable cross-track program state. The Owner then
+  decides disposition, retry, changed direction, or continuation; form 9 begins from the
+  Orchestrator's recorded declaration and waits for that human decision before mutation.

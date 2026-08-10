@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Zero-Trust Hierarchy form 3 — Builder assignment</title>
+  <meta name="description" content="A boundary form for Zero-Trust Hierarchy: 3-builder-assignment.">
+  <meta name="author" content="Yarden Viktor Dejorno">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Zero-Trust Hierarchy form 3 — Builder assignment">
+  <meta property="og:description" content="A boundary form for Zero-Trust Hierarchy: 3-builder-assignment.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hrsi56.github.io/gauntlet-hierarchy/forms/3-builder-assignment.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://hrsi56.github.io/gauntlet-hierarchy/forms/3-builder-assignment.html">
+  <link rel="icon" href="data:,">
+  <style>
+:root {
+  color-scheme: light dark;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --rule: #d9d4c9;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(35 28 19 / 4%);
+  --measure: 44rem;
+  --wide: 76rem;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino,
+    Georgia, serif;
+  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* The committed Mermaid rendering maps its palette to these semantic variables. */
+  --diagram-bg: transparent;
+  --diagram-panel: #f2eee5;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-line: #7f7669;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #101516;
+    --surface: #171d1f;
+    --surface-raised: #1c2325;
+    --ink: #f0eee8;
+    --ink-soft: #c2c8c8;
+    --ink-faint: #9ea8a9;
+    --accent: #ffad7a;
+    --accent-soft: #422b22;
+    --rule: #384143;
+    --code: #20282a;
+    --focus: #7fc3ff;
+    --shadow: 0 1rem 3rem rgb(0 0 0 / 24%);
+    --diagram-shadow: 0 .4rem 1.35rem rgb(0 0 0 / 10%);
+    --diagram-bg: transparent;
+    --diagram-panel: #222b2d;
+    --diagram-line: #98a3a4;
+  }
+}
+
+/* Stable hooks let accessibility tests force either palette without runtime JavaScript. */
+html[data-theme="light"] {
+  color-scheme: light;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --rule: #d9d4c9;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(35 28 19 / 4%);
+  --diagram-bg: transparent;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-panel: #f2eee5;
+  --diagram-line: #7f7669;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #101516;
+  --surface: #171d1f;
+  --surface-raised: #1c2325;
+  --ink: #f0eee8;
+  --ink-soft: #c2c8c8;
+  --ink-faint: #9ea8a9;
+  --accent: #ffad7a;
+  --accent-soft: #422b22;
+  --rule: #384143;
+  --code: #20282a;
+  --focus: #7fc3ff;
+  --shadow: 0 1rem 3rem rgb(0 0 0 / 24%);
+  --diagram-shadow: 0 .4rem 1.35rem rgb(0 0 0 / 10%);
+  --diagram-bg: transparent;
+  --diagram-ink: var(--ink);
+  --diagram-muted: var(--ink-soft);
+  --diagram-accent: var(--accent);
+  --diagram-panel: #222b2d;
+  --diagram-line: #98a3a4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  background:
+    radial-gradient(circle at 50% -14rem, color-mix(in srgb, var(--accent) 10%, transparent), transparent 35rem),
+    var(--page);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1rem, .97rem + .16vw, 1.08rem);
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: .08em;
+  text-underline-offset: .17em;
+}
+
+a:hover {
+  text-decoration-thickness: .14em;
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  border-radius: .15rem;
+  outline: .18rem solid var(--focus);
+  outline-offset: .2rem;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  top: .75rem;
+  left: .75rem;
+  padding: .55rem .8rem;
+  transform: translateY(-180%);
+  border-radius: .35rem;
+  background: var(--ink);
+  color: var(--page);
+  font: 700 .85rem/1.2 var(--sans);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.site-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 72%, transparent);
+  background: color-mix(in srgb, var(--page) 88%, transparent);
+}
+
+.site-header__inner,
+.site-footer__inner {
+  display: flex;
+  width: min(calc(100% - 2rem), var(--wide));
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.site-header__inner {
+  min-height: 4rem;
+}
+
+.site-name {
+  color: var(--ink);
+  font: 750 .85rem/1.2 var(--sans);
+  letter-spacing: .035em;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .4rem 1rem;
+  font: 650 .78rem/1.35 var(--sans);
+}
+
+.site-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+main {
+  overflow: clip;
+}
+
+.article {
+  width: min(calc(100% - 2.25rem), var(--measure));
+  margin-inline: auto;
+  padding: clamp(3.5rem, 8vw, 6.75rem) 0 clamp(4.5rem, 9vw, 7rem);
+}
+
+.article > h1 {
+  max-width: 14ch;
+  margin: 0 0 1rem;
+  font-family: var(--sans);
+  font-size: clamp(2.65rem, 8vw, 5.9rem);
+  font-weight: 760;
+  letter-spacing: -.055em;
+  line-height: .96;
+  text-wrap: balance;
+}
+
+.article > h1 + p {
+  max-width: 35rem;
+  margin: 0 0 clamp(3rem, 7vw, 5.5rem);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: clamp(1.18rem, 1.02rem + .78vw, 1.58rem);
+  line-height: 1.42;
+  text-wrap: balance;
+}
+
+.article--reference,
+.article--form,
+.article--forms-index {
+  width: min(calc(100% - 2.25rem), 52rem);
+  padding-top: clamp(3rem, 6vw, 5rem);
+}
+
+.article--reference > h1,
+.article--form > h1,
+.article--forms-index > h1 {
+  max-width: 24ch;
+  font-size: clamp(2.15rem, 1.7rem + 2.3vw, 3.8rem);
+  line-height: 1.03;
+}
+
+.article--reference > h1 + p,
+.article--form > h1 + p,
+.article--forms-index > h1 + p {
+  max-width: 44rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem);
+  line-height: 1.55;
+}
+
+.form-index {
+  display: grid;
+  gap: .7rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: form;
+}
+
+.form-index li {
+  counter-increment: form;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: .8rem;
+  align-items: baseline;
+  margin: 0;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+
+.form-index li::before {
+  content: counter(form, decimal-leading-zero);
+  color: var(--ink-faint);
+  font: 700 .74rem/1 var(--mono);
+  letter-spacing: .04em;
+}
+
+h2,
+h3,
+h4 {
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+h2 {
+  margin: clamp(3.8rem, 8vw, 6rem) 0 1.25rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--rule);
+  font-size: clamp(1.65rem, 1.35rem + 1vw, 2.25rem);
+  letter-spacing: -.035em;
+}
+
+h3 {
+  margin: 2.8rem 0 .8rem;
+  font-size: clamp(1.2rem, 1.1rem + .35vw, 1.45rem);
+  letter-spacing: -.018em;
+}
+
+h4 {
+  margin: 2rem 0 .65rem;
+  font-size: 1rem;
+  letter-spacing: .015em;
+}
+
+p,
+ul,
+ol,
+blockquote,
+pre,
+table {
+  margin-top: 0;
+  margin-bottom: 1.35rem;
+}
+
+strong {
+  font-weight: 700;
+}
+
+ul,
+ol {
+  padding-left: 1.4rem;
+}
+
+li {
+  padding-left: .2rem;
+}
+
+li + li {
+  margin-top: .55rem;
+}
+
+li::marker {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-weight: 750;
+}
+
+blockquote {
+  margin-inline: 0;
+  padding: .15rem 0 .15rem 1.25rem;
+  border-left: .2rem solid var(--accent);
+  color: var(--ink-soft);
+  font-size: 1.06em;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--mono);
+}
+
+code {
+  padding: .08em .3em;
+  border: 1px solid color-mix(in srgb, var(--rule) 65%, transparent);
+  border-radius: .25rem;
+  background: var(--code);
+  font-size: .84em;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  max-width: 100%;
+  padding: 1.15rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: .55rem;
+  background: var(--code);
+  font-size: .8rem;
+  line-height: 1.55;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow-wrap: anywhere;
+  white-space: inherit;
+}
+
+table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+th,
+td {
+  min-width: 9rem;
+  padding: .72rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--ink-soft);
+  font-size: .74rem;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+hr {
+  margin: 4rem 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.hierarchy-diagram {
+  width: min(calc(100vw - 2rem), var(--wide));
+  margin: clamp(2.5rem, 6vw, 4rem) 0 clamp(3.5rem, 7vw, 5.25rem) 50%;
+  transform: translateX(-50%);
+}
+
+.diagram-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 .65rem;
+  font: 650 .72rem/1.25 var(--sans);
+}
+
+.diagram-navigation a {
+  padding: .35rem .6rem;
+  border: 1px solid color-mix(in srgb, var(--rule) 72%, transparent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.diagram-navigation a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.diagram-navigation a:focus-visible {
+  outline: .18rem solid var(--focus);
+  outline-offset: .15rem;
+}
+
+.diagram-frame {
+  max-height: min(70vh, 44rem);
+  padding: clamp(.45rem, 1.2vw, .85rem);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--rule) 56%, transparent);
+  border-radius: .55rem;
+  background: transparent;
+  box-shadow: var(--diagram-shadow);
+  overscroll-behavior: contain;
+  scrollbar-color: var(--diagram-line) transparent;
+}
+
+.diagram-frame:focus-visible {
+  outline: .2rem solid var(--focus);
+  outline-offset: .2rem;
+}
+
+.diagram-frame svg {
+  display: block;
+  width: var(--diagram-native-width, 46.5rem);
+  min-width: var(--diagram-native-width, 46.5rem);
+  max-width: none !important;
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+}
+
+.hierarchy-diagram figcaption {
+  width: min(100%, var(--measure));
+  margin: .8rem auto 0;
+  color: var(--ink-faint);
+  font: .78rem/1.5 var(--sans);
+  text-align: center;
+}
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font: .78rem/1.55 var(--sans);
+}
+
+.site-footer__inner {
+  align-items: flex-start;
+  padding-block: 1.5rem 2.25rem;
+}
+
+.site-footer p {
+  max-width: 46rem;
+  margin: 0;
+}
+
+.site-footer a {
+  color: inherit;
+}
+
+@media (max-width: 42rem) {
+  .site-header__inner,
+  .site-footer__inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .7rem;
+    padding-block: .85rem;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+
+  .article {
+    width: min(calc(100% - 1.5rem), var(--measure));
+    padding-top: 3.2rem;
+  }
+
+  .article--reference,
+  .article--form,
+  .article--forms-index {
+    width: min(calc(100% - 1.5rem), 52rem);
+  }
+
+  .article > h1 {
+    max-width: 11ch;
+  }
+
+  .article--reference > h1,
+  .article--form > h1,
+  .article--forms-index > h1 {
+    max-width: 22ch;
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .hierarchy-diagram {
+    width: calc(100vw - .75rem);
+  }
+
+  .diagram-navigation {
+    gap: .3rem;
+    padding-inline: .25rem;
+  }
+
+  .diagram-navigation a {
+    flex: 1 1 8rem;
+    padding-inline: .45rem;
+    text-align: center;
+  }
+
+  .diagram-frame {
+    max-height: 72vh;
+    padding: .3rem;
+    border-radius: .35rem;
+  }
+
+  .diagram-frame svg {
+    width: var(--diagram-native-width, 46.5rem);
+    min-width: var(--diagram-native-width, 46.5rem);
+  }
+
+  .hierarchy-diagram figcaption {
+    padding-inline: .75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  :root,
+  html[data-theme="light"],
+  html[data-theme="dark"] {
+    color-scheme: light;
+    --page: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #000000;
+    --ink-soft: #222222;
+    --ink-faint: #444444;
+    --accent: #5f210d;
+    --rule: #bbbbbb;
+    --code: #f4f4f4;
+    --shadow: none;
+    --diagram-shadow: none;
+    --diagram-bg: transparent;
+    --diagram-panel: #f2f2f2;
+    --diagram-ink: #000000;
+    --diagram-muted: #222222;
+    --diagram-accent: #5f210d;
+    --diagram-line: #555555;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .site-header,
+  .skip-link,
+  .diagram-navigation {
+    display: none;
+  }
+
+  .article {
+    width: 100%;
+    padding: 0;
+  }
+
+  .hierarchy-diagram {
+    width: 100%;
+    margin-inline: 0;
+    transform: none;
+    break-inside: avoid;
+  }
+
+  .diagram-frame {
+    max-height: none;
+    padding: 0;
+    overflow: visible;
+    border-color: #bbbbbb;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .diagram-frame svg {
+    width: 100%;
+    min-width: 0;
+    max-width: 100% !important;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the main content</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-name" href="../index.html">Zero-Trust Hierarchy</a>
+      <nav class="site-nav" aria-label="Publication">
+        <a href="../index.html">Article</a>
+        <a href="../RULEBOOK.html">Rulebook</a>
+        <a href="index.html" aria-current="page">Forms</a>
+        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main-content">
+    <article class="article article--form">
+<h1 id="zero-trust-hierarchy-form-3--builder-assignment">Zero-Trust Hierarchy form 3 — Builder assignment</h1>
+<p>The <strong>Engineering Lead</strong> writes this form for one <strong>Builder</strong> in a bounded context. The assignment contains an observable piece-level goal, concrete criteria, relevant ratified rules, an exact ownership allowlist, and required evidence. The Lead retains all checkpoint-level authority and all integration/version-publishing authority.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Builder Assignment — [piece]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>authorized workspace or repository:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>authorized checkpoint:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>execution/evidence profile:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>piece identifier:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>context is fresh or intentionally seeded:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact seed source/version and reason, if seeded:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Lead-created bounded workspace (Git worktree when applicable):</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>owned dependencies/paths — exact allowlist:</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>observable goal:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>concrete acceptance criteria and citations:</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>decision-bearing inputs — exhaustive source/version list:</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>required tests, reproduction, and evidence:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>forbidden scope:</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>target window inside the checkpoint ceiling (Lead planning aid, not a new authority):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Instructions</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Implement only this piece and edit only allowlisted dependencies. You MAY create or edit</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>implementation tests, test fixtures, and documentation inside the allowlist. Report them as</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>Builder-authored construction evidence, not as an independent acceptance oracle.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Under the Git reference profile, you MUST NOT stage, commit, merge, switch branches, update refs,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>create or remove worktrees, or push. Under any profile, you MUST NOT publish a candidate version,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>mutate shared integration state, or edit outside the allowlist. These are procedural role</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>restrictions; the workspace is not an operating-system sandbox.</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>Return to the Engineering Lead:</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>every changed dependency/path;</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>exact commands actually run and their results;</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>produced artifacts and hashes where relevant;</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>known gaps or unresolved assumptions; and</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>every decision-bearing source/input with stable identity/version, access time, purpose, and</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>   decision affected; and</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>a statement of any allowlist or role-boundary deviation.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>Do not grade your work, write a verdict, or declare a checkpoint criterion complete. You may state</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>expected results for your own implementation tests. You MUST NOT define, copy into the assignment,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>or pre-answer the independent acceptance oracle that will judge this piece; the Critic derives that</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>oracle independently from the ratified bar and decision-bearing inputs.</span></code></pre></div>
+<h2 id="lead-import-check">Lead import check</h2>
+<p>The Lead checks that every returned and imported dependency is inside the allowlist. An out-of-scope change is not accepted "just this once." Under Git, the Lead imports approved paths and commits serially on the local checkpoint branch; another profile uses its declared version publisher. Builders with overlapping write ownership are one workstream and MUST NOT run as independent parallel writers.</p>
+    </article>
+  </main>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Written by Yarden Viktor Dejorno. Licensed under <a href="../LICENSE">CC BY 4.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

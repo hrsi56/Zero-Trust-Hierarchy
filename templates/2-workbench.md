@@ -1,62 +1,104 @@
-# 2 — Active workbench
+# Zero-Trust Hierarchy form 2 — Active workbench
 
-Written and read by the **Engineering Lead only**. Created after a valid brief arrives, and only
-while that checkpoint is active.
+The **Engineering Lead** may create this private, non-versioned file only after a brief has passed
+validation and the required first observable output has reported start time plus verified actual
+state. Under the Git reference profile, keep it Git-ignored.
 
-This file is operational visibility — not program state, not acceptance authority, not an audit log.
-Keep it Git-ignored. It never enters a candidate commit, never enters a Critic worktree, the
-Orchestrator never reads it, and the human never carries anything from it upward.
+The workbench is temporary operational state. It is not program state, an acceptance bar, a
+verdict, or an upward handoff. Builders, Critics, the Orchestrator, and the human courier /
+development-management function do not receive it. Before terminal return, move any unique
+evidence deliberately into an authorized evidence artifact, then always remove the workbench. It
+never survives under the workbench name.
 
-At terminal return: freeze a renamed snapshot only if it holds unique evidence, otherwise delete it.
-Never carry it into the next checkpoint.
-
-```markdown
+````markdown
 # Active Workbench — [checkpoint id]
 
-Plan anchor:
-Candidate branch / full commit SHA:
-Checkpoint active-elapsed ceiling:
-started_at_utc / last_updated_at_utc:
-Consumed active elapsed: [raw seconds / decimal hours]
+## Authorization and clock
+- target workspace or repository:
+- authorized checkpoint:
+- exact ratified plan anchor:
+- execution/evidence profile:
+- candidate branch or equivalent version workspace: [identity] | NOT_CREATED — not yet created
+- active-elapsed ceiling:
+- started_at_utc:
+- last_updated_at_utc:
+- consumed active seconds:
+- decimal hours (derived convenience only):
+
+## First observable state, already reported
+- exact starting artifact/workspace version:
+- modification state at start:
+- Git full HEAD, branch, and working-tree state, if applicable:
+- relevant environment / data state at start:
+- profile resources/topology at start:
+- expected-state mismatch: none / [exact mismatch and disposition]
+- timestamp-acquisition mechanism selected by this implementation: [do not call it ratified unless
+  the governing documents do]
 
 ## Eligible pause ledger
-| paused_at_utc | resumed_at_utc | seconds | reason / evidence | all contexts stopped? |
+| paused_at_utc | resumed_at_utc | raw seconds | already-authorized reason / evidence | all contexts and tools stopped? |
 |---|---|---:|---|---|
 
-## Authorized goal and bar
-- criterion → evidence required
+## Authorized observable goal and complete bar
+| Criterion and exact citation | Evidence required | State |
+|---|---|---|
 
-## Lead-chosen pieces
-| Piece | Owned paths | Builder worktree | Integration SHA | Critic verdict | Largest open gap |
+## Decomposition, dependencies, and repair routing
+| Piece / surface | Depends on | Builder context | Acceptance oracle | Current gap | Next repair or review route |
 |---|---|---|---|---|---|
 
-## Mandatory independent surfaces in scope
-| Surface | Applicable? | Verdict file |
-|---|---|---|
-| [pre-registered surface 1] | | |
-| [pre-registered surface 2] | | |
-| [pre-registered surface 3] | | |
+## Builder contexts and seeds
+| Piece | Fresh or seeded | Exact seed source/version | Reason | Owned dependencies | Bounded workspace | Returned dependencies |
+|---|---|---|---|---|---|---|
 
-## Independent acceptance-oracle pack (when its checkpoint is active)
-| Oracle | Independent fixture | Independent expected result | Critic commands / verdict |
-|---|---|---|---|
-| [O1 — adversarial condition] | | [the result computed independently of the builder] | |
-| [O2 — adversarial condition] | | | |
+## Decision-bearing provenance
+| Source/input | Stable identity/version/hash | Accessed_at_utc | Role | Purpose | Decision or claim affected | Secret redaction, if any |
+|---|---|---|---|---|---|---|
 
-## Integration
-- final candidate SHA:
-- reproduction commands:
-- Integration verdict file:
+Use an explicit `none` row if no source exists beyond the ratified bar and candidate. Include local
+files, external references, datasets, prompts, tool outputs, supplied expected values, and seeded
+context.
 
-## Exact blocker, if terminal
-- none / exact owner or authority request
-```
+## Lead integration ledger
+| Import/version | Ownership checked? | Candidate identity | Commands / result | Open gap |
+|---|---|---|---|---|
 
-## Notes
+## Mandatory surfaces and acceptance oracles
+| Surface / oracle | Applicable? | Reason | Independent fixture / expected result | Critic verdict |
+|---|---|---|---|---|
 
-- Record raw seconds and preserve them for enforcement; show decimal hours only as a convenience.
-- A pause is eligible only while **all** Lead, Builder, Critic, Integration, test, and tool activity
-  is stopped for an already-authorized external dependency or a platform suspension. A newly
-  required credential, source, or authority is a terminal `BLOCKED`, not an open-ended pause.
-- The oracle table is mandatory where the plan defines one, not illustrative. The independent-fixture
-  requirement is the whole point: a fixture the builder wrote proves nothing about the builder.
+## Component verdict currency
+| Verdict record | Candidate identity | Reviewed dependencies / Git reviewed_paths | Valid lineage? | Dependency change empty? | Current / stale | Rerun action |
+|---|---|---|---|---|---|---|
+
+## Integration and terminal identities
+- final candidate identity / Git final_candidate_sha: [identity] | NOT_CREATED — [reason]
+- Integration verdict file / result:
+- evidence identity / Git evidence_tip_sha: [identity] | NOT_CREATED — [reason]
+- candidate/evidence linkage: yes / no / not yet / NOT_APPLICABLE — [reason]
+- terminal changed dependencies / Git diff paths:
+- terminal delta is evidence-only: yes / no / not yet / NOT_APPLICABLE — [reason]
+- cited identity resolution checked: yes / no / not yet / NOT_APPLICABLE — [reason]
+
+## Post-verdict or post-stop reads
+- terminal read boundary: [Integration verdict time] | [non-PASS stop decision time]
+
+| Source/input read after terminal read boundary | Stable identity/version/hash | Read_at_utc | Purpose | Decision-bearing? | Consequence / rereview |
+|---|---|---|---|---|---|
+
+Use `none` if no later read occurred. A decision-bearing post-verdict read reopens the candidate
+and requires fresh review; a non-PASS records later reads even if no verdict exists.
+
+## Current resources/topology
+| Branch/worktree/tag or profile equivalent | Owner | Purpose | Exact version | Clean/unchanged? | Planned disposition |
+|---|---|---|---|---|---|
+
+## Terminal reason, if not PASS
+- none / exact blocker, plateau evidence, or exhausted-budget state:
+- smallest exact Owner decision, authority, or resource change required:
+````
+
+An eligible pause exists only when every Lead, Builder, Critic, Integration, test, and tool context
+is stopped for an already-authorized external dependency or platform suspension. A newly required
+credential, authority, source, destructive/public act, or change to the bar is terminal `BLOCKED`,
+not an open pause.
