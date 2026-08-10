@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import html
 import math
 import os
@@ -37,28 +36,16 @@ AUTHOR = "Yarden Viktor Dejorno"
 PUBLIC_URL = "https://hrsi56.github.io/gauntlet-hierarchy/"
 REPOSITORY_URL = "https://github.com/hrsi56/gauntlet-hierarchy"
 
-MERMAID_VERSION = "11.16.0"
-MERMAID_PACKAGE = f"@mermaid-js/mermaid-cli@{MERMAID_VERSION}"
 PANDOC_VERSION = "3.6.4"
-MERMAID_TEMP = "/tmp/zero-trust-hierarchy.mmd"
-MERMAID_COMMAND = (
-    'PUPPETEER_SKIP_DOWNLOAD=true '
-    'PUPPETEER_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" '
-    'npm_config_cache=/tmp/zero-trust-hierarchy-npm-cache '
-    f"npx --yes {MERMAID_PACKAGE} -i {MERMAID_TEMP} "
-    "-o assets/zero-trust-hierarchy.svg -b transparent -w 1400"
-)
 
-MERMAID_FENCE = re.compile(
-    r"(?ms)^```mermaid[ \t]*\n(?P<source>.*?)^```[ \t]*$"
+# The diagram is a hand-authored SVG. `assets/zero-trust-hierarchy.svg` is the canonical
+# source: nothing generates it, so the build verifies its structure and palette rather
+# than a derivation from some other source.
+DIAGRAM_IMAGE = re.compile(
+    r"(?m)^!\[(?P<alt>[^\]]*)\]\(assets/zero-trust-hierarchy\.svg\)[ \t]*$"
 )
-HASH_RECORD = re.compile(r"mermaid-source-sha256:\s*([0-9a-f]{64})", re.I)
-RENDERER_RECORD = re.compile(r"mermaid-renderer:\s*([^\r\n<]+)", re.I)
-COMMAND_RECORD = re.compile(r"mermaid-command:\s*([^\r\n<]+)", re.I)
-SVG_METADATA = re.compile(
-    r"\s*<metadata\s+id=[\"']zero-trust-build-metadata[\"']\s*>.*?</metadata>\s*",
-    re.I | re.S,
-)
+PALETTE_VARIABLE = re.compile(r"var\(\s*(--diagram-[a-z-]+)\s*(?:,\s*(?P<fallback>[^)]*))?\)")
+REQUIRED_PALETTE = ("--diagram-ink", "--diagram-line", "--diagram-panel")
 MARKER = '<div data-build-sentinel="zero-trust-hierarchy-diagram"></div>'
 CSP = (
     "default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; "
@@ -95,56 +82,27 @@ def read_text(path: Path) -> str:
         raise BuildError(f"required file is missing: {label}") from exc
 
 
-def normalized_mermaid(source: str) -> str:
-    """Normalize line endings, trailing whitespace, and the terminal newline."""
-    source = source.replace("\r\n", "\n").replace("\r", "\n")
-    lines = [line.rstrip(" \t") for line in source.split("\n")]
-    while lines and not lines[0]:
-        lines.pop(0)
-    while lines and not lines[-1]:
-        lines.pop()
-    if not lines:
-        raise BuildError("the Mermaid block is empty")
-    return "\n".join(lines) + "\n"
-
-
-def article_parts() -> tuple[str, str, str]:
+def article_parts() -> tuple[str, str]:
     article = read_text(ARTICLE).replace("\r\n", "\n").replace("\r", "\n")
-    matches = list(MERMAID_FENCE.finditer(article))
+    matches = list(DIAGRAM_IMAGE.finditer(article))
     if len(matches) != 1:
         raise BuildError(
-            f"article.md must contain exactly one fenced Mermaid block; found {len(matches)}"
+            "article.md must reference the diagram exactly once as a standalone image, "
+            f"![alt](assets/zero-trust-hierarchy.svg); found {len(matches)}"
         )
+    if not matches[0].group("alt").strip():
+        raise BuildError("the article's diagram image reference must carry alt text")
     if not re.search(r"(?m)^# Zero-Trust Hierarchy[ \t]*$", article):
         raise BuildError(f"article.md must contain the exact H1: {TITLE}")
     if STANDFIRST not in article:
         raise BuildError(f"article.md must contain the exact standfirst: {STANDFIRST}")
 
     match = matches[0]
-    source = normalized_mermaid(match.group("source"))
     marked_article = article[: match.start()] + MARKER + article[match.end() :]
-    return article, source, marked_article
+    return article, marked_article
 
 
-def source_hash(source: str) -> str:
-    return hashlib.sha256(source.encode("utf-8")).hexdigest()
-
-
-def rerender_instructions(expected_hash: str) -> str:
-    return "\n".join(
-        [
-            "The committed diagram is stale or lacks valid build metadata.",
-            f"Expected normalized Mermaid SHA-256: {expected_hash}",
-            "From the repository root, run exactly:",
-            f"  python3 scripts/build.py --extract-mermaid {MERMAID_TEMP}",
-            f"  {MERMAID_COMMAND}",
-            "  python3 scripts/build.py --stamp-svg",
-            "  python3 scripts/build.py",
-        ]
-    )
-
-
-def validate_svg(svg: str, expected_hash: str) -> float:
+def validate_svg(svg: str) -> float:
     try:
         root = ET.fromstring(svg)
     except ET.ParseError as exc:
@@ -165,30 +123,13 @@ def validate_svg(svg: str, expected_hash: str) -> float:
     if native_width <= 0:
         raise BuildError("the SVG viewBox width must be positive")
 
-    metadata_nodes = [
-        node
-        for node in root.iter()
-        if local_name(node.tag) == "metadata"
-        and node.attrib.get("id") == "zero-trust-build-metadata"
-    ]
-    if len(metadata_nodes) != 1:
-        raise BuildError(rerender_instructions(expected_hash))
-    metadata_text = "\n".join(metadata_nodes[0].itertext())
-    hashes = HASH_RECORD.findall(metadata_text)
-    renderers = [value.strip() for value in RENDERER_RECORD.findall(metadata_text)]
-    commands = [value.strip() for value in COMMAND_RECORD.findall(metadata_text)]
-
-    if hashes != [expected_hash]:
-        raise BuildError(rerender_instructions(expected_hash))
-    if renderers != [MERMAID_PACKAGE]:
+    background = re.search(
+        r"background(?:-color)?:\s*([^;\"']+)", root.attrib.get("style", ""), re.I
+    )
+    if background and background.group(1).strip().lower() not in {"transparent", "none"}:
         raise BuildError(
-            f"SVG renderer metadata must be exactly {MERMAID_PACKAGE!r}.\n"
-            + rerender_instructions(expected_hash)
-        )
-    if commands != [MERMAID_COMMAND]:
-        raise BuildError(
-            "SVG rendering-command metadata does not match the approved pinned command.\n"
-            + rerender_instructions(expected_hash)
+            "the SVG root must not paint an opaque background; the diagram sits directly "
+            f"on the page, not in a card. Found: {background.group(1).strip()}"
         )
 
     titles = [
@@ -217,8 +158,20 @@ def validate_svg(svg: str, expected_hash: str) -> float:
         raise BuildError("the committed SVG must not load remote resources")
     if re.search(r"(?:@import|url\()\s*[\"']?https?://", svg, re.I):
         raise BuildError("the committed SVG CSS must not load remote resources")
-    for variable in ("--diagram-panel", "--diagram-ink", "--diagram-line"):
-        if f"var({variable})" not in svg:
+    # Every themed colour must also carry a literal fallback, so the committed file still
+    # renders correctly wherever the page variables are absent — a direct file open, or the
+    # Markdown source rendered on the repository host.
+    palette: set[str] = set()
+    for match in PALETTE_VARIABLE.finditer(svg):
+        fallback = (match.group("fallback") or "").strip()
+        if not fallback:
+            raise BuildError(
+                f"{match.group(1)} needs a literal fallback so the diagram also renders "
+                f"outside the page; write var({match.group(1)}, #value)"
+            )
+        palette.add(match.group(1))
+    for variable in REQUIRED_PALETTE:
+        if variable not in palette:
             raise BuildError(f"the SVG palette must use the semantic CSS variable {variable}")
     font_sizes = [float(value) for value in re.findall(r"font-size:\s*([0-9.]+)px", svg, re.I)]
     if not font_sizes or min(font_sizes) < 12:
@@ -417,9 +370,9 @@ def diagram_figure(svg: str, native_width: float) -> str:
         [
             '<figure class="hierarchy-diagram" aria-labelledby="hierarchy-diagram-caption">',
             '  <nav class="diagram-navigation" aria-label="Diagram positions">',
-            '    <a href="#my-svg-flowchart-O-0">Governance</a>',
-            '    <a href="#my-svg-flowchart-H-10">Human control point</a>',
-            '    <a href="#my-svg-flowchart-G-12">Gauntlet loop</a>',
+            '    <a href="#ztx-owner">Governance</a>',
+            '    <a href="#ztx-human">Human control point</a>',
+            '    <a href="#ztx-gauntlet">Gauntlet loop</a>',
             "  </nav>",
             f'  <div class="diagram-frame" tabindex="0" role="region" aria-label="Scrollable hierarchy diagram" style="--diagram-native-width: {width:g}px">',
             inline_svg(svg),
@@ -646,9 +599,9 @@ def build_outputs() -> dict[Path, str]:
     if re.search(r"(?:@import|url\()\s*[\"']?https?://", css, re.I):
         raise BuildError("site CSS attempts to load a remote resource")
 
-    _, mermaid, marked_article = article_parts()
+    _, marked_article = article_parts()
     svg = read_text(SVG)
-    diagram_width = validate_svg(svg, source_hash(mermaid))
+    diagram_width = validate_svg(svg)
 
     sources = form_sources()
     source_outputs = {
@@ -755,69 +708,12 @@ def print_inventory(verb: str, outputs: dict[Path, str]) -> None:
         print(f"  {output.relative_to(ROOT)}")
 
 
-def stamp_svg() -> None:
-    _, mermaid, _ = article_parts()
-    digest = source_hash(mermaid)
-    svg = read_text(SVG)
-    svg = SVG_METADATA.sub("\n", svg)
-    palette = (
-        ("rgba(232,232,232, 0.8)", "color-mix(in srgb, var(--diagram-bg) 88%, transparent)"),
-        ("rgba(232, 232, 232, 0.5)", "color-mix(in srgb, var(--diagram-bg) 78%, transparent)"),
-        ("rgba(185, 185, 185, 1)", "color-mix(in srgb, var(--diagram-line) 35%, transparent)"),
-        ("hsl(80, 100%, 96.2745098039%)", "var(--diagram-bg)"),
-        ("#333333", "var(--diagram-line)"),
-        ("#000000", "var(--diagram-ink)"),
-        ("#ECECFF", "var(--diagram-panel)"),
-        ("#9370DB", "var(--diagram-accent)"),
-        ("#ffffde", "color-mix(in srgb, var(--diagram-panel) 72%, var(--diagram-bg))"),
-        ("#aaaa33", "var(--diagram-line)"),
-        ("#552222", "var(--diagram-accent)"),
-        ("#333", "var(--diagram-ink)"),
-        ("#000", "var(--diagram-ink)"),
-    )
-    for generated_color, semantic_color in palette:
-        if generated_color not in svg and semantic_color not in svg:
-            raise BuildError(
-                f"expected Mermaid palette token is missing: {generated_color}; "
-                "inspect renderer output before stamping"
-            )
-        svg = svg.replace(generated_color, semantic_color)
-    metadata = "\n".join(
-        [
-            '<metadata id="zero-trust-build-metadata">',
-            f"  mermaid-source-sha256: {digest}",
-            f"  mermaid-renderer: {MERMAID_PACKAGE}",
-            f"  mermaid-command: {MERMAID_COMMAND}",
-            "</metadata>",
-        ]
-    )
-    opening = re.search(r"<svg\b[^>]*>", svg, re.I)
-    if not opening:
-        raise BuildError(f"{SVG.relative_to(ROOT)} does not contain an SVG root element")
-    split = opening.end()
-    stamped = svg[:split] + "\n" + metadata + "\n" + svg[split:].lstrip("\n")
-    SVG.write_text(stamped.rstrip() + "\n", encoding="utf-8", newline="\n")
-    print(f"Stamped {SVG.relative_to(ROOT)} with Mermaid SHA-256 {digest}")
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    mode = parser.add_mutually_exclusive_group()
-    mode.add_argument(
+    parser.add_argument(
         "--check",
         action="store_true",
         help="verify every generated HTML artifact against a fresh deterministic build",
-    )
-    mode.add_argument(
-        "--extract-mermaid",
-        metavar="PATH",
-        type=Path,
-        help="write the normalized canonical Mermaid source to PATH",
-    )
-    mode.add_argument(
-        "--stamp-svg",
-        action="store_true",
-        help="record the canonical source hash, pinned renderer, and command in the SVG",
     )
     return parser.parse_args()
 
@@ -825,18 +721,6 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     try:
-        if args.extract_mermaid is not None:
-            _, mermaid, _ = article_parts()
-            args.extract_mermaid.write_text(mermaid, encoding="utf-8", newline="\n")
-            print(
-                f"Wrote normalized Mermaid source to {args.extract_mermaid} "
-                f"(SHA-256 {source_hash(mermaid)})"
-            )
-            return 0
-        if args.stamp_svg:
-            stamp_svg()
-            return 0
-
         outputs = build_outputs()
         if args.check:
             check_outputs(outputs)

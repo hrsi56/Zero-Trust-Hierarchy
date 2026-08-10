@@ -16,38 +16,7 @@ Zero-Trust Hierarchy breaks that chain. It assigns each decision to a distinct a
 
 The hierarchy is asymmetric. The Architect / Owner ratifies purpose and governing documents. The Orchestrator authorizes one bounded unit. The Engineering Lead chooses how to execute it. A replaceable inner method returns reviewed work. Evidence then travels back through orchestration to human judgment.
 
-```mermaid
-%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 18, "wrappingWidth": 300}}}%%
-flowchart TB
-  accTitle: Zero-Trust Hierarchy authority and evidence flow
-  accDescr: The Architect / Owner ratifies governing documents, the Orchestrator authorizes one bounded unit, the same human judges its return, and the Engineering Lead uses a replaceable Gauntlet Loop before returning evidence for receipt and disposition.
-  subgraph TOP["Top governance loop"]
-    direction TB
-    subgraph PAIR[" "]
-      direction LR
-      O["Architect / Owner — human<br/>purpose · ratification<br/>strategic direction"]
-      D["Governing documents<br/>ratified plans · rulebook<br/>roles and configuration<br/>management map"]
-    end
-    R["Orchestrator<br/>WHAT · WHEN · WHERE · ceiling<br/>receipt evidence · closure eligibility"]
-    O -->|"ratifies"| D
-    D -->|"authorizes and constrains"| R
-    R -->|"state · evidence · decision request"| O
-  end
-  style PAIR fill:none,stroke:none,color:transparent
-
-  subgraph TRACK["One visible execution track"]
-    direction TB
-    H["Human — development manager / courier<br/>same Architect / Owner<br/>judgment · veto · disposition · continue?"]
-    L["Engineering Lead<br/>HOW · decomposition · one-writer integration"]
-    G["Gauntlet Loop — Matt Shumer<br/>somethingbig.ai/gauntlet-loop<br/>replaceable · ↻ internally iterative"]
-    H <-->|"brief ↓ · packet ↑"| L
-    L <-->|"goal + bar ↓ · artifact + verdicts ↑"| G
-  end
-
-  R <-->|"0…N tracks<br/>brief ↓ · packet ↑"| H
-  O -.->|"same human · two hats"| H
-  click G "https://somethingbig.ai/gauntlet-loop" "Matt Shumer's Gauntlet Loop" _blank
-```
+![Zero-Trust Hierarchy authority and evidence flow](assets/zero-trust-hierarchy.svg)
 
 [Matt Shumer’s Gauntlet Loop](https://somethingbig.ai/gauntlet-loop) supplies the replaceable inner execution pattern: give a capable lead a goal and concrete bar; let that lead decompose the work; separate construction from a fresh critical pass; show the reviewer the artifact rather than the Builder’s explanation; return the largest meaningful gap; and continue without an arbitrary round count. Shumer also describes blind comparison when circumstances make it useful, not as a universal property of every review. This article does not restate that loop. Its subject is the authority system around it: who may launch work, how written criteria become binding, which evidence crosses each boundary, how verdicts remain current, who may close or land a result, and why a human retains purpose and disposition authority.
 
