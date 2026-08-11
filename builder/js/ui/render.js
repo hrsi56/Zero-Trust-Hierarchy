@@ -170,8 +170,8 @@ function renderPromptColumn(stage) {
   panel.appendChild(el('div', { class: 'prompt-panel__header' }, [
     text('h2', 'Generated prompt', { class: 'section-title', style: 'margin:0' }),
     el('div', { class: 'mode-switch', role: 'group', 'aria-label': 'Operating mode' }, [
-      el('button', { type: 'button', 'aria-pressed': String(mode === 'same'), onClick: () => { store.setMode(stage.id, 'same'); rerenderPromptArea(); } }, ['Same agent']),
-      el('button', { type: 'button', 'aria-pressed': String(mode === 'fresh'), onClick: () => { store.setMode(stage.id, 'fresh'); rerenderPromptArea(); } }, ['Fresh agent']),
+      el('button', { type: 'button', 'aria-pressed': String(mode === 'same'), onClick: () => { store.setMode(stage.id, 'same'); rerenderPromptArea(); } }, [(stage.modeLabels && stage.modeLabels.same) || 'Same agent']),
+      el('button', { type: 'button', 'aria-pressed': String(mode === 'fresh'), onClick: () => { store.setMode(stage.id, 'fresh'); rerenderPromptArea(); } }, [(stage.modeLabels && stage.modeLabels.fresh) || 'Fresh agent']),
     ]),
   ]));
 
@@ -204,9 +204,11 @@ function renderPromptColumn(stage) {
 
   function rerenderPromptArea() {
     const currentMode = store.getMode(stage.id);
-    modeHelp.textContent = currentMode === 'same'
+    // A stage may override this when its two modes mean something more specific than
+    // "same conversation or a new one" — stage 12's modes are two different authority tiers.
+    modeHelp.textContent = (stage.modeHelp && stage.modeHelp[currentMode]) || (currentMode === 'same'
       ? 'Continue in the same agent conversation that completed the previous step.'
-      : 'Launch the agent from the root of your project and make sure it can read the project files. Give it the prompt below. Do not copy your project documents into this website.';
+      : 'Launch the agent from the root of your project and make sure it can read the project files. Give it the prompt below. Do not copy your project documents into this website.');
 
     const missing = missingRequiredAnswers(stage, store.getAnswers(stage.id));
     clear(missingBanner);

@@ -24,13 +24,13 @@ const PARALLEL_LABELS = {
 function operatingModeText(ctx) {
   if (ctx.mode === 'same') {
     return [
-      'Continue in the same agent conversation that completed the previous step.',
+      'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn.',
       'Do not start a fresh session for this — the continuity is exactly what lets you build on what was already inspected. That said, continuity is not an exemption from verification: check current project state below rather than trusting anything this conversation concluded earlier, including your own prior read of the ratified Capstone. Actual state overrides an expected-state narrative, even one from earlier in this same conversation.',
     ].join(' ');
   }
   return [
-    'Launch the agent from the root of your project and make sure it can read the project files.',
-    'Do not copy your project documents into this website — this site only ever produces a prompt for you to run inside your own project; it never reads or stores your project\'s contents. Because this is a fresh session with no memory of any earlier conversation about this project, you must rebuild your understanding of current state entirely from scratch rather than relying on anything decided, drafted, or assumed before this session began.',
+    'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.',
+    'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone. Rebuild your understanding of the current state entirely from what you can read now, rather than relying on anything decided, drafted, or assumed before this session began.',
   ].join(' ');
 }
 
@@ -118,7 +118,7 @@ export default {
   methodProvenance: {
     verified: [
       'The requirement that a ratified plan be decomposed into an ordered set of bounded checkpoints — each one a single authorized unit of work — comes directly from the bootstrap\'s Phase A drafting (article.md §14), which lists a "checkpoint decomposition" among the governance artifacts a setup agent drafts, and from the checkpoint brief\'s own field 2, "Authorized checkpoint (exactly one bounded unit)".',
-      'Zero-to-arbitrarily-many optional parallel tracks — never assumed, never required — and the requirement that cross-track dependencies be tracked by durable program state rather than any one role\'s private assumption, come directly from article §13 / RULEBOOK §17 on parallel tracks.',
+      'Zero-to-arbitrarily-many optional parallel tracks — never assumed, never required — and the requirement that cross-track dependencies be tracked by durable program state rather than any one role\'s private assumption, come from article.md §13 and RULEBOOK.md §17, "Parallel tracks and external changes."',
     ],
     adapted: [],
     productDesign: [

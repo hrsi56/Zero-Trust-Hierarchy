@@ -46,18 +46,18 @@ export default {
   number: 12,
   title: 'Return, Receipt & Disposition',
   purpose: "Receive the terminal report on the checkpoint, have it checked for honesty and completeness, and then make your own LAND or DISCARD call — the one decision only you can make.",
-  agentProduces: 'A consolidated return report naming the terminal result (PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED), a receipt check confirming that report is honest and traceable to real evidence, and — for a supported PASS — the evidence and live-resource summary you need to decide LAND or DISCARD yourself.',
   prerequisites: ['first-execution'],
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'The five distinct meanings of "done" — technical PASS, terminal return, supported receipt, disposition, and lifecycle closure — and the rule that none of them implies the next, are stated directly in the method brief.',
-      'The four terminal states this stage can receive (PASS, BLOCKED, PLATEAU, BUDGET_EXHAUSTED) and their meanings, the receipt check\'s job (verifying the report\'s envelope — authorization, honesty, traceable evidence — never re-running the technical review itself), and the rule that LAND is Owner-only, requires a supported PASS, and preserves a separate evidence trail from DISCARD, are all stated directly in the method brief.',
-      'The read-only-inspection-before-disposition rule — that the evidence and live-resource picture is assembled and shown to the human before any LAND or DISCARD decision is acted on, never after — is stated directly in the method brief.',
+      'The five distinct meanings of "done" — technical PASS, terminal return, supported receipt, disposition, and lifecycle closure — and the rule that none of them implies the next, are enumerated in article.md §11, "Returning is not closing," which adds that "Neither PASS nor landing starts the next unit."',
+      'That the Return Packet is the Engineering Lead\'s sole upward artifact (RULEBOOK.md §13) and that the receipt on it is performed by the Orchestrator (§14) are two different tiers doing two different jobs. §14 states the receipt is bounded to the packet and the evidence records it cites, and that the Orchestrator "MUST NOT open or review source/content as a second reviewer, rerun tests, rederive metrics, inspect generated technical outputs, inspect Builder workspaces, or read the Lead\'s workbench," because that "would collapse the authority split." This stage\'s two operating modes carry that split.',
+      'The four terminal states (PASS, BLOCKED, PLATEAU, BUDGET_EXHAUSTED) are RULEBOOK.md §12; the supported/rejected receipt result and its PASS-specific gates are §14; and that LAND is Owner-only, that disposition precedes mechanical reclamation, and that preservation precedes deletion are §15 and §16, with article.md §11 on how LAND and DISCARD preserve different facts.',
+      'Reporting an explicit "not created — [reason]" rather than fabricating a resource to fill a field, and accepting such a claim only where the resource genuinely never existed, are the honest non-PASS rules in RULEBOOK.md §11 and the conditional integrity checks in §14.',
     ],
     adapted: [],
     productDesign: [
-      'Merging what the source method treats as two chained moments — the terminal return plus receipt check, and the human\'s later disposition and continuation decision — into one stage is this guide\'s own design choice, made because every stage in this journey already ends in a human disposition gate; splitting them here would have meant asking for two dispositions back to back over the same event.',
+      'Presenting the terminal return, the receipt check, and the human\'s disposition as one stage of this journey — while keeping the return and the receipt in two separate agent contexts, carried by the stage\'s two operating modes — is this guide\'s own packaging. The authority split itself is not negotiable and is not this guide\'s invention; what this guide chose is to surface it as one screen with two prompts rather than two stages ending in two human dispositions over the same event.',
       'The reviewDepth and dispositionLeaning questions, and their specific wording, are this guide\'s own addition — the source method does not ask the human to pre-declare how they want to read a report.',
     ],
   },
@@ -89,10 +89,20 @@ export default {
       ],
     },
   ],
+  agentProduces: 'Two things, from two different agents: the side that executed the checkpoint assembles one consolidated return report naming its terminal result (PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED) and stops; a separate agent that did not run the work then checks that report against real evidence and returns one supported-or-rejected finding, plus the evidence and live-resource picture you need to decide LAND or DISCARD yourself.',
+  // This stage's two modes are not "same conversation or a new one" — they are the two sides of
+  // the authority split (RULEBOOK.md §13 writes the packet, §14 checks it). Both are needed, in
+  // that order, and the labels say so rather than leaving the human to pick one and stop.
+  modeLabels: { same: '1. Assemble the report', fresh: '2. Check it independently' },
+  modeHelp: {
+    same: 'Step 1 of 2 — run this in the conversation that executed the checkpoint. It assembles the return report and stops there.',
+    fresh: 'Step 2 of 2 — run this in a NEW conversation, with a different agent that did not do the work. Checking your own report is the one thing this step cannot be.',
+  },
   freeTextLabel: 'Anything else the agent should understand before assembling the return report?',
   completionGate: [
     { id: 'terminalStated', label: 'The report states one explicit terminal result — PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED — not a vague "mostly done."', kind: 'confirm', required: true },
-    { id: 'receiptChecked', label: 'The report\'s honesty and completeness were checked against real evidence, not just asserted by the same work that produced it.', kind: 'confirm', required: true },
+    { id: 'receiptChecked', label: 'The report was checked against real evidence by an agent that did not run the checkpoint — I ran the receipt prompt in a separate conversation, rather than letting the executing agent vouch for its own report.', kind: 'confirm', required: true },
+    { id: 'receiptBounded', label: 'That checking agent gave a plain supported-or-rejected finding, naming any failed check — it did not quietly re-review the work itself.', kind: 'confirm', required: true },
     { id: 'evidenceReported', label: 'I can see what still exists (branches, evidence, open items) well enough to decide LAND or DISCARD, or to understand why the checkpoint did not reach PASS.', kind: 'confirm', required: true },
     { id: 'ownPublish', label: 'I understand that LAND, or any publish, deploy, or merge-to-main action, is mine to perform by hand — the agent did not do it for me.', kind: 'confirm', required: true },
     { id: 'artifactPath', label: 'Path to the return report (optional)', kind: 'text', required: false },
@@ -102,12 +112,26 @@ export default {
     const reviewDepth = answers.reviewDepth;
     const dispositionLeaning = answers.dispositionLeaning;
 
-    const roleAndAuthority = [
-      'You are closing out one checkpoint: assembling its terminal report, then checking that report\'s honesty and completeness against real evidence before it goes to the human. You are not re-doing the technical review the Critics already did, and you hold no authority to decide LAND, DISCARD, or whether to continue — those are the human\'s alone.',
-      'Treat these as two distinct jobs even if you do them in the same conversation: first assemble an honest report of what actually happened, then separately check that report against the evidence rather than trusting your own summary of it.',
-    ].join('\n');
+    // The method splits this stage across two authority tiers: the Engineering Lead assembles
+    // the Return Packet (RULEBOOK.md §13) and the Orchestrator performs the bounded receipt gate
+    // on it (§14), which explicitly forbids the receipt from becoming a second technical review.
+    // Those two jobs must not be done by the same context — a report that checks itself is the
+    // exact self-certification this method exists to prevent. So the two operating modes carry
+    // the split: "same agent" is the execution side and stops at the packet; "fresh agent" is
+    // the receipt side and never re-reviews the work.
+    const roleAndAuthority = fresh
+      ? [
+        'You are performing the receipt check on a checkpoint that someone else executed. You did not do this work, and you must not now re-do its technical review: your job is to check the envelope — that the return report is authorized, complete, internally honest, and traceable to evidence that actually resolves — not to re-judge whether the code or artifact is any good. That judgment already happened, in the Critic verdicts, and repeating it here would just create a second reviewer with less context than the first.',
+        'You hold no authority to decide LAND, DISCARD, or whether the project continues. Those are the human\'s alone. Your output is a finding: supported, or rejected with every failed check named.',
+      ].join('\n')
+      : [
+        'You are the execution side closing out one checkpoint: your job is to assemble one honest, complete terminal report of what actually happened, and then stop.',
+        'You must not perform the receipt check on your own report. A report that certifies itself is exactly the self-certification this method exists to prevent, and the check is not yours to do regardless of how confident you are in your own account. Assemble the report, hand it back, and stop there — a separate context that did not run this work performs the check, and the human decides what happens next.',
+      ].join('\n');
 
-    const stageObjective = 'Produce one consolidated return report naming exactly one terminal result, verify that report\'s claims against real evidence rather than the report\'s own narrative, and lay out — without deciding — what the human needs to choose LAND or DISCARD, or to understand a non-PASS result.';
+    const stageObjective = fresh
+      ? 'Check an existing return report against real evidence — authorization, completeness, honesty, and identity resolution — and return one finding of supported or rejected, then lay out (without deciding) what the human needs in order to choose LAND or DISCARD, or to understand a non-PASS result.'
+      : 'Produce one consolidated return report naming exactly one terminal result and mapping every acceptance-bar item to real evidence, then stop and hand it off for an independent check.';
 
     const humanIntent = [
       quoteHumanInput('How the human wants to review this', reviewDepthQuoted(reviewDepth)),
@@ -118,8 +142,8 @@ export default {
     ].filter(Boolean).join('\n\n');
 
     const operatingMode = fresh
-      ? 'Launch the agent from the root of your project and make sure it can read the project files. Do not copy your project documents into this website — hand this prompt to an agent with real access to the repository.'
-      : 'Continue in the same agent conversation that ran the checkpoint. That continuity does not excuse skipping verification: re-confirm the actual current state of every branch, evidence record, and verdict directly rather than trusting your own summary from earlier in this conversation.';
+      ? 'You are a fresh context with no memory of this checkpoint being executed, and that is the point: the report you are checking was written by the side that did the work, and this check only means something because you are not that side. You are expected to have direct read access to the project. Verify everything from the repository and the cited evidence records rather than from anything the report asserts about itself. If you turn out to be the same context that executed this checkpoint, stop and say so rather than checking your own work.'
+      : 'You are continuing in the conversation that ran the checkpoint. That continuity does not excuse reporting from memory: re-confirm the actual current state of every branch, evidence record, and verdict directly rather than trusting your own summary from earlier in this conversation. It also does not extend to the receipt check — that belongs to a separate context and is not part of this prompt.';
 
     const investigation = fresh
       ? [
@@ -139,16 +163,29 @@ export default {
 
     const precedence = 'The checkpoint brief and its cited acceptance bar remain controlling for what "PASS" means here. A verdict is only current evidence if it reviewed the actual final version of the work and nothing it depended on changed afterward — an older verdict on a superseded version does not count, however confident its wording sounds.';
 
-    const task = [
-      'Assemble one consolidated return report for this checkpoint. It must state exactly one terminal result — PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED — never an in-between or a vague characterization.',
-      'Map every item in the checkpoint\'s acceptance bar to direct evidence: for PASS, every item must be closed with a name-able verdict or artifact behind it; for a non-PASS result, state plainly which items remain open and why.',
-      'Separately, check the report you just assembled: does every claim in it trace to something you can actually point to (a verdict record, a commit, an observed result), rather than to the report\'s own say-so? Note explicitly if anything could not be verified this way.',
-      reviewDepthText(reviewDepth),
-      'Compile the live-resource picture: what branches, worktrees, and evidence records exist right now, their current state, and — for anything unexplained — flag it for the human rather than assuming it is fine to ignore or clean up.',
-      dispositionLeaningText(dispositionLeaning),
-    ].join('\n\n');
+    const task = fresh
+      ? [
+        'Locate the return report produced for this checkpoint by the side that executed it. If no such report exists, stop and say so — do not reconstruct one yourself from the repository, because a report you wrote is not a report you can check.',
+        'Check the report against real evidence, reading only the report and the evidence records it actually cites. Confirm: the authorized target and exactly one checkpoint; the exact ratified anchor and a complete echo of the brief; a declared execution/evidence profile; the actual start state, clock accounting, and one stated terminal result; a checklist mapping that is honest for the result claimed (fully closed for PASS, open items visible for a non-PASS); complete provenance including any reads made after the final verdict; a live-resource picture that matches what you can observe; and every claimed candidate, verdict, or evidence identity actually resolving.',
+        'For a claimed PASS only, additionally confirm: every checklist criterion has direct evidence; the component verdicts relied on are durable, version-exact, and still current; a fresh integration review binds the exact final artifact; the final artifact and its evidence record are distinct, resolvable, and correctly linked; and the terminal delta is evidence-only. For a non-PASS, do not demand a verdict, candidate, or evidence record the run never produced — accept an explicit "not created — [reason]" where the resource genuinely never existed, and never let a non-PASS imply technical closure.',
+        reviewDepthText(reviewDepth),
+        'Compile the live-resource picture: what branches, worktrees, and evidence records exist right now, their current state, and — for anything unexplained — flag it for the human rather than assuming it is fine to ignore or clean up.',
+        dispositionLeaningText(dispositionLeaning),
+      ].join('\n\n')
+      : [
+        'Assemble one consolidated return report for this checkpoint. It must state exactly one terminal result — PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED — never an in-between or a vague characterization.',
+        'Map every item in the checkpoint\'s acceptance bar to direct evidence: for PASS, every item must be closed with a name-able verdict or artifact behind it; for a non-PASS result, state plainly which items remain open and why. Where a resource genuinely never existed, say "not created — [reason]" explicitly rather than leaving the field blank or inventing one to fill the form.',
+        'Include everything the checker will need and cannot get from you later: the authorized target and checkpoint, the exact ratified anchor and a full echo of the brief you were given, the declared execution/evidence profile, actual start state and clock accounting, every component and integration verdict with exact reviewed identities and results, the complete checklist mapping, and exhaustive provenance — including every read you made after the final verdict, and why it did not influence any decision.',
+        reviewDepthText(reviewDepth),
+        'Compile the live-resource picture: what branches, worktrees, and evidence records exist right now, their current state, and — for anything unexplained — flag it for the human rather than assuming it is fine to ignore or clean up.',
+        'Then stop. Do not check your own report, do not declare it supported, and do not begin any later checkpoint. State explicitly that work stopped and that the report awaits an independent check.',
+        dispositionLeaningText(dispositionLeaning),
+      ].join('\n\n');
 
     const constraints = [
+      fresh
+        ? 'Do not become a second technical reviewer. Do not open or read source or generated content to judge its quality, do not rerun tests, do not rederive metrics, do not inspect Builder workspaces, and do not read the execution side\'s private working notes. Read the report and the evidence records it cites — nothing wider. Judging the work again, with less context than the Critics had, would collapse the authority split this check exists to protect.'
+        : 'Do not perform the receipt check on your own report, under any name — not as a "sanity check," a "self-review," or a confidence statement that it is complete and honest. Your account of your own work is the thing being checked; it cannot also be the check.',
       'Do not perform, stage, or simulate LAND yourself: no merge to a main or production branch, no publish, no deploy, no tag or release — those actions belong to the human alone, and only after they explicitly choose LAND.',
       'Do not perform DISCARD\'s cleanup steps (deleting branches, reclaiming worktrees) before the human has actually decided — preserving what exists comes first, and only the human\'s explicit decision unlocks any cleanup.',
       'Do not treat a technically supported PASS as automatically meaning the checkpoint should be accepted — that is a judgment about whether the result still serves the human\'s actual goals, and it is the human\'s call, not yours.',
@@ -158,7 +195,9 @@ export default {
     const deliverables = [
       'One terminal result: PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED, stated plainly and once.',
       'A checklist-to-evidence mapping covering every item in the acceptance bar, closed for PASS or explicitly open for a non-PASS result.',
-      'A statement of what was checked to confirm the report\'s own claims, and anything that could not be verified this way.',
+      fresh
+        ? 'One receipt finding — supported or rejected — with every failed check named individually. A supported finding permits the human to consider disposition; it does not itself land anything, close the lifecycle, or authorize the next checkpoint.'
+        : 'An explicit statement that this report has not been checked by anyone else yet, that no LAND or reclamation has occurred, and that work stopped rather than continuing into a later checkpoint.',
       'A live-resource inventory: branches, worktrees, and evidence records that currently exist, their state, and anything unexplained.',
       'For a supported PASS: what LAND and DISCARD would each concretely mean for this exact result.',
       'For a non-PASS: the smallest exact thing that would need to change for the checkpoint to reach PASS, or the smallest exact human decision needed to unblock it.',
@@ -167,13 +206,17 @@ export default {
     ].join('\n\n');
 
     const qualityGates = [
-      'Before the report is shown to the human, check each of these — this is the receipt-style check, and it is not optional:',
+      fresh
+        ? 'These are the checks your finding must cover, one by one, naming each that fails:'
+        : 'These are the questions the independent checker will ask of your report. Make sure it can answer each of them from what you wrote plus the evidence you cited — but do not answer them on the checker\'s behalf or record your own verdict on them:',
       '- Is the target checkpoint and its exact authorized scope named correctly, matching the brief that authorized it?',
       '- Does every claimed verdict actually exist, name the real final version of the work, and remain current — not stale because something it depended on changed afterward?',
       '- For a claimed PASS: does a fresh, independent final review verdict exist and actually cover the complete bar, not just most of it?',
       '- Is the checklist mapping honest for the stated result — complete for PASS, with every open item visible for a non-PASS?',
       '- Does the live-resource inventory match what you can actually observe, including anything unexplained?',
-      'If any check above fails, the report is not ready — fix the report or state plainly what could not be confirmed, rather than presenting an unchecked report as final.',
+      fresh
+        ? 'If any check above fails, the finding is rejected, and it names exactly which checks failed. A rejected finding is a real, useful result — it is not a failure of the run and must not be softened into a supported one with caveats.'
+        : 'If you cannot supply what one of those questions needs, say so plainly in the report rather than omitting it — a gap you declare is honest, a gap you leave for the checker to discover is not.',
     ].join('\n\n');
 
     const prohibitedAssumptions = [
@@ -190,10 +233,16 @@ export default {
 
     const approvalBoundary = "Everything in this stage is preparation for the human's decision, not the decision itself. LAND requires the human's explicit choice, is available only after a supported PASS, and is performed by the human's own hand — not simulated, staged, or performed by you. DISCARD likewise requires the human's explicit choice before any resource is reclaimed.";
 
-    const terminalReturn = [
-      '"Done" for this stage means the report exists, states one clear terminal result, has been checked against real evidence rather than its own narrative, and puts the live-resource picture and the LAND/DISCARD tradeoff (or the non-PASS next step) in front of the human — not that a decision has been made.',
-      'Report the terminal result, the checklist mapping, what was checked and how, the live-resource inventory, and — explicitly — that no LAND, publish, deploy, or resource reclamation has happened yet and awaits the human\'s decision.',
-    ].join('\n\n');
+    const terminalReturn = fresh
+      ? [
+        '"Done" for this stage means an independently checked report is in front of the human, with one clear terminal result and one clear receipt finding — not that a decision has been made.',
+        'Report the terminal result, the checklist mapping, your finding (supported or rejected) with every failed check named, the live-resource inventory, and — explicitly — that no LAND, publish, deploy, or resource reclamation has happened yet and awaits the human\'s decision.',
+      ].join('\n\n')
+      : [
+        '"Done" for this prompt means one complete, honest report exists and you have stopped — not that the checkpoint is closed, and not that the result has been accepted by anyone.',
+        'Report the terminal result, the checklist mapping, the evidence identities you are relying on, the live-resource inventory, and — explicitly — that this report has not yet been independently checked, that no LAND, publish, deploy, or reclamation has happened, and that no later checkpoint was begun.',
+        'End by telling the human, in one line, what happens next: an agent that did not run this checkpoint performs the receipt check on this report before any disposition decision is made.',
+      ].join('\n\n');
 
     return { roleAndAuthority, stageObjective, humanIntent, operatingMode, investigation, precedence, task, constraints, deliverables, qualityGates, prohibitedAssumptions, stopConditions, approvalBoundary, terminalReturn };
   },
@@ -212,7 +261,7 @@ export default {
           quoteHumanInput('Anything else the human wants understood', freeText),
         ].filter(Boolean).join('\n\n');
         const operatingMode = fresh
-          ? 'Launch the agent from the root of your project with real file access. Do not copy your project documents into this website.'
+          ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
           : 'Continue in the same conversation, but re-verify every defect directly rather than trusting your earlier assessment of why the report was rejected.';
         const investigation = fresh
           ? [
@@ -249,7 +298,7 @@ export default {
         const stageObjective = 'State plainly and specifically what is blocking this checkpoint, or why further effort under the current approach has stopped producing meaningful progress, and name the smallest exact decision, resource, or change that would move it forward.';
         const humanIntent = quoteHumanInput('Anything the human wants understood about this blocker', freeText);
         const operatingMode = fresh
-          ? 'Launch the agent from the root of your project with real file access. Do not copy your project documents into this website.'
+          ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
           : 'Continue in the same conversation, but re-confirm the current blocking condition directly rather than restating an earlier description of it.';
         const investigation = fresh
           ? 'Fresh conversation — read the actual non-PASS report directly, and independently confirm the blocker or plateau condition still holds right now rather than accepting the report\'s account unchecked.'

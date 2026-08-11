@@ -128,8 +128,8 @@ export default {
 
     const operatingMode = [
       ctx.mode === 'fresh'
-        ? 'Launch the agent from the root of your project and make sure it can read the project files, if you have one connected — but for this particular stage that is optional: nothing here touches your project, so a chat-only assistant with no file access works too. Do not copy your project documents into this website regardless.'
-        : 'Continue in the same agent conversation that helped with anything earlier, if any — but this stage does not depend on that continuity, since nothing here touches your project or reads any file.',
+        ? 'You are a fresh agent with no memory of any earlier conversation about this project. Unusually for this method, file access is optional here: this stage touches no file, so a chat-only assistant is a perfectly adequate partner for it. The human\'s project documents were deliberately not pasted into this prompt, and you should not ask for them.'
+        : 'You may be continuing in a conversation that discussed this project earlier. This stage does not depend on that continuity — it touches no file and reads nothing — so treat any earlier context as background only.',
       hasAgent
         ? 'You are not being asked to inspect or change any file in this stage no matter which agent is being used.'
         : 'The human has no AI agent connected to their project yet. This conversation is pure discussion: do not propose file edits, and do not claim to have inspected any code.',

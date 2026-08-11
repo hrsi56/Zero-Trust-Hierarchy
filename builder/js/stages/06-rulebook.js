@@ -79,11 +79,11 @@ export default {
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'The precedence order reproduced below — Owner-ratified governance first, then the durable record of what has actually been decided, then the specific plan section, then the acting role\'s own contract, then supporting forms, then verified actual state — comes directly from the method\'s governance and precedence rules; "a newer-looking or longer file is not automatically authoritative — only ratification confers authority" is reproduced near-verbatim.',
-      'The governance-locked set (root rulebook, ratified scope, governance record, role or agent configuration) not being modifiable by any agent merely because a piece of work would benefit — with a genuinely needed change instead returning to the Owner for a narrow, one-use decision — is taken directly from the method.',
-      'That no agent may weaken the bar it is being judged against, enlarge its own scope or ceiling, or grant itself authority it was not given — and that a bar changes only through a fresh Owner ratification, never through an agent\'s own confidence — is drawn directly from the method\'s role definitions and its distinction between a bar and a goal.',
-      'The five terminal outcomes an agent may report (met the bar; blocked and needs a human action; no further progress under the current approach; time or budget ran out without weakening the bar; the assignment itself was invalid) and the rule that none of them, alone, authorizes starting the next piece of work — that always takes a new explicit human decision — are reproduced from the method\'s terminal-state vocabulary.',
-      'The instruction to adapt the six-role structure rather than copy it wholesale, and to not add tiers or ceremony this project\'s actual risk does not justify, follows the method\'s own fit-check guardrail: ceremony that costs more than the risk it controls means the method should not be adopted at that weight at all — the same proportionality applies to how much of the role and review structure any one project actually needs.',
+      'The precedence order reproduced below — Owner-ratified governance first, then the durable record of what has actually been decided, then the specific plan section, then the acting role\'s own contract, then supporting forms, then verified actual state — is the precedence chain required by RULEBOOK.md §3, "Authority precedence and ratification"; "a newer-looking or longer file is not automatically authoritative — only ratification confers authority" is reproduced near-verbatim from that section.',
+      'The governance-locked set (root rulebook, ratified scope, governance record, role or agent configuration) not being modifiable by any agent merely because a piece of work would benefit — with a genuinely needed change instead returning to the Owner for a narrow, one-use decision — is RULEBOOK.md §3, which names the governance-locked set explicitly.',
+      'That no agent may weaken the bar it is being judged against, enlarge its own scope or ceiling, or grant itself authority it was not given — and that a bar changes only through a fresh Owner ratification, never through an agent\'s own confidence — is RULEBOOK.md §2 — the Tier 2 prohibitions state outright that the Lead "MUST NOT weaken the bar, enlarge its own ceiling, accept informal scope expansion, self-certify technical closure" — read together with §4 on how a document becomes an acceptance bar.',
+      'The five terminal outcomes an agent may report (met the bar; blocked and needs a human action; no further progress under the current approach; time or budget ran out without weakening the bar; the assignment itself was invalid) and the rule that none of them, alone, authorizes starting the next piece of work — that always takes a new explicit human decision — are RULEBOOK.md §12, "Terminal outcomes, silence, and abandonment," with the pre-execution invalid case in §5 and templates/10-brief-invalid-return.md, and article.md §11 for the rule that "Neither PASS nor landing starts the next unit."',
+      'The instruction to adapt the six-role structure rather than copy it wholesale, and to not add tiers or ceremony this project\'s actual risk does not justify, follows the NOT_FIT guardrail in the bootstrap payload in article.md §14 — the method should not be adopted where "the ceremony costs more than the controlled risk" — applied here to how much of the role and review structure any one project actually needs.',
     ],
     adapted: [],
     productDesign: [
@@ -164,11 +164,11 @@ export default {
 
     const operatingMode = ctx.mode === 'fresh'
       ? [
-        'Launch the agent from the root of your project and make sure it can read the project files directly — for example a coding agent or CLI assistant running inside your repository, not a chat-only assistant. Do not copy your project documents into this website; it only produces the prompt text below for you to run in your own agent.',
+        'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.',
         'You have no memory of this project from any earlier stage of this process. Treat everything about its current state, including whether a Rulebook already exists, as unverified until you investigate it yourself.',
       ].join('\n')
       : [
-        'Continue in the same agent conversation that completed the previous step.',
+        'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn.',
         'Continuity of conversation is not continuity of authority to skip verification. Re-confirm the branch structure, deployment setup, and any existing governance document are still what you believe them to be before drafting or revising the Rulebook — per this project\'s own precedence rules below, verified actual state always overrides a prior turn\'s narrative, including your own.',
       ].join('\n');
 
@@ -273,8 +273,8 @@ export default {
         ].filter(Boolean).join('\n\n');
 
         const operatingMode = ctx.mode === 'fresh'
-          ? 'Launch the agent from the root of your project and make sure it can read the project files directly. Do not copy your project documents into this website; it only produces this prompt text for you to run in your own agent. You have no memory of any earlier conversation about this project — verify everything below yourself.'
-          : 'Continue in the same agent conversation that completed the previous step. Continuity of conversation does not exempt you from re-reading the actual current Rulebook document and actual current project state before auditing it — do not audit from memory of what you think it says.';
+          ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
+          : 'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn. Continuity of conversation does not exempt you from re-reading the actual current Rulebook document and actual current project state before auditing it — do not audit from memory of what you think it says.';
 
         const investigation = [
           'Read the current Rulebook document in full, start to finish. Separately, investigate the project\'s actual current branch structure, deployment mechanism, credential handling, and role assignments.',
@@ -329,7 +329,7 @@ export default {
         ].filter(Boolean).join('\n\n');
 
         const operatingMode = ctx.mode === 'fresh'
-          ? 'Launch the agent from the root of your project and make sure it can read the project files directly. Do not copy your project documents into this website; it only produces this prompt text for you to run in your own agent.'
+          ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
           : 'Continue in the same agent conversation that hit this case. Continuing the conversation does not let you skip re-checking the actual current state relevant to the case below — verify it fresh rather than trusting an earlier assumption in this same conversation.';
 
         const investigation = 'Before writing the report, re-verify the actual current state relevant to this specific case — what would actually happen under each option you are considering, and which of those outcomes are reversible versus not. Do not escalate based on a stale guess about consequences; a wrong description of the stakes makes the human\'s decision worse, not easier.';

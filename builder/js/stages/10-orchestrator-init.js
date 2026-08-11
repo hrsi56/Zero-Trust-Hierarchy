@@ -48,8 +48,8 @@ const PRECEDENCE_TEXT = [
 
 function operatingModeText(fresh, continuityNote) {
   return fresh
-    ? 'Launch the agent from the root of your project and make sure it can read the project files. Do not copy your project documents into this website — this generated prompt is meant to be handed to an agent that already has real file access to your repository.'
-    : `Continue in the same agent conversation that completed the previous step. That continuity does not excuse skipping verification here: ${continuityNote}`;
+    ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
+    : `You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn. That continuity does not excuse skipping verification here: ${continuityNote}`;
 }
 
 function checkpointAnswers(answers) {
@@ -93,9 +93,9 @@ export default {
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'The eleven required fields of the Checkpoint Brief — target workspace, the one authorized checkpoint, the ratified plan anchor, expected state framed as a hypothesis, the observable goal, the complete checklist citation with a verbatim extract, the constraints/execution-evidence profile naming its six required primitives, the numeric active-elapsed ceiling, owner-preauthorized actions or an explicit "none," executor/session preconditions, and the single stop-and-return instruction — are drawn directly from the method brief\'s checkpoint-brief section.',
-      'The BRIEF_INVALID rule — that a brief missing, ambiguous, or contradictory on any field must be returned before any file edit, clock start, workbench, branch, or candidate is created, and that this is a correct, honest refusal rather than a soft warning or a failure — is stated directly in the method brief.',
-      'The instruction that expected state (field 4) is a hypothesis the executor must verify, and that verified actual state overrides it, is stated directly in the method brief and applies equally whether the conversation drafting the brief is fresh or continued.',
+      'The eleven required fields of the Checkpoint Brief — target workspace, the one authorized checkpoint, the ratified plan anchor, expected state framed as a hypothesis, the observable goal, the complete checklist citation with a verbatim extract, the constraints/execution-evidence profile naming its six required primitives, the numeric active-elapsed ceiling, owner-preauthorized actions or an explicit "none," executor/session preconditions, and the single stop-and-return instruction — are the eleven required fields listed in RULEBOOK.md §5, "The checkpoint brief," and echoed in templates/1-checkpoint-brief.md.',
+      'The BRIEF_INVALID rule — that a brief missing, ambiguous, contradictory, multi-workspace, or multi-checkpoint must be returned before any file edit, clock start, workbench, branch, candidate, bounded workspace, or Critic assignment exists, and that this is a correct, honest refusal rather than a soft warning or a failure — is RULEBOOK.md §5 together with templates/10-brief-invalid-return.md, which states that the return "is not a Return Packet."',
+      'The instruction that expected state (field 4) is a hypothesis the executor must verify, and that verified actual state overrides it, is RULEBOOK.md §6, "Start, actual state, and the clock," and it applies equally whether the conversation drafting the brief is fresh or continued.',
     ],
     adapted: [],
     productDesign: [

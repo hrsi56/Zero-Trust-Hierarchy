@@ -50,8 +50,8 @@ const PRECEDENCE_TEXT = [
 
 function operatingModeText(fresh, continuityNote) {
   return fresh
-    ? 'Launch the agent from the root of your project and make sure it can read the project files. Do not copy your project documents into this website — this generated prompt is meant to be handed to an agent that already has real file access to your repository.'
-    : `Continue in the same agent conversation that completed the previous step. That continuity does not excuse skipping verification here: ${continuityNote}`;
+    ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
+    : `You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn. That continuity does not excuse skipping verification here: ${continuityNote}`;
 }
 
 /** @type {import('../lib/schema.js').StageModule} */
@@ -65,10 +65,10 @@ export default {
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'Zero to arbitrarily many heterogeneous tracks may run at once, and every track must preserve the same underlying invariants regardless of how many others are currently running — this is drawn directly from the method brief\'s parallel-tracks section, reproduced generically in this stage\'s Exact task layer as the nine cross-track invariants.',
-      'Staleness is something computed from an explicit, durable record of what each verdict actually depended on, not something judged by feel after the fact — this is drawn directly from the method brief\'s checkpoint-brief evidence fields and its description of the Engineering Lead\'s staleness-computation duty.',
-      'The governance-locked set (the root rulebook, ratified anchors, and related governing material) may not be modified by any agent merely because a checkpoint would benefit from it; a genuinely needed change stops work and returns to the human Owner for a narrow, one-use, non-generalizing decision — this is stated directly in the method brief\'s governance-and-precedence section and is the basis for this stage\'s no-self-amendment rule.',
-      'An unexplained or unowned branch or resource must be inspected and presented to the human Owner, never auto-deleted, and one slow track must never freeze unrelated eligible work in another track — both are stated directly in the method brief\'s parallel-tracks section.',
+      'Zero to arbitrarily many heterogeneous tracks may run at once, and every track must preserve the same underlying invariants regardless of how many others are currently running — this is RULEBOOK.md §17, "Parallel tracks and external changes," together with §2 (Tier 1: the Orchestrator "may route zero to arbitrarily many heterogeneous tracks") and article.md §13, "Zero to arbitrarily many tracks." It is reproduced generically in this stage\'s Exact task layer as the cross-track invariants.',
+      'Staleness is something computed from an explicit, durable record of what each verdict actually depended on, not something judged by feel after the fact — this is RULEBOOK.md §9, "Durable verdicts and computed staleness," with the Engineering Lead\'s staleness-computation duty named in §2 (Tier 2).',
+      'The governance-locked set (the root rulebook, ratified anchors, and related governing material) may not be modified by any agent merely because a checkpoint would benefit from it; a genuinely needed change stops work and returns to the human Owner — this is RULEBOOK.md §3, "Authority precedence and ratification," which names that set explicitly, and it is the basis for this stage\'s no-self-amendment rule.',
+      'An unexplained or unowned branch or resource must be inspected and presented to the human Owner, never auto-deleted, and one slow track must never freeze unrelated eligible work in another track — these are RULEBOOK.md §17 and §16, "Evidence preservation and reclamation," under which preservation precedes deletion.',
     ],
     adapted: [],
     productDesign: [

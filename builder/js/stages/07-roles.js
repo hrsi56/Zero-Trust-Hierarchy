@@ -36,14 +36,19 @@ const PRECEDENCE_TEXT = [
   'A file that looks newer or longer is not automatically authoritative — only the human Owner\'s explicit ratification confers authority. If the rulebook conflicts with anything else you find, the rulebook wins unless the human tells you otherwise in this conversation.',
 ].join('\n');
 
-const NO_NEW_TIER_LINE = 'Do not invent a role or authority tier beyond the six named above — in particular, do not invent a "Development Manager" or any similarly named coordinating title. If you feel a gap that seems to need a seventh role, that is a sign the gap belongs inside one of the six existing contracts, or needs to go back to the human, never a new role.';
+// The rule is about *tiers*, not about a forbidden word. The method itself calls the human's
+// second hat the "human courier / development-management function" (RULEBOOK.md §2, Tier 0), so
+// banning that phrase outright would contradict the vocabulary a user meets in the source. What
+// must never appear is a new autonomous authority tier — an agent role that holds authority of
+// its own between the ones already defined.
+const NO_NEW_TIER_LINE = 'Do not invent an authority tier beyond the ones named above. Specifically: no new agent role that holds authority of its own, under any title — "Development Manager," "Coordinator," "Reviewer-in-Chief," or anything similar. Note that this is a rule about tiers, not about wording: the method does describe the human\'s own second hat, after a return, as a development-management function, and that is the same person as the Owner wearing a second hat, not a seventh role. If you feel a gap that seems to need another role, that is a sign the gap belongs inside one of the existing contracts, or needs to go back to the human — never a new tier.';
 
 const CONTRACT_IS_BEHAVIOR_LINE = 'A role contract is a set of behavioral obligations imposed on whichever agent or conversation picks up that role for this project — it is not a separate login, account, or piece of software. Do not write contracts as if "the Orchestrator" is a different product from "the Engineering Lead"; they may be the very same AI tool wearing a different hat in a different conversation.';
 
 function operatingModeText(fresh, continuityNote) {
   return fresh
-    ? 'Launch the agent from the root of your project and make sure it can read the project files. Do not copy your project documents into this website — this generated prompt is meant to be handed to an agent that already has real file access to your repository.'
-    : `Continue in the same agent conversation that completed the previous step. That continuity does not excuse skipping verification here: ${continuityNote}`;
+    ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
+    : `You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn. That continuity does not excuse skipping verification here: ${continuityNote}`;
 }
 
 /** @type {import('../lib/schema.js').StageModule} */
@@ -57,17 +62,17 @@ export default {
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'The five execution roles (Orchestrator, Engineering Lead, Builder, Component Critic, Integration Critic) and their ownership and prohibition boundaries — including that the Orchestrator never inspects source or reruns tests, the Engineering Lead never publishes or lands work, Builders never grade their own output, and both Critics work from fresh, previously uninvolved contexts — are drawn directly from the method brief\'s role definitions.',
-      'The framing of fresh-context review, read-only behavior, and withheld Builder narrative as cooperative procedural controls, rather than OS-level or cryptographic sandboxing, is stated directly in the method brief and is preserved in this stage\'s generated prompt.',
-      'The prohibition on inventing any authority tier beyond the six named roles — explicitly including a "Development Manager" — is stated directly in the method brief\'s editorial guardrails.',
+      'The five execution roles (Orchestrator, Engineering Lead, Builder, Component Critic, Integration Critic) and their ownership and prohibition boundaries — including that the Orchestrator never inspects source or reruns tests, the Engineering Lead never publishes or lands work, Builders never grade their own output, and both Critics work from fresh, previously uninvolved contexts — are the tier definitions in RULEBOOK.md §2, "Authority and roles" (Tier 0 through Tier 3).',
+      'The framing of fresh-context review, read-only behavior, and withheld Builder narrative as cooperative procedural controls, rather than OS-level or cryptographic sandboxing, is stated in article.md §9 ("These are cooperative controls, not a claim of operating-system isolation") and again in the bootstrap payload in §14, and is preserved in this stage\'s generated prompt.',
+      'That the governing documents "do not form another autonomous agent tier," and that the human\'s own second hat below the Orchestrator is two hats worn by one person rather than a separate authority tier, is stated in RULEBOOK.md §2 under Tier 0 — which is the basis for this stage\'s rule that a gap must be resolved inside an existing contract or returned to the human rather than by adding a tier.',
     ],
     adapted: [
-      'The requirement that a Builder\'s implementation and a Critic\'s verdict come from genuinely separate agents or contexts, so the Critic judges the actual artifact rather than the Builder\'s account of it, is adapted from the Gauntlet Loop\'s inner build/critique pattern — the method brief credits that pattern as the replaceable inner execution loop this project\'s surrounding authority system wraps around.',
+      'The requirement that a Builder\'s implementation and a Critic\'s verdict come from genuinely separate agents or contexts, so the Critic judges the actual artifact rather than the Builder\'s account of it, is adapted from the Gauntlet Loop\'s inner build/critique pattern; the NOTICE file in this repository credits Matt Shumer\'s Gauntlet Loop as the inner execution pattern that Zero-Trust Hierarchy\'s surrounding authority system wraps around.',
     ],
     productDesign: [
       'The three structured questions in this stage — which AI tool(s) will run these roles, whether one tool will rotate through roles across separate conversations, and which roles are worth keeping distinct for this project\'s size — are this guide\'s own editorial framing. The source method does not ask a human these specific structured questions; it assumes role separation and has a setup agent draft contracts directly.',
       'Folding a "which roles are worth keeping distinct" question into this stage, with a strong help-text reminder that even a tiny solo project usually keeps all five as separate conversations, is this guide\'s own design choice meant to head off a common misreading — that role count should scale down with team headcount. The source method treats the five roles as structural, not proportional to team size, but does not phrase it as a question with this exact escape hatch.',
-      'Repeating the "do not invent a Development Manager or any tier beyond the six roles" rule in several separate places in each generated prompt — the Exact task layer, the Constraints layer, Prohibited assumptions, and again explicitly in Stop-and-escalate conditions — is this guide\'s own deliberate redundancy. The underlying rule itself is directly stated in the method brief; how many times and where to repeat it inside a generated prompt, to make one well-known failure mode hard to miss, is this guide\'s editorial choice.',
+      'Naming "Development Manager" and "Coordinator" as example titles to avoid, and repeating the no-new-tier rule in several separate layers of each generated prompt — Exact task, Constraints, Prohibited assumptions, and again in Stop-and-escalate conditions — is this guide\'s own editorial redundancy against one common failure mode. The underlying rule (RULEBOOK.md §2: governing documents "do not form another autonomous agent tier") is verified method content; the example titles are not the source method\'s wording, and the source in fact uses "development-management function" for the human\'s own second hat, which is why this stage says so explicitly rather than banning the phrase.',
     ],
   },
   questions: [
@@ -215,7 +220,7 @@ export default {
 
     const stopConditions = [
       'Stop and return to the human, rather than guessing, if: the rulebook is missing, ambiguous, or internally contradictory about any of these role boundaries; you find yourself wanting to grant one role a capability that belongs to another; the named platform cannot actually support a boundary you were about to configure; or authority over some specific decision genuinely cannot be resolved from the rulebook plus this conversation.',
-      'If you catch yourself about to write anything resembling a "Development Manager," a "Coordinator," or any seventh role of any name, stop — that is out of scope for this method regardless of how convenient it would be.',
+      'If you catch yourself about to write a new agent role that holds authority of its own — a "Development Manager," a "Coordinator," or any additional tier of any name — stop; that is out of scope regardless of how convenient it would be. Describing the human\'s own post-return hat as a development-management function is not that, and is fine.',
     ].join('\n');
 
     const approvalBoundary = 'Everything you draft in this stage is a proposal until the human Owner reviews and explicitly ratifies it. Do not treat any contract as already in force, do not act under a role\'s authority as if it were already granted, and do not connect, install, or configure any live tool integration (accounts, hooks, credentials) without the human\'s explicit go-ahead stated in this conversation.';
@@ -300,7 +305,7 @@ export default {
           NO_NEW_TIER_LINE,
         ].join('\n');
 
-        const stopConditions = 'Stop and return to the human if fixing this one contract turns out to require changing another role\'s contract or the rulebook itself, if the same kind of ambiguity appears in more than one contract (a systemic issue, not a local one), or if you cannot determine the intended boundary from the rulebook plus this conversation without guessing. If the fix you are drafting would only work by adding a "Development Manager," a "Coordinator," or any role beyond the six defined above, stop — the ambiguity needs a narrower fix inside an existing contract, not a new role.';
+        const stopConditions = 'Stop and return to the human if fixing this one contract turns out to require changing another role\'s contract or the rulebook itself, if the same kind of ambiguity appears in more than one contract (a systemic issue, not a local one), or if you cannot determine the intended boundary from the rulebook plus this conversation without guessing. If the fix you are drafting would only work by adding a new authority tier — a "Development Manager," a "Coordinator," or any agent role beyond the ones defined above — stop; the ambiguity needs a narrower fix inside an existing contract, not a new tier.';
 
         const approvalBoundary = 'The repaired contract is a proposal until the human Owner reviews and explicitly ratifies it. Do not treat the repair as already in force, and do not use it to justify any role acting with expanded authority in the meantime.';
 
@@ -387,7 +392,7 @@ export default {
           NO_NEW_TIER_LINE,
         ].join('\n');
 
-        const stopConditions = 'Stop and return to the human if resolving an overlap genuinely requires a rulebook change rather than a contract change, if you find a contract claiming a power reserved to the human Owner and it is unclear whether that was intentional, or if two plausible resolutions both seem defensible and the choice is a judgment call only the human can make. If the only resolution you can find is inventing a "Development Manager," a "Coordinator," or any role beyond the six defined above to arbitrate the overlap, stop — that is out of scope for this method; narrow one of the existing six contracts instead.';
+        const stopConditions = 'Stop and return to the human if resolving an overlap genuinely requires a rulebook change rather than a contract change, if you find a contract claiming a power reserved to the human Owner and it is unclear whether that was intentional, or if two plausible resolutions both seem defensible and the choice is a judgment call only the human can make. If the only resolution you can find is inventing a new authority tier to arbitrate the overlap — a "Development Manager," a "Coordinator," or any agent role beyond the ones defined above — stop; that is out of scope for this method, so narrow one of the existing contracts instead.';
 
         const approvalBoundary = 'This audit and its proposed resolutions are recommendations until the human Owner reviews and explicitly ratifies any contract changes. Do not apply a resolution as if it were already in force, and do not let any role act on the disputed power while the audit is pending.';
 
@@ -410,7 +415,7 @@ export default {
     outputsAndEvidence: 'The expected output is one contract per execution role plus whatever platform configuration file(s) the named tool actually supports, with evidence being the contracts\' own text: a fresh reader should be able to check a specific past action against a specific contract clause and get an unambiguous yes-or-no answer about whether it was in bounds.',
     failureModes: [
       'Writing five documents that all describe activities ("reviews the code," "builds the feature") instead of ownership and explicit prohibitions, so nothing in them is actually checkable after the fact.',
-      'Quietly inventing a coordinating role — a "Development Manager," "Coordinator," or similar — to smooth over a gap that actually belongs inside one of the six existing roles or should go back to the human as a question.',
+      'Quietly inventing a coordinating agent tier — a "Development Manager," "Coordinator," or similar role holding authority of its own — to smooth over a gap that actually belongs inside one of the existing contracts or should go back to the human as a question.',
       'Collapsing all five roles into a single tone-of-voice document because the human only has one AI tool, instead of building explicit role-switch and fresh-context discipline into the contracts.',
       'Letting the Engineering Lead\'s contract quietly acquire publish or land authority "for convenience," which erases the human Owner\'s exclusive disposition power.',
       'Treating an existing configuration file found in the repository as already ratified without checking it against the rulebook or asking the human.',

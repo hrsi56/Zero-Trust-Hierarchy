@@ -9,8 +9,8 @@ const REFERENCE_HELP = 'A concrete reference point makes an abstract quality bar
 const PRIORITIES_HELP = 'When two priorities conflict — for example shipping fast versus polishing the interface — this ranking tells the agent, and any later reviewer, which one should win by default.';
 const ARTIFACT_LOCATION_HELP = 'If your project already has a documentation or planning folder, name it here. Leave it blank and the agent will pick a conventional location and tell you exactly where it put the file.';
 
-const OPERATING_MODE_SAME = 'Continue in the same agent conversation that completed the previous step.';
-const OPERATING_MODE_FRESH = 'Launch the agent from the root of your project and make sure it can read the project files. Give it the prompt below. Do not copy your project documents into this website.';
+const OPERATING_MODE_SAME = 'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn.';
+const OPERATING_MODE_FRESH = 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.';
 
 const QUALITY_PRIORITY_OPTIONS = [
   { value: 'correctness', label: 'Correctness', description: 'It does exactly what it claims, with no silent wrong answers.' },
@@ -122,9 +122,9 @@ export default {
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'The Capstone / project-plan artifact, and its required contents (an observable outcome, a scope boundary, constraints, risks, and an acceptance bar), come directly from the bootstrap\'s drafted governance artifacts — the first of the nine documents a setup agent drafts, visibly labeled DRAFT, before ever asking for ratification.',
-      'The "bar vs. goal" distinction this stage\'s acceptance-bar section must satisfy — an authorized, stable, falsifiable condition rather than a vague aspiration like "make it excellent" — is stated directly in the method brief and reproduced here as the standard the generated prompt holds the draft to.',
-      'Requiring the draft to list every open decision still needing the human, and forbidding the agent from inferring approval from silence or enthusiasm, mirrors the bootstrap\'s rule that a drafting agent must stop and wait for explicit ratification rather than assume it.',
+      'The Capstone / project-plan artifact, and its required contents (an observable outcome, a scope boundary, constraints, risks, and an acceptance bar), come from the bootstrap payload in article.md §14, Phase A step 5, where the Capstone / project plan is the first of the nine governance artifacts a setup agent drafts — in its response only, never as something authoritative — before any ratification is asked for.',
+      'The "bar vs. goal" distinction this stage\'s acceptance-bar section must satisfy — an authorized, stable, falsifiable condition rather than a vague aspiration like "make it excellent" — is set out in RULEBOOK.md §4, "How a document becomes an acceptance bar" (and narratively in article.md §5, "Turn prose into an acceptance bar"), and is reproduced here as the standard the generated prompt holds the draft to.',
+      'Requiring the draft to list every open decision still needing the human, and forbidding the agent from inferring approval from silence or enthusiasm, follows Phase A step 2 of the bootstrap payload in article.md §14 — "Label every inference and ask rather than inventing an Owner judgment" — together with RULEBOOK.md §3, under which only ratification confers authority.',
     ],
     adapted: [],
     productDesign: [

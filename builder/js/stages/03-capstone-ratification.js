@@ -76,9 +76,9 @@ export default {
   requiresWorkspaceAgent: true,
   methodProvenance: {
     verified: [
-      'The rule that ratification is the human\'s own affirmative act — never inferred from silence, enthusiasm, or permission to merely inspect — comes directly from the bootstrap\'s AWAITING_OWNER_RATIFICATION mechanic, which this stage\'s approval boundary and terminal return layers apply specifically to the Capstone.',
-      'The rule that an agent may propose exact replacement language but can never ratify its own proposal is drawn directly from the source method\'s precedence doctrine: only ratification confers authority, and no role\'s own claim promotes itself across that boundary.',
-      'The definition of a real acceptance bar as authorized, stable, and falsifiable — as opposed to a mere goal like "make it excellent" — is drawn directly from the method brief, and underlies this stage\'s feasibility and missing-constraints lenses and the falsifiability check in the Exact task layer.',
+      'The rule that ratification is the human\'s own affirmative act — never inferred from silence, enthusiasm, or permission to merely inspect — is the bootstrap payload in article.md §14, which halts on an explicit awaiting-ratification line and closes by stating that the bootstrap "creates a controlled decision point; it does not substitute for ratification." This stage applies that mechanic specifically to the Capstone.',
+      'The rule that an agent may propose exact replacement language but can never ratify its own proposal is RULEBOOK.md §3, "Authority precedence and ratification": only ratification confers authority, and — as the definition quoted in the bootstrap payload in article.md §14 puts it — "No success claim promotes itself."',
+      'The definition of a real acceptance bar as authorized, stable, and falsifiable — as opposed to a mere goal like "make it excellent" — is RULEBOOK.md §4, "How a document becomes an acceptance bar" (article.md §5 tells the same story in prose), and it underlies this stage\'s feasibility and missing-constraints lenses and the falsifiability check in the Exact task layer.',
     ],
     adapted: [
       'The repair recovery prompt\'s instruction to loop a self-directed critique-and-repair pass against your own revision until a fresh pass finds nothing new adapts the Gauntlet Loop\'s inner build/critique/iterate pattern — judge against a concrete bar, send back the single largest gap, and loop without a fixed round count — applied here to one document instead of a whole build.',
@@ -151,11 +151,11 @@ export default {
 
     const operatingMode = ctx.mode === 'same'
       ? [
-        'Continue in the same agent conversation that completed the previous step.',
+        'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn.',
         'That continuity does not exempt you from checking reality: re-read the current draft Capstone as it exists on disk right now, rather than relying on what an earlier turn in this conversation said about it. Actual current state always overrides an earlier expected-state narrative, including your own.',
       ].join('\n')
       : [
-        'Launch the agent from the root of your project and make sure it can read the project files. Give it the prompt below. Do not copy your project documents into this website.',
+        'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.',
         'You have no memory of how this draft was produced. Treat every claim about what was "already decided" or "already agreed" as something to verify against an actual artifact in the project, not as settled fact.',
       ].join('\n');
 
@@ -262,11 +262,11 @@ export default {
 
         const operatingMode = ctx.mode === 'same'
           ? [
-            'Continue in the same agent conversation that completed the previous step.',
+            'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn.',
             'If this conversation already produced a challenge critique of the draft Capstone, you may use it as a starting point — but re-read the current file on disk before repairing anything; a human may have hand-edited it since, and actual current state always overrides an earlier turn\'s account of it.',
           ].join('\n')
           : [
-            'Launch the agent from the root of your project and make sure it can read the project files. Give it the prompt below. Do not copy your project documents into this website.',
+            'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.',
             'You have no memory of any prior challenge pass. Do not assume a specific problem exists just because you were asked to repair one — verify everything from scratch.',
           ].join('\n');
 
@@ -367,11 +367,11 @@ export default {
 
         const operatingMode = ctx.mode === 'same'
           ? [
-            'Continue in the same agent conversation that completed the previous step.',
+            'You are continuing in the same conversation that completed the previous step, so you may already hold relevant context. Treat that context as a starting point, not as evidence — anything you rely on here must be re-confirmed against the project\'s current files rather than recalled from an earlier turn.',
             'Do not rely on this conversation\'s earlier account of why the item is undecidable — re-check the current draft Capstone and the real project state one more time before concluding it truly requires the human\'s judgment rather than further reading.',
           ].join('\n')
           : [
-            'Launch the agent from the root of your project and make sure it can read the project files. Give it the prompt below. Do not copy your project documents into this website.',
+            'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.',
             'You have no memory of the earlier challenge pass. Independently verify that this really is a judgment call and not something a fuller read of the project would answer, before writing the decision request.',
           ].join('\n');
 
