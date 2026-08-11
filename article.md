@@ -3,7 +3,6 @@
 No success claim promotes itself. A distributed verification system for agent work.
 
 <section class="sixty-second" aria-labelledby="sixty-second-title">
-  <h2 id="sixty-second-title">The 60-second version</h2>
   <div class="sixty-second__grid">
     <div class="sixty-second__item">
       <h3>What problem does it solve?</h3>
@@ -23,7 +22,7 @@ No success claim promotes itself. A distributed verification system for agent wo
       <strong>Ready to put the method to work?</strong>
       <span>The local-first Builder turns it into thirteen staged prompts. No account, API key, or project-data upload required.</span>
     </div>
-    <a class="sixty-second__button" href="builder/index.html">Open the Gauntlet Builder <span aria-hidden="true">→</span></a>
+    <a class="sixty-second__button" href="builder/index.html">Open the Builder <span aria-hidden="true">→</span></a>
   </div>
 </section>
 
