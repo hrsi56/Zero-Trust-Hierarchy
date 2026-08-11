@@ -659,6 +659,47 @@ hr {
   text-decoration: none;
 }
 
+/* The 60-second section carries its own Builder CTA in the same bottom-right
+   corner as the floating pill, so the pill yields while that section is on
+   screen. The name is declared on the section but read by the pill, which sits
+   outside <main>, so `timeline-scope` hoists it to a common ancestor. This is a
+   progressive enhancement: where scroll-driven timelines are unsupported the
+   pill simply stays visible. Visibility keeps the hidden pill out of the tab
+   order rather than leaving an invisible link focusable. */
+@supports (animation-timeline: view()) and (timeline-scope: --sixty-second) {
+  :root {
+    timeline-scope: --sixty-second;
+  }
+
+  .sixty-second {
+    view-timeline-name: --sixty-second;
+  }
+
+  .builder-cta {
+    animation-name: builder-cta-yield;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+    animation-timeline: --sixty-second;
+  }
+
+  @keyframes builder-cta-yield {
+    0% {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    6%,
+    94% {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    100% {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
 
 @media (max-width: 42rem) {
   .site-header__inner,
