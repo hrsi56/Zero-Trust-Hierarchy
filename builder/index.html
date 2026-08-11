@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Gauntlet Builder — build your AI development operating system</title>
+  <meta name="description" content="A local, offline prompt compiler that walks you through building a Zero-Trust Hierarchy for your own project, one generated prompt at a time. No API, no account, nothing leaves your browser.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./css/tokens.css">
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="app-header">
+    <div class="app-header__inner">
+      <a class="app-brand" href="./index.html">
+        <span class="app-brand__mark" aria-hidden="true">◈</span>
+        <span class="app-brand__text">Gauntlet Builder</span>
+      </a>
+      <div class="app-header__actions">
+        <button type="button" class="btn btn--ghost" id="theme-toggle" aria-pressed="false">
+          <span id="theme-toggle-label">Match system theme</span>
+        </button>
+        <a class="app-header__back" href="../index.html">← Zero-Trust Hierarchy</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <nav class="journey-nav" id="journey-nav" aria-label="Journey stages">
+      <!-- Rendered by ui/journeyMap.js -->
+    </nav>
+
+    <main id="main" class="app-main" tabindex="-1">
+      <div id="storage-banner" class="banner banner--warning" hidden role="status">
+        Your browser's local storage is unavailable, so nothing will be saved between visits.
+        You can still complete a stage and copy its prompt — just export your answers before you
+        close this tab if you want to keep them.
+      </div>
+
+      <div id="stage-root">
+        <!-- Rendered by ui/render.js -->
+      </div>
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <div class="app-footer__inner">
+      <p>
+        Everything you type stays in this browser tab. Nothing is sent anywhere, no account is
+        needed, and no AI model is called by this page — it only writes prompts for you to hand
+        to an agent you run yourself. <a href="#" id="footer-privacy-link">How this works →</a>
+      </p>
+      <div class="app-footer__tools">
+        <button type="button" class="btn btn--ghost btn--small" id="export-btn">Export journey</button>
+        <button type="button" class="btn btn--ghost btn--small" id="import-btn">Import journey</button>
+        <button type="button" class="btn btn--ghost btn--small btn--danger" id="reset-all-btn">Reset everything</button>
+        <input type="file" id="import-file-input" accept="application/json" hidden>
+      </div>
+    </div>
+  </footer>
+
+  <div id="dialog-root" aria-live="polite"></div>
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

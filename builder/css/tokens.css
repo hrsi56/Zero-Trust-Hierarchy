@@ -1,0 +1,140 @@
+/*
+  Design tokens. These intentionally mirror the palette and type stack used by the parent
+  publication (../assets/site.css) so the builder reads as part of the same editorial family —
+  this file is a standalone copy, not an import, so builder/ never depends on a file outside it.
+*/
+
+:root {
+  color-scheme: light dark;
+
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --surface-sunken: #efebe1;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --accent-ink: #ffffff;
+  --rule: #d9d4c9;
+  --rule-strong: #c7c0b1;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --shadow: 0 1rem 3rem rgb(35 28 19 / 8%);
+  --shadow-soft: 0 .35rem 1.1rem rgb(35 28 19 / 6%);
+
+  --ok: #2f6f4e;
+  --ok-soft: #e1efe6;
+  --warn: #8a5a16;
+  --warn-soft: #f2e9d5;
+  --danger: #9c2f24;
+  --danger-soft: #f4dfda;
+
+  --measure: 44rem;
+  --wide: 78rem;
+
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --radius-sm: .35rem;
+  --radius-md: .55rem;
+  --radius-lg: .9rem;
+  --space-1: .4rem;
+  --space-2: .7rem;
+  --space-3: 1.1rem;
+  --space-4: 1.75rem;
+  --space-5: 2.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #101516;
+    --surface: #171d1f;
+    --surface-raised: #1c2325;
+    --surface-sunken: #14191a;
+    --ink: #f0eee8;
+    --ink-soft: #c2c8c8;
+    --ink-faint: #9ea8a9;
+    --accent: #ffad7a;
+    --accent-soft: #422b22;
+    --accent-ink: #241005;
+    --rule: #384143;
+    --rule-strong: #46504f;
+    --code: #20282a;
+    --focus: #7fc3ff;
+    --shadow: 0 1rem 3rem rgb(0 0 0 / 30%);
+    --shadow-soft: 0 .35rem 1.1rem rgb(0 0 0 / 18%);
+    --ok: #7cc9a0;
+    --ok-soft: #1c3229;
+    --warn: #e8be7a;
+    --warn-soft: #3a2f18;
+    --danger: #e8897c;
+    --danger-soft: #3a201c;
+  }
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --page: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --surface-sunken: #efebe1;
+  --ink: #18212b;
+  --ink-soft: #46515c;
+  --ink-faint: #626c75;
+  --accent: #8a3216;
+  --accent-soft: #f2dfd5;
+  --accent-ink: #ffffff;
+  --rule: #d9d4c9;
+  --rule-strong: #c7c0b1;
+  --code: #eee9df;
+  --focus: #0b6bcb;
+  --ok: #2f6f4e;
+  --ok-soft: #e1efe6;
+  --warn: #8a5a16;
+  --warn-soft: #f2e9d5;
+  --danger: #9c2f24;
+  --danger-soft: #f4dfda;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #101516;
+  --surface: #171d1f;
+  --surface-raised: #1c2325;
+  --surface-sunken: #14191a;
+  --ink: #f0eee8;
+  --ink-soft: #c2c8c8;
+  --ink-faint: #9ea8a9;
+  --accent: #ffad7a;
+  --accent-soft: #422b22;
+  --accent-ink: #241005;
+  --rule: #384143;
+  --rule-strong: #46504f;
+  --code: #20282a;
+  --focus: #7fc3ff;
+  --ok: #7cc9a0;
+  --ok-soft: #1c3229;
+  --warn: #e8be7a;
+  --warn-soft: #3a2f18;
+  --danger: #e8897c;
+  --danger-soft: #3a201c;
+}
+
+/*
+  The UA rule for [hidden] is display:none, but any author `display` on the same element wins.
+  Several panels and banners here are toggled purely through the `hidden` property while also
+  carrying a layout class (.banner is display:flex), so without this they would stay visible.
+*/
+[hidden] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
