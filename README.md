@@ -7,7 +7,7 @@ cybersecurity threat model. Work moves through bounded authority tiers, and ever
 receives independently checkable evidence or labels the facts that remain procedural declarations
 and human judgement.
 
-Read the publication: **<https://hrsi56.github.io/gauntlet-hierarchy/>**
+Read the publication: **[<https://hrsi56.github.io/gauntlet-hierarchy/>](https://hrsi56.github.io/Zero-Trust-Hierarchy/index.html#ztx-gauntlet)**
 
 ## What is here
 
