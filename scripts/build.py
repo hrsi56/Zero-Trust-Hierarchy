@@ -23,7 +23,8 @@ RULEBOOK = ROOT / "RULEBOOK.md"
 TEMPLATES = ROOT / "templates"
 FORMS = ROOT / "forms"
 CSS = ROOT / "assets" / "site.css"
-SVG = ROOT / "assets" / "zero-trust-hierarchy.svg"
+SVG_WIDE = ROOT / "assets" / "zero-trust-hierarchy.svg"
+SVG_STACKED = ROOT / "assets" / "zero-trust-hierarchy-stacked.svg"
 SOCIAL_IMAGE = ROOT / "assets" / "zero-trust-hierarchy-social.png"
 
 ARTICLE_OUTPUT = ROOT / "index.html"
@@ -45,9 +46,12 @@ REPOSITORY_URL = "https://github.com/hrsi56/Zero-Trust-Hierarchy"
 
 PANDOC_VERSION = "3.6.4"
 
-# The diagram is a hand-authored SVG. `assets/zero-trust-hierarchy.svg` is the canonical
-# source: nothing generates it, so the build verifies its structure and palette rather
-# than a derivation from some other source.
+# The diagram is a pair of hand-authored SVGs, one landscape and one portrait, carrying the
+# same nodes and the same edges. Both are canonical sources: nothing generates them, so the
+# build verifies their structure and palette rather than a derivation from some other source.
+# The page renders exactly one of the two, and neither is ever put inside a scroll box, so
+# the landscape layout may only be shown while it can stay near its native size.
+STACKED_MAX_WIDTH = 420
 DIAGRAM_IMAGE = re.compile(
     r"(?m)^!\[(?P<alt>[^\]]*)\]\(assets/zero-trust-hierarchy\.svg\)[ \t]*$"
 )
@@ -128,34 +132,54 @@ def article_parts() -> tuple[str, str]:
     return article, marked_article
 
 
-def validate_svg(svg: str) -> float:
+def validate_svg(svg: str, source: Path, *, portrait: bool) -> float:
+    label = source.relative_to(ROOT)
     try:
         root = ET.fromstring(svg)
     except ET.ParseError as exc:
-        raise BuildError(f"assets/zero-trust-hierarchy.svg is not valid XML: {exc}") from exc
+        raise BuildError(f"{label} is not valid XML: {exc}") from exc
 
     def local_name(tag: str) -> str:
         return tag.rsplit("}", 1)[-1]
 
     if local_name(root.tag) != "svg":
-        raise BuildError("assets/zero-trust-hierarchy.svg has no SVG root element")
+        raise BuildError(f"{label} has no SVG root element")
     view_box = root.attrib.get("viewBox", "").split()
     if len(view_box) != 4:
-        raise BuildError("the SVG root must contain a four-value viewBox")
+        raise BuildError(f"the {label} root must contain a four-value viewBox")
     try:
-        native_width = float(view_box[2])
+        native_width, native_height = float(view_box[2]), float(view_box[3])
     except ValueError as exc:
-        raise BuildError("the SVG viewBox width is not numeric") from exc
-    if native_width <= 0:
-        raise BuildError("the SVG viewBox width must be positive")
+        raise BuildError(f"the {label} viewBox dimensions are not numeric") from exc
+    if native_width <= 0 or native_height <= 0:
+        raise BuildError(f"the {label} viewBox dimensions must be positive")
+    # Each layout must keep the shape it exists for. The page picks between them by
+    # viewport width alone, so a layout that drifted towards the other's proportions would
+    # be served precisely where it does not fit.
+    if portrait:
+        if native_height <= native_width:
+            raise BuildError(
+                f"{label} is the narrow-screen layout and must be taller than it is wide; "
+                f"found {native_width:g}×{native_height:g}"
+            )
+        if native_width > STACKED_MAX_WIDTH:
+            raise BuildError(
+                f"{label} must be authored no wider than {STACKED_MAX_WIDTH} units, so its "
+                f"text renders near its native size on a phone; found {native_width:g}"
+            )
+    elif native_width <= native_height:
+        raise BuildError(
+            f"{label} is the wide-screen layout and must be wider than it is tall; "
+            f"found {native_width:g}×{native_height:g}"
+        )
 
     background = re.search(
         r"background(?:-color)?:\s*([^;\"']+)", root.attrib.get("style", ""), re.I
     )
     if background and background.group(1).strip().lower() not in {"transparent", "none"}:
         raise BuildError(
-            "the SVG root must not paint an opaque background; the diagram sits directly "
-            f"on the page, not in a card. Found: {background.group(1).strip()}"
+            f"the {label} root must not paint an opaque background; the diagram sits "
+            f"directly on the page, not in a card. Found: {background.group(1).strip()}"
         )
 
     titles = [
@@ -165,7 +189,7 @@ def validate_svg(svg: str) -> float:
         node for node in root.iter() if local_name(node.tag) == "desc" and node.attrib.get("id")
     ]
     if not titles or not descriptions:
-        raise BuildError("the committed SVG must contain identified <title> and <desc> elements")
+        raise BuildError(f"{label} must contain identified <title> and <desc> elements")
     labelled_by = set(root.attrib.get("aria-labelledby", "").split())
     described_by = set(root.attrib.get("aria-describedby", "").split())
     if (
@@ -173,17 +197,17 @@ def validate_svg(svg: str) -> float:
         or titles[0].attrib["id"] not in labelled_by
         or descriptions[0].attrib["id"] not in described_by
     ):
-        raise BuildError("the SVG root must expose a role and title/description ARIA linkage")
+        raise BuildError(f"the {label} root must expose a role and title/description ARIA linkage")
     if re.search(r"<script\b", svg, re.I):
-        raise BuildError("the committed SVG must not contain scripts")
+        raise BuildError(f"{label} must not contain scripts")
     if re.search(
         r"<(?:image|use|foreignObject)\b[^>]*\b(?:src|href|xlink:href)=[\"']https?://",
         svg,
         re.I,
     ):
-        raise BuildError("the committed SVG must not load remote resources")
+        raise BuildError(f"{label} must not load remote resources")
     if re.search(r"(?:@import|url\()\s*[\"']?https?://", svg, re.I):
-        raise BuildError("the committed SVG CSS must not load remote resources")
+        raise BuildError(f"the {label} CSS must not load remote resources")
     # Every themed colour must also carry a literal fallback, so the committed file still
     # renders correctly wherever the page variables are absent — a direct file open, or the
     # Markdown source rendered on the repository host.
@@ -192,17 +216,17 @@ def validate_svg(svg: str) -> float:
         fallback = (match.group("fallback") or "").strip()
         if not fallback:
             raise BuildError(
-                f"{match.group(1)} needs a literal fallback so the diagram also renders "
-                f"outside the page; write var({match.group(1)}, #value)"
+                f"{label} uses {match.group(1)} without a literal fallback, so the diagram "
+                f"stops rendering outside the page; write var({match.group(1)}, #value)"
             )
         palette.add(match.group(1))
     for variable in REQUIRED_PALETTE:
         if variable not in palette:
-            raise BuildError(f"the SVG palette must use the semantic CSS variable {variable}")
+            raise BuildError(f"the {label} palette must use the semantic CSS variable {variable}")
     font_sizes = [float(value) for value in re.findall(r"font-size:\s*([0-9.]+)px", svg, re.I)]
     if not font_sizes or min(font_sizes) < 12:
         found = min(font_sizes) if font_sizes else "none"
-        raise BuildError(f"the SVG must not define text below 12px; smallest value: {found}")
+        raise BuildError(f"{label} must not define text below 12px; smallest value: {found}")
     return native_width
 
 
@@ -390,13 +414,17 @@ def rewrite_anchors(
     return re.sub(r"<a\b[^>]*>", replace_anchor, fragment, flags=re.I)
 
 
-def diagram_figure(svg: str, native_width: float) -> str:
-    width = math.ceil(native_width * 1000) / 1000
+def diagram_figure(wide: str, wide_width: float, stacked: str) -> str:
+    """Publish both layouts; the stylesheet renders whichever the viewport can hold."""
+    width = math.ceil(wide_width * 1000) / 1000
     return "\n".join(
         [
-            '<figure class="hierarchy-diagram">',
-            f'  <div class="diagram-frame" tabindex="0" role="region" aria-label="Scrollable hierarchy diagram" style="--diagram-native-width: {width:g}px">',
-            inline_svg(svg),
+            f'<figure class="hierarchy-diagram" style="--diagram-native-width: {width:g}px">',
+            '  <div class="diagram-layout diagram-layout--wide">',
+            inline_svg(wide),
+            "  </div>",
+            '  <div class="diagram-layout diagram-layout--stacked">',
+            inline_svg(stacked),
             "  </div>",
             "</figure>",
         ]
@@ -634,8 +662,10 @@ def build_outputs() -> dict[Path, str]:
         raise BuildError("site CSS attempts to load a remote resource")
 
     _, marked_article = article_parts()
-    svg = read_text(SVG)
-    diagram_width = validate_svg(svg)
+    wide_svg = read_text(SVG_WIDE)
+    stacked_svg = read_text(SVG_STACKED)
+    diagram_width = validate_svg(wide_svg, SVG_WIDE, portrait=False)
+    validate_svg(stacked_svg, SVG_STACKED, portrait=True)
 
     sources = form_sources()
     source_outputs = {
@@ -692,7 +722,9 @@ def build_outputs() -> dict[Path, str]:
         if spec.has_diagram:
             if fragment.count(MARKER) != 1:
                 raise BuildError("Pandoc did not preserve the unique diagram build sentinel")
-            fragment = fragment.replace(MARKER, diagram_figure(svg, diagram_width))
+            fragment = fragment.replace(
+                MARKER, diagram_figure(wide_svg, diagram_width, stacked_svg)
+            )
         elif MARKER in fragment:
             raise BuildError(f"unexpected diagram sentinel in {spec.source.relative_to(ROOT)}")
         if spec.kind == "forms-index":

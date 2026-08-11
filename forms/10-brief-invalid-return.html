@@ -579,32 +579,36 @@ hr {
   outline-offset: .15rem;
 }
 
-.diagram-frame {
-  max-height: min(70vh, 44rem);
-  padding: clamp(.45rem, 1.2vw, .85rem);
-  overflow: auto;
-  border: none;
-  border-radius: .55rem;
-  background: transparent;
-  box-shadow: none;
-  overscroll-behavior: contain;
-  scrollbar-color: var(--diagram-line) transparent;
-}
-
-/* Frameless at rest; the ring appears only for keyboard focus. */
-.diagram-frame:focus-visible {
-  outline: .2rem solid var(--focus);
-  outline-offset: .2rem;
-}
-
-.diagram-frame svg {
-  display: block;
-  width: var(--diagram-native-width, 46.5rem);
-  min-width: var(--diagram-native-width, 46.5rem);
-  max-width: none !important;
-  height: auto;
-  max-height: none;
+/* The figure never scrolls. It carries two authored layouts of the same diagram and shows
+   the one the viewport can hold at legible text sizes: the landscape drawing only while it
+   can stay near its native size, the portrait column everywhere below that. */
+.diagram-layout {
   margin-inline: auto;
+}
+
+.diagram-layout svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.diagram-layout--wide {
+  display: none;
+  max-width: var(--diagram-native-width, 73.75rem);
+}
+
+.diagram-layout--stacked {
+  max-width: 26rem;
+}
+
+@media (min-width: 72rem) {
+  .diagram-layout--wide {
+    display: block;
+  }
+
+  .diagram-layout--stacked {
+    display: none;
+  }
 }
 
 .hierarchy-diagram figcaption {
@@ -787,17 +791,6 @@ hr {
     text-align: center;
   }
 
-  .diagram-frame {
-    max-height: 72vh;
-    padding: .3rem;
-    border-radius: .35rem;
-  }
-
-  .diagram-frame svg {
-    width: var(--diagram-native-width, 46.5rem);
-    min-width: var(--diagram-native-width, 46.5rem);
-  }
-
   .hierarchy-diagram figcaption {
     padding-inline: .75rem;
   }
@@ -862,19 +855,14 @@ hr {
     break-inside: avoid;
   }
 
-  .diagram-frame {
-    max-height: none;
-    padding: 0;
-    overflow: visible;
-    border-color: #bbbbbb;
-    background: transparent;
-    box-shadow: none;
+  /* Paper is wide enough for the landscape drawing and never long enough for the column. */
+  .diagram-layout--wide {
+    display: block;
+    max-width: 100%;
   }
 
-  .diagram-frame svg {
-    width: 100%;
-    min-width: 0;
-    max-width: 100% !important;
+  .diagram-layout--stacked {
+    display: none;
   }
 
   a {

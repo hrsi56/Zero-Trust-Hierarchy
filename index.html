@@ -587,32 +587,36 @@ hr {
   outline-offset: .15rem;
 }
 
-.diagram-frame {
-  max-height: min(70vh, 44rem);
-  padding: clamp(.45rem, 1.2vw, .85rem);
-  overflow: auto;
-  border: none;
-  border-radius: .55rem;
-  background: transparent;
-  box-shadow: none;
-  overscroll-behavior: contain;
-  scrollbar-color: var(--diagram-line) transparent;
-}
-
-/* Frameless at rest; the ring appears only for keyboard focus. */
-.diagram-frame:focus-visible {
-  outline: .2rem solid var(--focus);
-  outline-offset: .2rem;
-}
-
-.diagram-frame svg {
-  display: block;
-  width: var(--diagram-native-width, 46.5rem);
-  min-width: var(--diagram-native-width, 46.5rem);
-  max-width: none !important;
-  height: auto;
-  max-height: none;
+/* The figure never scrolls. It carries two authored layouts of the same diagram and shows
+   the one the viewport can hold at legible text sizes: the landscape drawing only while it
+   can stay near its native size, the portrait column everywhere below that. */
+.diagram-layout {
   margin-inline: auto;
+}
+
+.diagram-layout svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.diagram-layout--wide {
+  display: none;
+  max-width: var(--diagram-native-width, 73.75rem);
+}
+
+.diagram-layout--stacked {
+  max-width: 26rem;
+}
+
+@media (min-width: 72rem) {
+  .diagram-layout--wide {
+    display: block;
+  }
+
+  .diagram-layout--stacked {
+    display: none;
+  }
 }
 
 .hierarchy-diagram figcaption {
@@ -795,17 +799,6 @@ hr {
     text-align: center;
   }
 
-  .diagram-frame {
-    max-height: 72vh;
-    padding: .3rem;
-    border-radius: .35rem;
-  }
-
-  .diagram-frame svg {
-    width: var(--diagram-native-width, 46.5rem);
-    min-width: var(--diagram-native-width, 46.5rem);
-  }
-
   .hierarchy-diagram figcaption {
     padding-inline: .75rem;
   }
@@ -870,19 +863,14 @@ hr {
     break-inside: avoid;
   }
 
-  .diagram-frame {
-    max-height: none;
-    padding: 0;
-    overflow: visible;
-    border-color: #bbbbbb;
-    background: transparent;
-    box-shadow: none;
+  /* Paper is wide enough for the landscape drawing and never long enough for the column. */
+  .diagram-layout--wide {
+    display: block;
+    max-width: 100%;
   }
 
-  .diagram-frame svg {
-    width: 100%;
-    min-width: 0;
-    max-width: 100% !important;
+  .diagram-layout--stacked {
+    display: none;
   }
 
   a {
@@ -910,7 +898,6 @@ hr {
 <h1 id="zero-trust-hierarchy">Zero-Trust Hierarchy</h1>
 <p>No success claim promotes itself. A distributed verification system for agent work.</p>
 <section class="sixty-second" aria-labelledby="sixty-second-title">
-  <h2 id="sixty-second-title">The 60-second version</h2>
   <div class="sixty-second__grid">
     <div class="sixty-second__item">
       <h3>What problem does it solve?</h3>
@@ -930,7 +917,7 @@ hr {
       <strong>Ready to put the method to work?</strong>
       <span>The local-first Builder turns it into thirteen staged prompts. No account, API key, or project-data upload required.</span>
     </div>
-    <a class="sixty-second__button" href="builder/index.html">Open the Gauntlet Builder <span aria-hidden="true">→</span></a>
+    <a class="sixty-second__button" href="builder/index.html">Open the Builder <span aria-hidden="true">→</span></a>
   </div>
 </section>
 
@@ -941,8 +928,8 @@ hr {
 <p>Zero-Trust Hierarchy breaks that chain. It assigns each decision to a distinct authority, requires a purpose-built artifact at every seam, and limits each receiver to the claims it is qualified to verify. The question is not “Do we trust this agent?” It is “What must be true before this claim is allowed to change anything above it?”</p>
 <h2 id="2-authority-goes-down-evidence-comes-back-up">2. Authority goes down; evidence comes back up</h2>
 <p>The hierarchy is asymmetric. The Architect / Owner ratifies purpose and governing documents. The Orchestrator authorizes one bounded unit. The Engineering Lead chooses how to execute it. A replaceable inner method returns reviewed work. Evidence then travels back through orchestration to human judgment.</p>
-<figure class="hierarchy-diagram">
-  <div class="diagram-frame" tabindex="0" role="region" aria-label="Scrollable hierarchy diagram" style="--diagram-native-width: 1180px">
+<figure class="hierarchy-diagram" style="--diagram-native-width: 1180px">
+  <div class="diagram-layout diagram-layout--wide">
 <svg xmlns="http://www.w3.org/2000/svg" id="ztx-diagram" viewBox="0 0 1180 470"
      width="100%" role="group" aria-labelledby="ztx-title" aria-describedby="ztx-desc"
      style="background-color: transparent;">
@@ -1130,6 +1117,199 @@ hr {
 <text class="e-label" text-anchor="middle" x="792" y="387">goal + bar</text>
 <path class="flow" d="M852 426 H738" marker-end="url(#ztx-arrow)"/>
 <text class="e-label" text-anchor="middle" x="792" y="417">artifact + verdicts</text>
+</svg>
+  </div>
+  <div class="diagram-layout diagram-layout--stacked">
+<svg xmlns="http://www.w3.org/2000/svg" id="ztx-stack" viewBox="0 0 380 898"
+     width="100%" role="group" aria-labelledby="ztx-stack-title" aria-describedby="ztx-stack-desc"
+     style="background-color: transparent;">
+<title id="ztx-stack-title">Zero-Trust Hierarchy authority and evidence flow</title>
+<desc id="ztx-stack-desc">The Architect / Owner ratifies governing documents, the documents authorize and constrain the Orchestrator, and the Orchestrator returns state, evidence, and decision requests to the Owner. The same human appears again at the checkpoint seam, where a brief travels down to one visible execution track of zero to many, and a packet travels back up. Inside the track the human exchanges brief and packet with the Engineering Lead, which exchanges goal plus bar for artifact plus verdicts with a replaceable, internally iterative Gauntlet Loop credited to Matt Shumer.</desc>
+
+<style>
+  #ztx-stack {
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  #ztx-stack text { font-size: 12.5px; }
+  #ztx-stack .band {
+    fill: none;
+    stroke: var(--diagram-line, #7f7669);
+    stroke-width: 1px;
+    opacity: .42;
+  }
+  #ztx-stack .band-label {
+    fill: var(--diagram-muted, #46515c);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  #ztx-stack .node > rect {
+    fill: var(--diagram-panel, #f2eee5);
+    stroke: var(--diagram-line, #7f7669);
+    stroke-width: 1.25px;
+  }
+  #ztx-stack .node--human > rect {
+    stroke: var(--diagram-accent, #8a3216);
+    stroke-width: 1.6px;
+  }
+  #ztx-stack .node--swappable > rect {
+    stroke: var(--diagram-accent, #8a3216);
+    stroke-dasharray: 5 4;
+  }
+  #ztx-stack .n-title {
+    fill: var(--diagram-ink, #18212b);
+    font-size: 14px;
+    font-weight: 650;
+  }
+  #ztx-stack .n-detail {
+    fill: var(--diagram-muted, #46515c);
+    font-size: 12.5px;
+  }
+  #ztx-stack .flow {
+    fill: none;
+    stroke: var(--diagram-line, #7f7669);
+    stroke-width: 1.25px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #ztx-stack .flow--same {
+    stroke: var(--diagram-accent, #8a3216);
+    stroke-dasharray: 2.5 4.5;
+    opacity: .85;
+  }
+  #ztx-stack .e-label {
+    fill: var(--diagram-muted, #46515c);
+    font-size: 12.5px;
+  }
+  #ztx-stack .e-label--note { font-style: italic; }
+  #ztx-stack .n-link {
+    fill: var(--diagram-accent, #8a3216);
+    font-size: 12.5px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  #ztx-stack a:hover .n-link { text-decoration-thickness: 2px; }
+</style>
+
+<defs>
+  <marker id="ztx-stack-arrow" viewBox="0 0 10 10" refX="9.2" refY="5"
+          markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="var(--diagram-line, #7f7669)"/>
+  </marker>
+  <marker id="ztx-stack-arrow-accent" viewBox="0 0 10 10" refX="9.2" refY="5"
+          markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="var(--diagram-accent, #8a3216)"/>
+  </marker>
+</defs>
+
+<!-- The portrait counterpart of the landscape diagram: one column of nodes, authority
+     descending through the middle, and the two long return edges carried by the outer
+     rails so no label has to compete with a node for horizontal room. -->
+
+<!-- ========================= Band A — the governance loop ========================= -->
+<rect class="band" x="4" y="6" width="372" height="408" rx="10"/>
+<text class="band-label" text-anchor="end" x="332" y="27">Top governance loop</text>
+
+<!-- the human source of purpose : the top of the column -->
+<g class="node node--human" id="ztx-stack-owner">
+  <rect x="64" y="44" width="268" height="86" rx="7"/>
+  <text text-anchor="middle">
+    <tspan class="n-title"  x="198" y="73">Architect / Owner — human</tspan>
+    <tspan class="n-detail" x="198" y="93">purpose · ratification</tspan>
+    <tspan class="n-detail" x="198" y="111">strategic direction</tspan>
+  </text>
+</g>
+
+<path class="flow" d="M100 132 V170" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" x="112" y="157">ratifies</text>
+
+<!-- what the Owner has ratified -->
+<g class="node" id="ztx-stack-documents">
+  <rect x="64" y="178" width="268" height="86" rx="7"/>
+  <text text-anchor="middle">
+    <tspan class="n-title"  x="198" y="207">Governing documents</tspan>
+    <tspan class="n-detail" x="198" y="227">ratified plans · rulebook</tspan>
+    <tspan class="n-detail" x="198" y="245">roles · configuration · map</tspan>
+  </text>
+</g>
+
+<path class="flow" d="M100 266 V304" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" x="112" y="291">authorizes and constrains</text>
+
+<!-- authorization, beneath both -->
+<g class="node" id="ztx-stack-orchestrator">
+  <rect x="64" y="312" width="268" height="86" rx="7"/>
+  <text text-anchor="middle">
+    <tspan class="n-title"  x="198" y="341">Orchestrator</tspan>
+    <tspan class="n-detail" x="198" y="361">WHAT · WHEN · WHERE · ceiling</tspan>
+    <tspan class="n-detail" x="198" y="379">receipt · closure eligibility</tspan>
+  </text>
+</g>
+
+<!-- evidence climbs the left rail, back to the human who ratified -->
+<path class="flow" d="M62 355 H32 Q22 355 22 345 V97 Q22 87 32 87 H56"
+      marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" text-anchor="middle" transform="rotate(-90 34 221)" x="34" y="221">state · evidence · decision request</text>
+
+<!-- ============================ The checkpoint seam ============================ -->
+
+<!-- one person, two operational hats : carried by the right rail -->
+<path class="flow flow--same" d="M334 87 H356 Q366 87 366 97 V517 Q366 527 356 527 H340"
+      marker-end="url(#ztx-stack-arrow-accent)"/>
+<text class="e-label e-label--note" text-anchor="middle" transform="rotate(-90 360 307)" x="360" y="307">same human · two hats</text>
+
+<!-- authority down -->
+<path class="flow" d="M100 400 V476" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" x="112" y="432">brief</text>
+
+<!-- evidence up -->
+<path class="flow" d="M236 482 V406" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" text-anchor="end" x="224" y="450">packet</text>
+
+<!-- ======================= Band B — one execution track ======================= -->
+<rect class="band" x="4" y="456" width="372" height="436" rx="10"/>
+<text class="band-label" text-anchor="end" x="332" y="882">One visible execution track of 0…N</text>
+
+<!-- the same human, judging a bounded return -->
+<g class="node node--human" id="ztx-stack-human">
+  <rect x="64" y="484" width="268" height="86" rx="7"/>
+  <text text-anchor="middle">
+    <tspan class="n-title"  x="198" y="513">Human — development manager</tspan>
+    <tspan class="n-detail" x="198" y="533">same Architect / Owner · courier</tspan>
+    <tspan class="n-detail" x="198" y="551">judgment · veto · disposition</tspan>
+  </text>
+</g>
+
+<path class="flow" d="M100 572 V622" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" x="112" y="594">brief</text>
+<path class="flow" d="M236 628 V578" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" text-anchor="end" x="224" y="616">packet</text>
+
+<!-- the execution authority -->
+<g class="node" id="ztx-stack-lead">
+  <rect x="64" y="630" width="268" height="86" rx="7"/>
+  <text text-anchor="middle">
+    <tspan class="n-title"  x="198" y="659">Engineering Lead</tspan>
+    <tspan class="n-detail" x="198" y="679">HOW · decomposition</tspan>
+    <tspan class="n-detail" x="198" y="697">one-writer integration</tspan>
+  </text>
+</g>
+
+<path class="flow" d="M100 718 V768" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" x="112" y="740">goal + bar</text>
+<path class="flow" d="M236 774 V724" marker-end="url(#ztx-stack-arrow)"/>
+<text class="e-label" text-anchor="end" x="224" y="762">artifact + verdicts</text>
+
+<!-- the replaceable inner method -->
+<g class="node node--swappable" id="ztx-stack-gauntlet">
+  <rect x="64" y="776" width="268" height="86" rx="7"/>
+  <text class="n-title" text-anchor="middle" x="198" y="805">Gauntlet Loop — Matt Shumer</text>
+  <a href="https://somethingbig.ai/gauntlet-loop" target="_blank" rel="external noopener noreferrer">
+    <text class="n-link" text-anchor="middle" x="198" y="825">somethingbig.ai/gauntlet-loop</text>
+  </a>
+  <text class="n-detail" text-anchor="middle" x="198" y="843">replaceable · ↻ internally iterative</text>
+</g>
 </svg>
   </div>
 </figure>
