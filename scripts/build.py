@@ -24,6 +24,7 @@ TEMPLATES = ROOT / "templates"
 FORMS = ROOT / "forms"
 CSS = ROOT / "assets" / "site.css"
 SVG = ROOT / "assets" / "zero-trust-hierarchy.svg"
+SOCIAL_IMAGE = ROOT / "assets" / "zero-trust-hierarchy-social.png"
 
 ARTICLE_OUTPUT = ROOT / "index.html"
 RULEBOOK_OUTPUT = ROOT / "RULEBOOK.html"
@@ -33,6 +34,11 @@ BUILDER_OUTPUT = ROOT / "builder" / "index.html"
 TITLE = "Zero-Trust Hierarchy"
 STANDFIRST = "No success claim promotes itself. A distributed verification system for agent work."
 DESCRIPTION = STANDFIRST
+ARTICLE_OG_TITLE = "AI Agents Shouldn’t Approve Their Own Work | Zero-Trust Hierarchy"
+SOCIAL_IMAGE_ALT = (
+    "AI Agents Shouldn’t Approve Their Own Work, illustrated by authority flowing down "
+    "and evidence flowing back up a hierarchy."
+)
 AUTHOR = "Yarden Viktor Dejorno"
 PUBLIC_URL = "https://hrsi56.github.io/Zero-Trust-Hierarchy/"
 REPOSITORY_URL = "https://github.com/hrsi56/Zero-Trust-Hierarchy"
@@ -81,6 +87,25 @@ def read_text(path: Path) -> str:
         except ValueError:
             label = path
         raise BuildError(f"required file is missing: {label}") from exc
+
+
+def validate_social_image() -> None:
+    try:
+        image = SOCIAL_IMAGE.read_bytes()
+    except FileNotFoundError as exc:
+        raise BuildError("required social image is missing: assets/zero-trust-hierarchy-social.png") from exc
+
+    png_signature = b"\x89PNG\r\n\x1a\n"
+    if len(image) < 24 or not image.startswith(png_signature) or image[12:16] != b"IHDR":
+        raise BuildError("assets/zero-trust-hierarchy-social.png must be a valid PNG")
+
+    width = int.from_bytes(image[16:20], "big")
+    height = int.from_bytes(image[20:24], "big")
+    if (width, height) != (1200, 627):
+        raise BuildError(
+            "assets/zero-trust-hierarchy-social.png must be exactly 1200×627; "
+            f"found {width}×{height}"
+        )
 
 
 def article_parts() -> tuple[str, str]:
@@ -411,12 +436,29 @@ def navigation(output: Path, active: str) -> str:
 def page_shell(spec: PageSpec, title: str, fragment: str, css: str) -> str:
     escaped_title = html.escape(title, quote=True)
     escaped_description = html.escape(spec.description, quote=True)
+    social_title = ARTICLE_OG_TITLE if spec.kind == "article" else title
+    escaped_social_title = html.escape(social_title, quote=True)
     escaped_author = html.escape(AUTHOR, quote=True)
     escaped_csp = html.escape(CSP, quote=False)
     home = html.escape(relative_href(spec.output, ARTICLE_OUTPUT), quote=True)
     license_href = html.escape(relative_href(spec.output, ROOT / "LICENSE"), quote=True)
     builder_href = html.escape(relative_href(spec.output, BUILDER_OUTPUT), quote=True)
     canonical = canonical_url(spec.output)
+    social_image_tags = ""
+    twitter_card = "summary"
+    if spec.kind == "article":
+        social_image_url = f"{PUBLIC_URL}assets/{SOCIAL_IMAGE.name}"
+        escaped_social_image_url = html.escape(social_image_url, quote=True)
+        escaped_social_image_alt = html.escape(SOCIAL_IMAGE_ALT, quote=True)
+        twitter_card = "summary_large_image"
+        social_image_tags = f'''\n  <meta property="og:image" content="{escaped_social_image_url}">
+  <meta property="og:image:secure_url" content="{escaped_social_image_url}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta property="og:image:alt" content="{escaped_social_image_alt}">
+  <meta name="twitter:image" content="{escaped_social_image_url}">
+  <meta name="twitter:image:alt" content="{escaped_social_image_alt}">'''
 
     return f'''<!doctype html>
 <html lang="en">
@@ -428,11 +470,13 @@ def page_shell(spec: PageSpec, title: str, fragment: str, css: str) -> str:
   <meta name="description" content="{escaped_description}">
   <meta name="author" content="{escaped_author}">
   <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="{escaped_title}">
+  <meta property="og:title" content="{escaped_social_title}">
   <meta property="og:description" content="{escaped_description}">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="{canonical}">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="{canonical}">{social_image_tags}
+  <meta name="twitter:card" content="{twitter_card}">
+  <meta name="twitter:title" content="{escaped_social_title}">
+  <meta name="twitter:description" content="{escaped_description}">
   <link rel="canonical" href="{canonical}">
   <link rel="icon" href="data:,">
   <style>
@@ -584,6 +628,7 @@ def validate_local_links(
 
 def build_outputs() -> dict[Path, str]:
     verify_pandoc()
+    validate_social_image()
     css = read_text(CSS).strip()
     if re.search(r"(?:@import|url\()\s*[\"']?https?://", css, re.I):
         raise BuildError("site CSS attempts to load a remote resource")

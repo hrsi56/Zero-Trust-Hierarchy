@@ -2,6 +2,31 @@
 
 No success claim promotes itself. A distributed verification system for agent work.
 
+<section class="sixty-second" aria-labelledby="sixty-second-title">
+  <h2 id="sixty-second-title">The 60-second version</h2>
+  <div class="sixty-second__grid">
+    <div class="sixty-second__item">
+      <h3>What problem does it solve?</h3>
+      <p>Agent workflows often let the same context build, review, repair, and declare success—carrying the same blind spots through every pass. Here, <strong>zero-trust</strong> is a method metaphor, not a cybersecurity threat model: an unsupported success claim should never gain authority merely because an agent says <code>PASS</code>.</p>
+    </div>
+    <div class="sixty-second__item">
+      <h3>What changes?</h3>
+      <p>Authority flows down; artifact-bound evidence comes back up. The Owner ratifies purpose, the Orchestrator authorizes one bounded unit, the Lead directs execution, and fresh Critic contexts judge the exact artifact against the ratified bar. Their separation is procedural, not security isolation; technical <code>PASS</code> is a return, not closure.</p>
+    </div>
+    <div class="sixty-second__item">
+      <h3>Who is it for?</h3>
+      <p>People supervising consequential agent work—software, research, policy, or publication—who need explicit authority boundaries, reproducible evidence, current verdicts, and human control of <strong>LAND</strong>, <strong>DISCARD</strong>, and continuation.</p>
+    </div>
+  </div>
+  <div class="sixty-second__cta">
+    <div class="sixty-second__cta-copy">
+      <strong>Ready to put the method to work?</strong>
+      <span>The local-first Builder turns it into thirteen staged prompts. No account, API key, or project-data upload required.</span>
+    </div>
+    <a class="sixty-second__button" href="builder/index.html">Open the Gauntlet Builder <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
 ## 1. Watch a success claim climb
 
 Here, **zero-trust** is a method metaphor for refusing unsupported success claims, not a cybersecurity threat model.

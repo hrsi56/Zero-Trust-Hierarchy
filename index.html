@@ -8,11 +8,21 @@
   <meta name="description" content="No success claim promotes itself. A distributed verification system for agent work.">
   <meta name="author" content="Yarden Viktor Dejorno">
   <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="Zero-Trust Hierarchy">
+  <meta property="og:title" content="AI Agents Shouldn’t Approve Their Own Work | Zero-Trust Hierarchy">
   <meta property="og:description" content="No success claim promotes itself. A distributed verification system for agent work.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://hrsi56.github.io/Zero-Trust-Hierarchy/">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://hrsi56.github.io/Zero-Trust-Hierarchy/assets/zero-trust-hierarchy-social.png">
+  <meta property="og:image:secure_url" content="https://hrsi56.github.io/Zero-Trust-Hierarchy/assets/zero-trust-hierarchy-social.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta property="og:image:alt" content="AI Agents Shouldn’t Approve Their Own Work, illustrated by authority flowing down and evidence flowing back up a hierarchy.">
+  <meta name="twitter:image" content="https://hrsi56.github.io/Zero-Trust-Hierarchy/assets/zero-trust-hierarchy-social.png">
+  <meta name="twitter:image:alt" content="AI Agents Shouldn’t Approve Their Own Work, illustrated by authority flowing down and evidence flowing back up a hierarchy.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Agents Shouldn’t Approve Their Own Work | Zero-Trust Hierarchy">
+  <meta name="twitter:description" content="No success claim promotes itself. A distributed verification system for agent work.">
   <link rel="canonical" href="https://hrsi56.github.io/Zero-Trust-Hierarchy/">
   <link rel="icon" href="data:,">
   <style>
@@ -241,12 +251,111 @@ main {
 
 .article > h1 + p {
   max-width: 35rem;
-  margin: 0 0 clamp(3rem, 7vw, 5.5rem);
+  margin: 0 0 clamp(2.25rem, 5vw, 3.75rem);
   color: var(--ink-soft);
   font-family: var(--sans);
   font-size: clamp(1.18rem, 1.02rem + .78vw, 1.58rem);
   line-height: 1.42;
   text-wrap: balance;
+}
+
+.sixty-second {
+  width: min(calc(100vw - 2rem), var(--wide));
+  margin: 0 0 clamp(3.5rem, 7vw, 5.5rem) 50%;
+  padding: clamp(1.4rem, 3vw, 2.25rem);
+  transform: translateX(-50%);
+  border: 1px solid color-mix(in srgb, var(--rule) 82%, transparent);
+  border-radius: .85rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 48%, transparent), transparent 42%),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.sixty-second h2 {
+  margin: 0 0 1.35rem;
+  padding: 0;
+  border: 0;
+  font-size: clamp(1.45rem, 1.2rem + .85vw, 2rem);
+}
+
+.sixty-second__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.sixty-second__item {
+  padding-inline: clamp(1rem, 2.4vw, 1.7rem);
+}
+
+.sixty-second__item:first-child {
+  padding-left: 0;
+}
+
+.sixty-second__item:last-child {
+  padding-right: 0;
+}
+
+.sixty-second__item + .sixty-second__item {
+  border-left: 1px solid var(--rule);
+}
+
+.sixty-second h3 {
+  margin: 0 0 .55rem;
+  font-size: clamp(1rem, .94rem + .22vw, 1.13rem);
+  letter-spacing: -.012em;
+}
+
+.sixty-second__item p {
+  margin: 0;
+  color: var(--ink-soft);
+  font: .88rem/1.58 var(--sans);
+}
+
+.sixty-second__cta {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.55rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+
+.sixty-second__cta-copy {
+  display: grid;
+  gap: .15rem;
+  max-width: 42rem;
+  color: var(--ink-soft);
+  font-size: .86rem;
+  line-height: 1.45;
+}
+
+.sixty-second__cta-copy strong {
+  color: var(--ink);
+  font-size: .93rem;
+}
+
+.sixty-second__button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: .45rem;
+  align-items: center;
+  padding: .72rem .95rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--surface-raised);
+  font: 750 .78rem/1 var(--sans);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sixty-second__button:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
 }
 
 .article--reference,
@@ -558,6 +667,7 @@ hr {
   text-decoration: none;
 }
 
+
 @media (max-width: 42rem) {
   .site-header__inner,
   .site-footer__inner {
@@ -584,6 +694,42 @@ hr {
 
   .article > h1 {
     max-width: 11ch;
+  }
+
+  .sixty-second {
+    width: calc(100vw - 1rem);
+    padding: 1.15rem;
+  }
+
+  .sixty-second__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sixty-second__item {
+    padding: 1rem 0;
+  }
+
+  .sixty-second__item:first-child {
+    padding-top: 0;
+  }
+
+  .sixty-second__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .sixty-second__item + .sixty-second__item {
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+  }
+
+  .sixty-second__cta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sixty-second__button {
+    justify-content: center;
+    white-space: normal;
   }
 
   .article--reference > h1,
@@ -722,6 +868,31 @@ hr {
     <article class="article article--article">
 <h1 id="zero-trust-hierarchy">Zero-Trust Hierarchy</h1>
 <p>No success claim promotes itself. A distributed verification system for agent work.</p>
+<section class="sixty-second" aria-labelledby="sixty-second-title">
+  <h2 id="sixty-second-title">The 60-second version</h2>
+  <div class="sixty-second__grid">
+    <div class="sixty-second__item">
+      <h3>What problem does it solve?</h3>
+      <p>Agent workflows often let the same context build, review, repair, and declare success—carrying the same blind spots through every pass. Here, <strong>zero-trust</strong> is a method metaphor, not a cybersecurity threat model: an unsupported success claim should never gain authority merely because an agent says <code>PASS</code>.</p>
+    </div>
+    <div class="sixty-second__item">
+      <h3>What changes?</h3>
+      <p>Authority flows down; artifact-bound evidence comes back up. The Owner ratifies purpose, the Orchestrator authorizes one bounded unit, the Lead directs execution, and fresh Critic contexts judge the exact artifact against the ratified bar. Their separation is procedural, not security isolation; technical <code>PASS</code> is a return, not closure.</p>
+    </div>
+    <div class="sixty-second__item">
+      <h3>Who is it for?</h3>
+      <p>People supervising consequential agent work—software, research, policy, or publication—who need explicit authority boundaries, reproducible evidence, current verdicts, and human control of <strong>LAND</strong>, <strong>DISCARD</strong>, and continuation.</p>
+    </div>
+  </div>
+  <div class="sixty-second__cta">
+    <div class="sixty-second__cta-copy">
+      <strong>Ready to put the method to work?</strong>
+      <span>The local-first Builder turns it into thirteen staged prompts. No account, API key, or project-data upload required.</span>
+    </div>
+    <a class="sixty-second__button" href="builder/index.html">Open the Gauntlet Builder <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
 <h2 id="1-watch-a-success-claim-climb">1. Watch a success claim climb</h2>
 <p>Here, <strong>zero-trust</strong> is a method metaphor for refusing unsupported success claims, not a cybersecurity threat model.</p>
 <p>Picture a generic autonomous run. An agent reports an artifact complete, then inspects it from the same context and confirms its own grade. A repair fixes the visible problem but regresses behavior that was already correct. The next review concentrates on the repaired case, reuses the same reasoning, and misses the regression. Later rounds inherit that history, narrowing around the original explanation instead of generating a discriminating test.</p>
