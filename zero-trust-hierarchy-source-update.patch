@@ -1,0 +1,304 @@
+cd /Users/djourno/Downloads/gauntlet-hierarchy
+diff --git a/article.md b/article.md
+index 7e98bde..6b32e59 100644
+--- a/article.md
++++ b/article.md
+@@ -2,6 +2,31 @@
+ 
+ No success claim promotes itself. A distributed verification system for agent work.
+ 
++<section class="sixty-second" aria-labelledby="sixty-second-title">
++  <h2 id="sixty-second-title">The 60-second version</h2>
++  <div class="sixty-second__grid">
++    <div class="sixty-second__item">
++      <h3>What problem does it solve?</h3>
++      <p>Agent workflows often let the same context build, review, repair, and declare success—carrying the same blind spots through every pass. Here, <strong>zero-trust</strong> is a method metaphor, not a cybersecurity threat model: an unsupported success claim should never gain authority merely because an agent says <code>PASS</code>.</p>
++    </div>
++    <div class="sixty-second__item">
++      <h3>What changes?</h3>
++      <p>Authority flows down; artifact-bound evidence comes back up. The Owner ratifies purpose, the Orchestrator authorizes one bounded unit, the Lead directs execution, and fresh Critic contexts judge the exact artifact against the ratified bar. Their separation is procedural, not security isolation; technical <code>PASS</code> is a return, not closure.</p>
++    </div>
++    <div class="sixty-second__item">
++      <h3>Who is it for?</h3>
++      <p>People supervising consequential agent work—software, research, policy, or publication—who need explicit authority boundaries, reproducible evidence, current verdicts, and human control of <strong>LAND</strong>, <strong>DISCARD</strong>, and continuation.</p>
++    </div>
++  </div>
++  <div class="sixty-second__cta">
++    <div class="sixty-second__cta-copy">
++      <strong>Ready to put the method to work?</strong>
++      <span>The local-first Builder turns it into thirteen staged prompts. No account, API key, or project-data upload required.</span>
++    </div>
++    <a class="sixty-second__button" href="builder/index.html">Open the Gauntlet Builder <span aria-hidden="true">→</span></a>
++  </div>
++</section>
++
+ ## 1. Watch a success claim climb
+ 
+ Here, **zero-trust** is a method metaphor for refusing unsupported success claims, not a cybersecurity threat model.
+diff --git a/assets/site.css b/assets/site.css
+index d70fa3a..a9ce24e 100644
+--- a/assets/site.css
++++ b/assets/site.css
+@@ -223,7 +223,7 @@ main {
+ 
+ .article > h1 + p {
+   max-width: 35rem;
+-  margin: 0 0 clamp(3rem, 7vw, 5.5rem);
++  margin: 0 0 clamp(2.25rem, 5vw, 3.75rem);
+   color: var(--ink-soft);
+   font-family: var(--sans);
+   font-size: clamp(1.18rem, 1.02rem + .78vw, 1.58rem);
+@@ -231,6 +231,105 @@ main {
+   text-wrap: balance;
+ }
+ 
++.sixty-second {
++  width: min(calc(100vw - 2rem), var(--wide));
++  margin: 0 0 clamp(3.5rem, 7vw, 5.5rem) 50%;
++  padding: clamp(1.4rem, 3vw, 2.25rem);
++  transform: translateX(-50%);
++  border: 1px solid color-mix(in srgb, var(--rule) 82%, transparent);
++  border-radius: .85rem;
++  background:
++    linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 48%, transparent), transparent 42%),
++    var(--surface);
++  box-shadow: var(--shadow);
++}
++
++.sixty-second h2 {
++  margin: 0 0 1.35rem;
++  padding: 0;
++  border: 0;
++  font-size: clamp(1.45rem, 1.2rem + .85vw, 2rem);
++}
++
++.sixty-second__grid {
++  display: grid;
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++  gap: 0;
++}
++
++.sixty-second__item {
++  padding-inline: clamp(1rem, 2.4vw, 1.7rem);
++}
++
++.sixty-second__item:first-child {
++  padding-left: 0;
++}
++
++.sixty-second__item:last-child {
++  padding-right: 0;
++}
++
++.sixty-second__item + .sixty-second__item {
++  border-left: 1px solid var(--rule);
++}
++
++.sixty-second h3 {
++  margin: 0 0 .55rem;
++  font-size: clamp(1rem, .94rem + .22vw, 1.13rem);
++  letter-spacing: -.012em;
++}
++
++.sixty-second__item p {
++  margin: 0;
++  color: var(--ink-soft);
++  font: .88rem/1.58 var(--sans);
++}
++
++.sixty-second__cta {
++  display: flex;
++  gap: 1.25rem;
++  align-items: center;
++  justify-content: space-between;
++  margin-top: 1.55rem;
++  padding-top: 1.3rem;
++  border-top: 1px solid var(--rule);
++  font-family: var(--sans);
++}
++
++.sixty-second__cta-copy {
++  display: grid;
++  gap: .15rem;
++  max-width: 42rem;
++  color: var(--ink-soft);
++  font-size: .86rem;
++  line-height: 1.45;
++}
++
++.sixty-second__cta-copy strong {
++  color: var(--ink);
++  font-size: .93rem;
++}
++
++.sixty-second__button {
++  display: inline-flex;
++  flex: 0 0 auto;
++  gap: .45rem;
++  align-items: center;
++  padding: .72rem .95rem;
++  border: 1px solid var(--accent);
++  border-radius: 999px;
++  background: var(--accent);
++  color: var(--surface-raised);
++  font: 750 .78rem/1 var(--sans);
++  text-decoration: none;
++  white-space: nowrap;
++}
++
++.sixty-second__button:hover {
++  transform: translateY(-1px);
++  text-decoration: none;
++}
++
+ .article--reference,
+ .article--form,
+ .article--forms-index {
+@@ -568,6 +667,42 @@ hr {
+     max-width: 11ch;
+   }
+ 
++  .sixty-second {
++    width: calc(100vw - 1rem);
++    padding: 1.15rem;
++  }
++
++  .sixty-second__grid {
++    grid-template-columns: 1fr;
++  }
++
++  .sixty-second__item {
++    padding: 1rem 0;
++  }
++
++  .sixty-second__item:first-child {
++    padding-top: 0;
++  }
++
++  .sixty-second__item:last-child {
++    padding-bottom: 0;
++  }
++
++  .sixty-second__item + .sixty-second__item {
++    border-top: 1px solid var(--rule);
++    border-left: 0;
++  }
++
++  .sixty-second__cta {
++    align-items: stretch;
++    flex-direction: column;
++  }
++
++  .sixty-second__button {
++    justify-content: center;
++    white-space: normal;
++  }
++
+   .article--reference > h1,
+   .article--form > h1,
+   .article--forms-index > h1 {
+diff --git a/scripts/build.py b/scripts/build.py
+index ab7f222..e85d146 100644
+--- a/scripts/build.py
++++ b/scripts/build.py
+@@ -24,6 +24,7 @@ TEMPLATES = ROOT / "templates"
+ FORMS = ROOT / "forms"
+ CSS = ROOT / "assets" / "site.css"
+ SVG = ROOT / "assets" / "zero-trust-hierarchy.svg"
++SOCIAL_IMAGE = ROOT / "assets" / "zero-trust-hierarchy-social.png"
+ 
+ ARTICLE_OUTPUT = ROOT / "index.html"
+ RULEBOOK_OUTPUT = ROOT / "RULEBOOK.html"
+@@ -33,6 +34,11 @@ BUILDER_OUTPUT = ROOT / "builder" / "index.html"
+ TITLE = "Zero-Trust Hierarchy"
+ STANDFIRST = "No success claim promotes itself. A distributed verification system for agent work."
+ DESCRIPTION = STANDFIRST
++ARTICLE_OG_TITLE = "AI Agents Shouldn’t Approve Their Own Work | Zero-Trust Hierarchy"
++SOCIAL_IMAGE_ALT = (
++    "AI Agents Shouldn’t Approve Their Own Work, illustrated by authority flowing down "
++    "and evidence flowing back up a hierarchy."
++)
+ AUTHOR = "Yarden Viktor Dejorno"
+ PUBLIC_URL = "https://hrsi56.github.io/Zero-Trust-Hierarchy/"
+ REPOSITORY_URL = "https://github.com/hrsi56/Zero-Trust-Hierarchy"
+@@ -83,6 +89,25 @@ def read_text(path: Path) -> str:
+         raise BuildError(f"required file is missing: {label}") from exc
+ 
+ 
++def validate_social_image() -> None:
++    try:
++        image = SOCIAL_IMAGE.read_bytes()
++    except FileNotFoundError as exc:
++        raise BuildError("required social image is missing: assets/zero-trust-hierarchy-social.png") from exc
++
++    png_signature = b"\x89PNG\r\n\x1a\n"
++    if len(image) < 24 or not image.startswith(png_signature) or image[12:16] != b"IHDR":
++        raise BuildError("assets/zero-trust-hierarchy-social.png must be a valid PNG")
++
++    width = int.from_bytes(image[16:20], "big")
++    height = int.from_bytes(image[20:24], "big")
++    if (width, height) != (1200, 627):
++        raise BuildError(
++            "assets/zero-trust-hierarchy-social.png must be exactly 1200×627; "
++            f"found {width}×{height}"
++        )
++
++
+ def article_parts() -> tuple[str, str]:
+     article = read_text(ARTICLE).replace("\r\n", "\n").replace("\r", "\n")
+     matches = list(DIAGRAM_IMAGE.finditer(article))
+@@ -411,12 +436,29 @@ def navigation(output: Path, active: str) -> str:
+ def page_shell(spec: PageSpec, title: str, fragment: str, css: str) -> str:
+     escaped_title = html.escape(title, quote=True)
+     escaped_description = html.escape(spec.description, quote=True)
++    social_title = ARTICLE_OG_TITLE if spec.kind == "article" else title
++    escaped_social_title = html.escape(social_title, quote=True)
+     escaped_author = html.escape(AUTHOR, quote=True)
+     escaped_csp = html.escape(CSP, quote=False)
+     home = html.escape(relative_href(spec.output, ARTICLE_OUTPUT), quote=True)
+     license_href = html.escape(relative_href(spec.output, ROOT / "LICENSE"), quote=True)
+     builder_href = html.escape(relative_href(spec.output, BUILDER_OUTPUT), quote=True)
+     canonical = canonical_url(spec.output)
++    social_image_tags = ""
++    twitter_card = "summary"
++    if spec.kind == "article":
++        social_image_url = f"{PUBLIC_URL}assets/{SOCIAL_IMAGE.name}"
++        escaped_social_image_url = html.escape(social_image_url, quote=True)
++        escaped_social_image_alt = html.escape(SOCIAL_IMAGE_ALT, quote=True)
++        twitter_card = "summary_large_image"
++        social_image_tags = f'''\n  <meta property="og:image" content="{escaped_social_image_url}">
++  <meta property="og:image:secure_url" content="{escaped_social_image_url}">
++  <meta property="og:image:type" content="image/png">
++  <meta property="og:image:width" content="1200">
++  <meta property="og:image:height" content="627">
++  <meta property="og:image:alt" content="{escaped_social_image_alt}">
++  <meta name="twitter:image" content="{escaped_social_image_url}">
++  <meta name="twitter:image:alt" content="{escaped_social_image_alt}">'''
+ 
+     return f'''<!doctype html>
+ <html lang="en">
+@@ -428,11 +470,13 @@ def page_shell(spec: PageSpec, title: str, fragment: str, css: str) -> str:
+   <meta name="description" content="{escaped_description}">
+   <meta name="author" content="{escaped_author}">
+   <meta name="color-scheme" content="light dark">
+-  <meta property="og:title" content="{escaped_title}">
++  <meta property="og:title" content="{escaped_social_title}">
+   <meta property="og:description" content="{escaped_description}">
+   <meta property="og:type" content="article">
+-  <meta property="og:url" content="{canonical}">
+-  <meta name="twitter:card" content="summary">
++  <meta property="og:url" content="{canonical}">{social_image_tags}
++  <meta name="twitter:card" content="{twitter_card}">
++  <meta name="twitter:title" content="{escaped_social_title}">
++  <meta name="twitter:description" content="{escaped_description}">
+   <link rel="canonical" href="{canonical}">
+   <link rel="icon" href="data:,">
+   <style>
+@@ -584,6 +628,7 @@ def validate_local_links(
+ 
+ def build_outputs() -> dict[Path, str]:
+     verify_pandoc()
++    validate_social_image()
+     css = read_text(CSS).strip()
+     if re.search(r"(?:@import|url\()\s*[\"']?https?://", css, re.I):
+         raise BuildError("site CSS attempts to load a remote resource")
