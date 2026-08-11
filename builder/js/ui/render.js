@@ -1,7 +1,7 @@
 import { el, text, clear, toast } from './dom.js';
 import { renderQuestion, questionVisible } from './questions.js';
 import { store, computeStageStatus, prerequisitesMet, snapshotPrereqs, STATUS_LABEL } from '../state.js';
-import { compilePrompt, buildPromptCtx } from '../compiler.js';
+import { compilePrompt, buildPromptCtx, ownerDecisionMeaning } from '../compiler.js';
 import { findUnresolvedTokens, missingRequiredAnswers } from '../lib/schema.js';
 
 /**
@@ -186,7 +186,7 @@ function renderPromptColumn(stage) {
   const textarea = el('textarea', {
     class: 'prompt-textarea',
     'aria-label': 'Generated prompt — editable',
-    onInput: (e) => store.setPromptEdit(stage.id, store.getMode(stage.id), e.target.value),
+    onInput: (e) => store.setPromptEdit(stage.id, store.getMode(stage.id), e.target.value, currentCompiled()),
   });
 
   const buttonRow = el('div', { class: 'btn-row', style: 'margin-top:.8rem' });
@@ -202,6 +202,7 @@ function renderPromptColumn(stage) {
   // the missing judgement.
   const missingBannerId = `missing-${stage.id}`;
   const missingBanner = el('div', { class: 'banner banner--warning', role: 'status', id: missingBannerId, hidden: true });
+  const staleEditBanner = el('div', { class: 'banner banner--warning', role: 'status', hidden: true });
 
   function currentCompiled() {
     const currentMode = store.getMode(stage.id);
@@ -237,10 +238,27 @@ function renderPromptColumn(stage) {
     if (blocked) textarea.setAttribute('aria-describedby', missingBannerId);
     else textarea.removeAttribute('aria-describedby');
 
+    const compiled = blocked ? '' : currentCompiled();
     const edited = store.getPromptEdit(stage.id, currentMode);
+    const editIsCurrent = edited && edited.basePrompt === compiled;
+    staleEditBanner.hidden = !edited || blocked || editIsCurrent;
+    clear(staleEditBanner);
+    if (!staleEditBanner.hidden) {
+      const restore = text('button', 'Restore the old edit anyway', { type: 'button', class: 'btn btn--small' });
+      restore.addEventListener('click', () => {
+        store.setPromptEdit(stage.id, currentMode, edited.text, compiled);
+        rerenderPromptArea();
+        toast('Old manual edit restored against the new generated prompt. Review it carefully.');
+      });
+      staleEditBanner.append(
+        text('strong', 'Your earlier manual edit is stale.'),
+        text('p', 'An answer or prerequisite changed, so the freshly generated prompt is shown instead. Restore the old edit only if you intentionally want to reapply it to the new context.', { style: 'margin:.4rem 0 .7rem' }),
+        restore,
+      );
+    }
     textarea.value = blocked
       ? 'This prompt is not ready yet.\n\nSome required decisions above are still blank. Rather than fill them with a plausible-sounding default and present it to your agent as your judgement, this stage waits for you.'
-      : (edited !== null ? edited : currentCompiled());
+      : (editIsCurrent ? edited.text : compiled);
     panel.querySelectorAll('.mode-switch button').forEach((b, i) => {
       b.setAttribute('aria-pressed', String((i === 0 && currentMode === 'same') || (i === 1 && currentMode === 'fresh')));
     });
@@ -275,6 +293,7 @@ function renderPromptColumn(stage) {
 
   panel.appendChild(modeHelp);
   panel.appendChild(missingBanner);
+  panel.appendChild(staleEditBanner);
   panel.appendChild(textarea);
   panel.appendChild(buttonRow);
   // Assembled first, then filled: rerenderPromptArea reads the mode-switch buttons out of the
@@ -444,7 +463,7 @@ function renderCompletionGate(stage, allStages, nav) {
     el('legend', {}, ['Your disposition']),
   ]);
   const dispositionOptions = [
-    { value: 'accepted', label: 'Accept — mark this stage complete and unlock the next one.' },
+    { value: 'accepted', label: `Accept — ${ownerDecisionMeaning(stage.id)} Unlock the next stage.` },
     { value: 'revise', label: 'Needs revision — I will redirect the agent before continuing.' },
     { value: 'stopped', label: 'Stop here for now — I am pausing the journey at this stage.' },
   ];
@@ -483,6 +502,7 @@ function renderCompletionGate(stage, allStages, nav) {
       artifactPath: artifactInput ? artifactInput.value : '',
       disposition,
       prereqSnapshot: snapshotPrereqs(stage),
+      decisionMeaning: ownerDecisionMeaning(stage.id),
     });
     status.textContent = disposition === 'accepted' ? 'Saved — the next stage is unlocked.' : 'Saved.';
     nav.onStageCompleted(stage.id);

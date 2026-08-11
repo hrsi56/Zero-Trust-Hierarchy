@@ -28,6 +28,7 @@ SVG = ROOT / "assets" / "zero-trust-hierarchy.svg"
 ARTICLE_OUTPUT = ROOT / "index.html"
 RULEBOOK_OUTPUT = ROOT / "RULEBOOK.html"
 FORMS_INDEX_OUTPUT = FORMS / "index.html"
+BUILDER_OUTPUT = ROOT / "builder" / "index.html"
 
 TITLE = "Zero-Trust Hierarchy"
 STANDFIRST = "No success claim promotes itself. A distributed verification system for agent work."
@@ -400,6 +401,7 @@ def navigation(output: Path, active: str) -> str:
         ("article", "Article", ARTICLE_OUTPUT),
         ("rulebook", "Rulebook", RULEBOOK_OUTPUT),
         ("forms", "Forms", FORMS_INDEX_OUTPUT),
+        ("builder", "Builder", BUILDER_OUTPUT),
     )
     links: list[str] = []
     for key, label, target in targets:
@@ -421,6 +423,7 @@ def page_shell(spec: PageSpec, title: str, fragment: str, css: str) -> str:
     escaped_csp = html.escape(CSP, quote=False)
     home = html.escape(relative_href(spec.output, ARTICLE_OUTPUT), quote=True)
     license_href = html.escape(relative_href(spec.output, ROOT / "LICENSE"), quote=True)
+    builder_href = html.escape(relative_href(spec.output, BUILDER_OUTPUT), quote=True)
     canonical = canonical_url(spec.output)
 
     return f'''<!doctype html>
@@ -459,6 +462,7 @@ def page_shell(spec: PageSpec, title: str, fragment: str, css: str) -> str:
 {fragment}
     </article>
   </main>
+  <a class="builder-cta" href="{builder_href}" aria-label="Open Gauntlet Builder">Build yours <span aria-hidden="true">→</span></a>
   <footer class="site-footer">
     <div class="site-footer__inner">
       <p>Written by {escaped_author}. Licensed under <a href="{license_href}">CC BY 4.0</a>.</p>

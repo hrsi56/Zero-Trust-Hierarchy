@@ -18,6 +18,8 @@ Read the publication: **<https://hrsi56.github.io/gauntlet-hierarchy/>**
   track, and the same human acting at both control points.
 - [Ten boundary forms](templates/1-checkpoint-brief.md) provide copy-pasteable briefs, assignments,
   verdicts, handoffs, receipts, disposition records, and invalid-brief returns.
+- [Gauntlet Builder](builder/index.html) is the official local-first guided implementation kit. It
+  turns the method into thirteen stage-specific prompts without sending project data to a model.
 
 ## Build the publication
 
@@ -25,6 +27,8 @@ The canonical sources are `article.md`, `RULEBOOK.md`, and `templates/*.md`. Wit
 Pandoc 3.6.4 available, run `python3 scripts/build.py` to generate the styled article, Rulebook,
 forms index, and ten individual form pages. Run `python3 scripts/build.py --check` to verify that
 all thirteen HTML artifacts are present, current, internally linked, script-free, and deterministic.
+The Builder is a separate static application with no build step; run
+`node builder/tests/validate.mjs` to validate its stage and prompt contracts.
 
 ## When it is useful
 

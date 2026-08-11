@@ -28,8 +28,9 @@ export function emptyJourney() {
     freeText: {},
     mode: {},
     gates: {},
-    // Edited prompt text lives in its own bucket, keyed "<stageId>::<mode>", so editing the
-    // preview never mutates the answers a prompt was compiled from (section 13 requirement).
+    // Edited prompt text lives in its own bucket, keyed "<stageId>::<mode>". Each entry also
+    // records the generated prompt it was based on, so an upstream answer change cannot silently
+    // keep serving an old manual edit as though it reflected the new inputs.
     promptEdits: {},
   };
 }
@@ -84,7 +85,7 @@ export function normalizeJourney(parsed) {
   j.freeText = coerceMap(parsed.freeText, (v) => (typeof v === 'string' ? v : undefined));
   j.mode = coerceMap(parsed.mode, (v) => (v === 'same' || v === 'fresh' ? v : undefined));
   j.gates = coerceMap(parsed.gates, coerceGate);
-  j.promptEdits = coerceMap(parsed.promptEdits, (v) => (typeof v === 'string' ? v : undefined));
+  j.promptEdits = coerceMap(parsed.promptEdits, coercePromptEdit);
   return { ok: true, journey: j, error: null };
 }
 
@@ -126,9 +127,25 @@ function coerceGate(raw) {
     artifactPath: typeof raw.artifactPath === 'string' ? raw.artifactPath : '',
     disposition: raw.disposition,
     completedAt: typeof raw.completedAt === 'string' ? raw.completedAt : null,
+    decisionMeaning: typeof raw.decisionMeaning === 'string' ? raw.decisionMeaning : '',
+    // Old exports did not bind acceptance to the stage's own answers. Marking them invalid
+    // forces one honest re-review instead of silently grandfathering a stale decision.
+    inputSnapshot: typeof raw.inputSnapshot === 'string' ? raw.inputSnapshot : 'invalid-input-snapshot',
     // A snapshot of the wrong type would silently read as "unchanged"; forcing it to a string
     // that cannot match makes the stage show "needs review" instead, which is the safe default.
     prereqSnapshot: typeof raw.prereqSnapshot === 'string' ? raw.prereqSnapshot : 'invalid-snapshot',
+  };
+}
+
+function coercePromptEdit(raw) {
+  // V1 stored the edited text as a bare string. Preserve it as visibly stale rather than
+  // discarding the user's work or treating it as current without knowing its source prompt.
+  if (typeof raw === 'string') return { text: raw, basePrompt: null };
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  if (typeof raw.text !== 'string') return undefined;
+  return {
+    text: raw.text,
+    basePrompt: typeof raw.basePrompt === 'string' ? raw.basePrompt : null,
   };
 }
 

@@ -102,6 +102,9 @@ git tag --list
 
 git cat-file -e <every_cited_sha>
 ->
+
+git status --porcelain
+->
 ```
 
 ### Declared equivalent profile

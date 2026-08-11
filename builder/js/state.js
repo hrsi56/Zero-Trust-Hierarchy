@@ -65,15 +65,15 @@ class Store {
     this._emit();
   }
 
-  /** Returns the human-edited prompt text for a stage+mode, or null if never edited. */
+  /** Returns {text, basePrompt} for a stage+mode, or null if never edited. */
   getPromptEdit(stageId, mode) {
     const key = `${stageId}::${mode}`;
     return Object.prototype.hasOwnProperty.call(this.journey.promptEdits, key) ? this.journey.promptEdits[key] : null;
   }
 
-  setPromptEdit(stageId, mode, text) {
+  setPromptEdit(stageId, mode, text, basePrompt) {
     const key = `${stageId}::${mode}`;
-    this.journey.promptEdits[key] = text;
+    this.journey.promptEdits[key] = { text, basePrompt };
     this._persist();
     this._emit();
   }
@@ -95,13 +95,15 @@ class Store {
    * any artifact path, the disposition verdict, and a snapshot of every prerequisite
    * stage's current answers (used later to detect staleness if an earlier answer changes).
    */
-  completeStage(stageId, { checkedItems, artifactPath, disposition, prereqSnapshot }) {
+  completeStage(stageId, { checkedItems, artifactPath, disposition, prereqSnapshot, decisionMeaning }) {
     this.journey.gates[stageId] = {
       checkedItems,
       artifactPath: artifactPath || '',
       disposition, // 'accepted' | 'revise' | 'stopped'
       completedAt: new Date().toISOString(),
       prereqSnapshot,
+      inputSnapshot: snapshotStageInput(stageId),
+      decisionMeaning: decisionMeaning || '',
     };
     this._persist();
     this._emit();
@@ -167,6 +169,14 @@ export function snapshotPrereqs(stage) {
   return canonical(snap);
 }
 
+/** Stable snapshot of the stage's own decisions at the moment the Owner accepts it. */
+export function snapshotStageInput(stageId) {
+  return canonical({
+    answers: store.getAnswers(stageId),
+    freeText: store.getFreeText(stageId),
+  });
+}
+
 export const STATUS_LABEL = {
   not_started: 'Not started',
   in_progress: 'In progress',
@@ -197,6 +207,7 @@ export function computeStageStatus(stage, allStages = allStagesDefault, seen = n
   }
   if (gate.disposition === 'revise') return 'revising';
   if (gate.disposition === 'stopped') return 'paused';
+  if (snapshotStageInput(stage.id) !== gate.inputSnapshot) return 'needs_review';
   if (snapshotPrereqs(stage) !== gate.prereqSnapshot) return 'needs_review';
 
   // `seen` is the current recursion PATH, not everything visited: it is removed again on the way

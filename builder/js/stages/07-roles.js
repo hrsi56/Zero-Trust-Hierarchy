@@ -1,17 +1,6 @@
 import { quoteHumanInput } from '../compiler.js';
-import { DELEGATE_VALUE } from '../ui/questions.js';
-
 const AGENT_PLATFORM_HELP = 'Role contracts eventually have to become real configuration — persistent instructions, project rules, a custom command or subagent definition — inside whatever you actually use. Name it now so the agent proposes configuration that is real for your setup, not generic advice.';
 const SINGLE_AGENT_HELP = 'This decides whether the contracts need built-in role-switch discipline (an explicit "which role is this conversation acting as right now" statement, plus a rule for starting a genuinely new conversation when the role changes) or can instead assume the tool boundary already keeps roles apart.';
-const ROLES_NEEDED_HELP = 'Even a tiny solo project usually keeps all five as separate conversations or context resets with one human and one AI tool — the separation is about fresh context and role discipline, not headcount. Only thin this out for a specific, considered reason; when in doubt, keep all five and let the agent tell you honestly if that is more ceremony than this project needs.';
-
-const ROLE_LABELS = {
-  orchestrator: 'Orchestrator',
-  engineeringLead: 'Engineering Lead',
-  builder: 'Builder(s)',
-  componentCritic: 'Component Critic',
-  integrationCritic: 'Integration Critic',
-};
 
 const TOOL_MAPPING_LABELS = {
   'rotating-single-tool': 'One AI tool, rotating through all five roles across separate conversations',
@@ -70,8 +59,7 @@ export default {
       'The requirement that a Builder\'s implementation and a Critic\'s verdict come from genuinely separate agents or contexts, so the Critic judges the actual artifact rather than the Builder\'s account of it, is adapted from the Gauntlet Loop\'s inner build/critique pattern; the NOTICE file in this repository credits Matt Shumer\'s Gauntlet Loop as the inner execution pattern that Zero-Trust Hierarchy\'s surrounding authority system wraps around.',
     ],
     productDesign: [
-      'The three structured questions in this stage — which AI tool(s) will run these roles, whether one tool will rotate through roles across separate conversations, and which roles are worth keeping distinct for this project\'s size — are this guide\'s own editorial framing. The source method does not ask a human these specific structured questions; it assumes role separation and has a setup agent draft contracts directly.',
-      'Folding a "which roles are worth keeping distinct" question into this stage, with a strong help-text reminder that even a tiny solo project usually keeps all five as separate conversations, is this guide\'s own design choice meant to head off a common misreading — that role count should scale down with team headcount. The source method treats the five roles as structural, not proportional to team size, but does not phrase it as a question with this exact escape hatch.',
+      'The two structured questions in this stage — which AI tool(s) will run these roles and whether one tool will rotate through roles across fresh conversations — are this guide\'s own editorial framing. The source method assumes role separation and has a setup agent draft contracts directly; the guide turns the tool mapping into an explicit decision without making the authority functions optional.',
       'Naming "Development Manager" and "Coordinator" as example titles to avoid, and repeating the no-new-tier rule in several separate layers of each generated prompt — Exact task, Constraints, Prohibited assumptions, and again in Stop-and-escalate conditions — is this guide\'s own editorial redundancy against one common failure mode. The underlying rule (RULEBOOK.md §2: governing documents "do not form another autonomous agent tier") is verified method content; the example titles are not the source method\'s wording, and the source in fact uses "development-management function" for the human\'s own second hat, which is why this stage says so explicitly rather than banning the phrase.',
     ],
   },
@@ -98,29 +86,13 @@ export default {
         { value: 'unsure', label: 'Not sure yet', description: 'Ask the agent to propose a reasonable mapping and pause for your decision.' },
       ],
     },
-    {
-      id: 'rolesNeeded',
-      type: 'checkbox',
-      label: 'Given this project\'s size, which roles are worth keeping as genuinely distinct conversations?',
-      help: ROLES_NEEDED_HELP,
-      required: true,
-      affectsPrompt: 'Sets which of the five role contracts the agent frames as genuinely separate conversation-discipline versus which (if any) the human deliberately chose to combine; selecting the delegate option tells the agent to investigate project size and complexity and propose a role set with tradeoffs instead of assuming one.',
-      options: [
-        { value: 'orchestrator', label: 'Orchestrator' },
-        { value: 'engineeringLead', label: 'Engineering Lead' },
-        { value: 'builder', label: 'Builder(s)' },
-        { value: 'componentCritic', label: 'Component Critic' },
-        { value: 'integrationCritic', label: 'Integration Critic' },
-      ],
-      allowDelegate: true,
-    },
   ],
   freeTextLabel: 'What should the agent understand about your roles or tooling setup that the structured questions above didn\'t capture?',
   completionGate: [
     { id: 'investigated', label: 'The agent read the actual current rulebook and repository (or existing configuration files) directly, rather than relying on my summary of what they say.', kind: 'confirm', required: true },
     { id: 'contractsCreated', label: 'A written contract exists for each of the five execution roles, and any needed platform configuration file(s) were created or revised.', kind: 'confirm', required: true },
     { id: 'evidenceReported', label: 'The agent reported what it verified, what it assumed, and any unresolved conflicts with the existing rulebook — not just a claim of success.', kind: 'confirm', required: true },
-    { id: 'reviewed', label: 'I\'ve reviewed the drafted contracts and configuration myself before treating any of it as ratified.', kind: 'confirm', required: true },
+    { id: 'reviewed', label: 'I reviewed all five execution-role contracts and configuration boundaries myself and explicitly ratify them.', kind: 'confirm', required: true },
     { id: 'artifactPath', label: 'Path to the role contracts / configuration files (optional)', kind: 'text', required: false },
   ],
   buildLayers(answers, freeText, ctx) {
@@ -128,26 +100,16 @@ export default {
     const platform = (answers.agentPlatform || '').trim();
     const toolMappingLabel = TOOL_MAPPING_LABELS[answers.singleAgentReality] || '';
 
-    const rolesSelected = Array.isArray(answers.rolesNeeded) ? answers.rolesNeeded : [];
-    const delegatedRoles = rolesSelected.includes(DELEGATE_VALUE);
-    const chosenRoleLabels = rolesSelected.filter((v) => v !== DELEGATE_VALUE).map((v) => ROLE_LABELS[v]).filter(Boolean);
-
     const roleAndAuthority = [
       'You are acting in an Engineering-Lead-like drafting capacity to help the human Architect/Owner author role contracts and, where useful, platform configuration for their own project. Drafting is all you are authorized to do here: you propose contract language and configuration; only the human Owner reviews and ratifies it as governing.',
       'Role contracts and agent/platform configuration are part of this project\'s protected governance material. Once the human ratifies them, no agent executing later work — in any role — may quietly rewrite them just because a future checkpoint would be easier with looser boundaries. A genuinely needed change stops work and returns to the human instead of being self-authorized.',
     ].join('\n');
 
-    const stageObjective = 'Produce one role contract for each execution role this project will keep distinct, plus any platform configuration file(s) needed to make those boundaries real in the AI tool(s) the human actually uses — without inventing any role or authority tier beyond the six defined below.';
+    const stageObjective = 'Produce one role contract for each of the five execution functions, plus any platform configuration file(s) needed to make their authority and fresh-context boundaries real in the AI tool(s) the human actually uses — without inventing, deleting, or merging an authority function.';
 
     const humanIntent = [
       quoteHumanInput('AI tool(s) that will run these roles', platform),
       quoteHumanInput('How roles map onto tools', toolMappingLabel),
-      chosenRoleLabels.length
-        ? quoteHumanInput('Roles the human wants kept as genuinely distinct conversations', chosenRoleLabels.join(', '))
-        : '',
-      delegatedRoles
-        ? 'The human is unsure which roles are worth keeping distinct for a project this size, and asked you to investigate and propose a role set with tradeoffs instead of assuming one (see Exact task below).'
-        : '',
       quoteHumanInput('Anything else the human wants understood about their roles or tooling setup', freeText),
     ].filter(Boolean).join('\n\n');
 
@@ -180,11 +142,7 @@ export default {
       ROLE_DEFINITIONS,
       FRESH_CONTEXT_NOTE,
       'For each of the five execution roles (Orchestrator, Engineering Lead, Builder, Component Critic, Integration Critic), write a contract stating: what it owns, an explicit list of what it may never do, what counts as "done" for the thing it hands upward, and what it must never treat as true just because another role claimed it.',
-      delegatedRoles
-        ? 'The human was unsure which roles are worth keeping genuinely distinct for a project this size. Investigate the project\'s actual scope and complexity, then propose which of the five roles to keep as fully separate conversations versus which, if any, could reasonably share a conversation with strict role-switch discipline, with the tradeoffs of each option, and pause for the human\'s decision before finalizing contracts. Default to recommending all five distinct unless you find a specific, stated reason this project is small enough to justify combining any.'
-        : chosenRoleLabels.length
-          ? `The human decided to keep these roles as genuinely distinct conversations: ${chosenRoleLabels.join(', ')}. Still draft a full contract for every one of the five roles listed above — a role that is not being kept as a separate conversation right now still needs a written contract, because the human may split it out later, and because even a combined conversation needs to know what each hat is and is not allowed to do while wearing it.`
-          : '',
+      'All five execution functions require contracts. One AI product may rotate through them, but one active conversation may hold only one declared role. A Builder context may never become a Critic context for its own work; each Component Critic is fresh from the Builder narrative; the Integration Critic is a different fresh context from the Component Critics and the Lead; and the Orchestrator never becomes a technical reviewer. Reduce paperwork or reviewer count when proportionate — never those seams.',
       answers.singleAgentReality === 'rotating-single-tool'
         ? 'Because one AI tool will rotate through multiple roles across separate conversations, build role-switch discipline into every contract: require the conversation to state, at its start, which single role it is acting as right now; forbid it from silently acting as a different role mid-conversation; and require starting a genuinely new conversation (not just a new message) whenever the role changes, especially before either Critic role begins its review.'
         : answers.singleAgentReality === 'multiple-tools'
@@ -214,7 +172,7 @@ export default {
     const prohibitedAssumptions = [
       'Do not assume the human has separate paid tools or accounts for each role just because there are five roles — role separation is about separate conversations and context resets, not separate subscriptions, unless the human\'s own answer says otherwise.',
       'Do not assume any configuration file you find already in the repository is already ratified just because it exists — treat it as a prior draft to read and reconcile, not as settled fact, unless the rulebook or the human confirms it.',
-      'Do not assume a role the human did not explicitly list as "kept distinct" has been eliminated from the method — it still needs a written contract; only its conversation-separation is in question, never its existence.',
+      'Do not use project size or one-tool reality to eliminate a role function. The same product may rotate through roles, but only through explicitly separate contexts where the contracts require freshness.',
       NO_NEW_TIER_LINE,
     ].join('\n');
 
@@ -408,7 +366,7 @@ export default {
   advanced: {
     purpose: 'Role contracts are the mechanism that turns "zero trust" from a slogan into something enforceable: without a written boundary, an agent playing Engineering Lead will eventually also grade its own work, or an Orchestrator will start reading source code because it is convenient, and no one notices until an unverified claim has already been acted on. This stage exists to write those boundaries down, in language specific enough to catch a real violation, before any role starts doing real work. It also has to survive contact with reality — most humans do not have five separate AI subscriptions, so the contracts must work whether one tool rotates through every hat or five different tools each own one.',
     problemPrevented: 'Without explicit contracts, role separation collapses quietly under time pressure — a Builder gets asked to also confirm its own fix worked, or an Engineering Lead publishes a change because the human was not around to ratify it and "someone had to." Each individual collapse looks reasonable in the moment; the pattern is what erodes the whole zero-trust guarantee. Writing the boundary down in advance, and stating explicitly what each role must never do, converts a fuzzy norm into something a fresh reader can check a contract against after the fact.',
-    judgmentVsInvestigation: 'Which AI tool(s) the human actually has, and whether that tool will rotate through roles or be paired with other tools, is something only the human can state — no amount of repository investigation reveals what product a person is subscribed to. Which roles are worth keeping as genuinely distinct conversations for a project this size is closer to a judgment call, but one the human can defer through the delegate option when they are uncertain; in that case, investigating the project\'s actual size and complexity becomes the agent\'s job, not a question asked back to the human. Everything about the current rulebook\'s actual content, the repository\'s real structure, and whether configuration files already exist is investigation the agent must do directly — this stage never asks the human to describe their own codebase from memory.',
+    judgmentVsInvestigation: 'Which AI tool(s) the human actually has, and whether one product will rotate through roles or be paired with others, is something only the human can state. The five execution functions and their incompatible context boundaries are method constraints, not a preference question. The current rulebook, repository structure, and existing configuration are facts the agent must investigate directly.',
     promptAnatomy: 'This stage\'s generated prompt inlines a full, generic definition of all six roles directly in the Exact task layer, because the receiving agent may have no access to this method\'s source material — the prompt has to be self-sufficient on its own. The Human intent layer stays deliberately thin (a tool name, a rough tool-to-role mapping, and which roles the human wants kept distinct) because the heavier judgment call — how much ceremony a project this size actually needs — is explicitly routable to agent investigation through the delegate option, rather than forced onto the human. Operating mode and Required repository investigation diverge sharply by mode, because a same-conversation continuation and a brand-new one carry very different risks of stale assumptions about what the rulebook or existing contracts actually say.',
     authorityBoundary: 'The agent producing these contracts holds no authority over the roles it is describing — it is drafting text for the human Owner to ratify, not appointing itself to any of the five roles. Once ratified, the contracts themselves become part of the project\'s protected governance material: no later executing agent, in any role, may edit its own or another role\'s contract just because a future checkpoint would be easier with a looser boundary. A genuinely needed change is a stop condition that returns to the Owner, never a silent self-edit.',
     inputsAndSources: 'Inputs are the three structured answers (the named AI tool(s), the tool-to-role mapping, and which roles the human wants kept distinct), the free-text field, and — critically — the project\'s own ratified rulebook and any pre-existing configuration files, which the agent must read directly from the repository rather than accept as summarized in this prompt. No file, path, or document from outside the human\'s own project is ever a valid source for this stage.',

@@ -170,7 +170,7 @@ export default {
     { id: 'investigated', label: 'The agent read the actual ratified Capstone and inspected the current project before proposing checkpoints, rather than relying on my summary of either.', kind: 'confirm', required: true },
     { id: 'artifactCreated', label: 'A roadmap / checkpoint-decomposition document was actually written to the project, not just described in chat.', kind: 'confirm', required: true },
     { id: 'evidenceReported', label: 'The agent reported its investigation trail, its assumptions, and any unresolved conflicts — not just a clean-looking final list.', kind: 'confirm', required: true },
-    { id: 'reviewed', label: 'I reviewed the proposed checkpoints, dependencies, and any parallel-track suggestions myself before treating this roadmap as something I\'m ready to act on.', kind: 'confirm', required: true },
+    { id: 'reviewed', label: 'I reviewed the checkpoints, dependencies, and parallel-track decisions myself and explicitly ratify this roadmap.', kind: 'confirm', required: true },
     { id: 'artifactPath', label: 'Path to the roadmap document in your project (optional)', kind: 'text', required: false },
   ],
   buildLayers(answers, freeText, ctx) {

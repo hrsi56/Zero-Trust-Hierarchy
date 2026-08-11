@@ -4,15 +4,16 @@ A standalone, offline, local-first guide that compiles precise, stage-specific p
 building a [Zero-Trust Hierarchy](../article.md) operating system around your own project — one
 generated prompt at a time, for an AI agent you run yourself.
 
-This directory is self-contained. It does not read, write, or link to anything else in this
-repository at runtime, and nothing outside `builder/` was modified to build it. See
+The application code is self-contained under this directory and has no runtime dependency on the
+publication build. It links back to the Article, and the publication links here as its Builder
+section. See
 [PRODUCT-SPEC.md](PRODUCT-SPEC.md) for the full design record, method-provenance breakdown, and
 list of implementation decisions.
 
 ## What it is not
 
 - Not a chatbot. It never calls an AI model and never asks for an API key.
-- Not a backend. There is no server, account, or database — everything runs in your browser tab.
+- Not a backend. There is no account or database — everything runs in your browser.
 - Not a place to paste your project. It never asks for a Capstone, a rulebook, a roadmap, a source
   file, or an agent's output — only for your own judgment calls, and, optionally, a file path.
 
@@ -86,7 +87,7 @@ builder/
 
 ## Privacy
 
-Nothing you type leaves this browser tab. Answers persist only in this browser's `localStorage`
+Nothing you type leaves this browser. Answers persist only in this browser's `localStorage`
 under one key; export/import are the only ways data leaves or enters, and both are entirely
 under your control as a downloaded/uploaded JSON file. There is no analytics, no tracking, and the
 Content-Security-Policy in `index.html` sets `connect-src 'none'`, so the browser itself will block

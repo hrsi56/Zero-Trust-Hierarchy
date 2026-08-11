@@ -108,7 +108,7 @@ export default {
     { id: 'mapProduced', label: 'A management map naming the governing documents and the precedence order between them was created or revised.', kind: 'confirm', required: true },
     { id: 'profileDeclared', label: 'The execution/evidence profile (GIT_REFERENCE, or a documented equivalent naming all six primitives) was declared concretely, not left generic or as a placeholder.', kind: 'confirm', required: true },
     { id: 'evidenceReported', label: 'The agent reported its evidence, its assumptions, and any unresolved precedence conflicts.', kind: 'confirm', required: true },
-    { id: 'reviewed', label: 'I reviewed the result myself before treating it as settled.', kind: 'confirm', required: true },
+    { id: 'reviewed', label: 'I reviewed the management map, durable-state policy, and execution/evidence profile myself and explicitly ratify them.', kind: 'confirm', required: true },
     { id: 'artifactPath', label: 'Path to the management map or durable-state record (optional).', kind: 'text', required: false },
   ],
   buildLayers(answers, freeText, ctx) {

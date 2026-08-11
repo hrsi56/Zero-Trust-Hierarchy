@@ -533,6 +533,30 @@ hr {
   color: inherit;
 }
 
+.builder-cta {
+  position: fixed;
+  z-index: 10;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: inline-flex;
+  gap: .45rem;
+  align-items: center;
+  padding: .62rem .85rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 68%, var(--rule));
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 .55rem 1.6rem rgb(20 14 10 / 20%);
+  color: var(--surface-raised);
+  font: 750 .75rem/1 var(--sans);
+  letter-spacing: .015em;
+  text-decoration: none;
+}
+
+.builder-cta:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
 @media (max-width: 42rem) {
   .site-header__inner,
   .site-footer__inner {
@@ -597,6 +621,12 @@ hr {
   .hierarchy-diagram figcaption {
     padding-inline: .75rem;
   }
+
+  .builder-cta {
+    right: max(.65rem, env(safe-area-inset-right));
+    bottom: max(.65rem, env(safe-area-inset-bottom));
+    padding: .58rem .75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -635,7 +665,8 @@ hr {
 
   .site-header,
   .skip-link,
-  .diagram-navigation {
+  .diagram-navigation,
+  .builder-cta {
     display: none;
   }
 
@@ -681,6 +712,7 @@ hr {
         <a href="../index.html">Article</a>
         <a href="../RULEBOOK.html">Rulebook</a>
         <a href="index.html" aria-current="page">Forms</a>
+        <a href="../builder/index.html">Builder</a>
         <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
       </nav>
     </div>
@@ -776,6 +808,7 @@ hr {
 <p>The Orchestrator MUST NOT use this form to choose architecture, libraries, file layout, decomposition, Builder count, internal budgets, implementation steps, or a fixed review-round count. Reducing the bar requires an Owner-ratified replacement anchor and a new brief.</p>
     </article>
   </main>
+  <a class="builder-cta" href="../builder/index.html" aria-label="Open Gauntlet Builder">Build yours <span aria-hidden="true">→</span></a>
   <footer class="site-footer">
     <div class="site-footer__inner">
       <p>Written by Yarden Viktor Dejorno. Licensed under <a href="../LICENSE">CC BY 4.0</a>.</p>

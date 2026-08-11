@@ -533,6 +533,30 @@ hr {
   color: inherit;
 }
 
+.builder-cta {
+  position: fixed;
+  z-index: 10;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: inline-flex;
+  gap: .45rem;
+  align-items: center;
+  padding: .62rem .85rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 68%, var(--rule));
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 .55rem 1.6rem rgb(20 14 10 / 20%);
+  color: var(--surface-raised);
+  font: 750 .75rem/1 var(--sans);
+  letter-spacing: .015em;
+  text-decoration: none;
+}
+
+.builder-cta:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
 @media (max-width: 42rem) {
   .site-header__inner,
   .site-footer__inner {
@@ -597,6 +621,12 @@ hr {
   .hierarchy-diagram figcaption {
     padding-inline: .75rem;
   }
+
+  .builder-cta {
+    right: max(.65rem, env(safe-area-inset-right));
+    bottom: max(.65rem, env(safe-area-inset-bottom));
+    padding: .58rem .75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -635,7 +665,8 @@ hr {
 
   .site-header,
   .skip-link,
-  .diagram-navigation {
+  .diagram-navigation,
+  .builder-cta {
     display: none;
   }
 
@@ -681,6 +712,7 @@ hr {
         <a href="index.html">Article</a>
         <a href="RULEBOOK.html" aria-current="page">Rulebook</a>
         <a href="forms/index.html">Forms</a>
+        <a href="builder/index.html">Builder</a>
         <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
       </nav>
     </div>
@@ -946,7 +978,8 @@ git diff --name-only &lt;component_sha&gt;..&lt;final_candidate_sha&gt; -- &lt;r
 git worktree list
 git branch -vv
 git tag --list
-git cat-file -e &lt;every_cited_sha&gt;</code></pre>
+git cat-file -e &lt;every_cited_sha&gt;
+git status --porcelain</code></pre>
 <p>Missing operands are recorded as <code>NOT_APPLICABLE — [specific reason]</code>, not passed. Under a non-Git profile, form 1 MUST have named the equivalent finite read-only queries for identity resolution, lineage, dependency change, evidence linkage, preservation, and live-resource inspection. The Orchestrator uses that declared query set; the evidence class does not expand because a tool is available.</p>
 <p>The Orchestrator MUST NOT open or review source/content as a second reviewer, rerun tests, rederive metrics, inspect generated technical outputs, inspect Builder workspaces, or read the Lead's workbench. Those actions would collapse the authority split by creating a second technical reviewer with less context.</p>
 <p>The receipt result is <strong>supported</strong> or <strong>rejected</strong>, with every failed gate item named. A supported technical PASS permits Owner disposition consideration. It does not itself land, close lifecycle, or authorize continuation. A non-PASS packet may be accepted as an honest return while still requiring the exact Owner decision or replacement brief it names.</p>
@@ -1026,6 +1059,7 @@ git cat-file -e &lt;every_cited_sha&gt;</code></pre>
 <p>The accompanying ten forms implement these boundaries. If a local form conflicts with this rulebook or the project's ratified higher-order governance, stop and resolve the conflict before execution; do not select whichever version is more convenient.</p>
     </article>
   </main>
+  <a class="builder-cta" href="builder/index.html" aria-label="Open Gauntlet Builder">Build yours <span aria-hidden="true">→</span></a>
   <footer class="site-footer">
     <div class="site-footer__inner">
       <p>Written by Yarden Viktor Dejorno. Licensed under <a href="LICENSE">CC BY 4.0</a>.</p>

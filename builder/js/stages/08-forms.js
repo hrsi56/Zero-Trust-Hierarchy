@@ -1,17 +1,9 @@
 import { quoteHumanInput } from '../compiler.js';
 import { DELEGATE_VALUE } from '../ui/questions.js';
 
-const FORMS_SOURCE_HELP = 'Most projects should just adopt the ten handoffs below — they already cover the moments where one role\'s claim has to become another role\'s independently verified fact. Pick "adapt lightly" only if this project\'s own vocabulary genuinely needs different field names; pick the non-software option only if there is no versioned codebase for a Git-shaped identity mechanism to attach to.';
+const FORMS_SOURCE_HELP = 'Most projects should adopt the ten canonical forms below. Pick "adapt lightly" only if this project\'s vocabulary genuinely needs different field names; pick the non-software option only if there is no versioned codebase for a Git-shaped identity mechanism to attach to.';
 const FORMS_LOCATION_HELP = 'A form nobody can find gets skipped the first time someone is in a hurry, which quietly turns a checked handoff back into an unchecked one. Naming a real location now — even a rough one — gives the agent something concrete to place files at instead of guessing or scattering them.';
 const CEREMONY_LEVEL_HELP = 'Ceremony should track the cost of being wrong here, not the number of people on the project. A solo, low-stakes project can combine several of these ten documents; a project where a mistake is expensive should keep more of them as literally separate artifacts, even if the same person ends up reading and writing most of them.';
-
-const ROLE_LABELS = {
-  orchestrator: 'Orchestrator',
-  engineeringLead: 'Engineering Lead',
-  builder: 'Builder(s)',
-  componentCritic: 'Component Critic',
-  integrationCritic: 'Integration Critic',
-};
 
 const FORMS_SOURCE_LABELS = {
   'adopt-directly': 'Adopt this method\'s ten forms directly',
@@ -26,23 +18,23 @@ const CEREMONY_LABELS = {
 
 /** Reproduced inline, generically, so the generated prompt is self-contained for the receiving agent. */
 const FORM_DEFINITIONS = [
-  '1. Checkpoint Brief — written by the Orchestrator, read by the Engineering Lead. States exactly one authorized bounded unit of work: which workspace it targets, the exact ratified plan reference it comes from, the current expected state labeled plainly as a hypothesis rather than confirmed fact, an inspectable observable goal, the complete acceptance checklist quoted in full rather than a paraphrased summary, the relevant constraints and how candidate identity and evidence will be tracked, a numeric time or effort ceiling that only prioritizes work and never excuses a lower bar, any human-only actions already pre-authorized (or an explicit "none"), the preconditions required before starting, and exactly one instruction for where to stop and return. A brief that is missing or contradictory on any of these fields must be rejected before any work begins — see the Invalid Brief Return below.',
-  '2. Active Workbench — the Engineering Lead\'s own private, non-versioned scratch state while doing the work: notes, half-finished experiments, discarded approaches. Never shown to a Critic, the Orchestrator, or the human as evidence of anything. Always cleared before the Lead returns its report; anything actually worth keeping is extracted into one of the other, authorized forms first.',
-  '3. Builder Assignment — written by the Engineering Lead, read by one Builder. Names exactly one piece of work, an observable piece-level goal, concrete acceptance criteria with their citations, the relevant ratified rules, an exact list of what the Builder may touch and nothing beyond it, and what evidence the Builder must produce. The Builder does receive concrete criteria — it is not building blind. What it must never receive, define, or pre-answer is the independent acceptance oracle that will judge the piece: the Critic derives that separately from the ratified bar, and the Builder never grades its own work or declares a checkpoint criterion complete.',
-  '4. Component Critic Assignment — written by the Engineering Lead, read by a fresh Component Critic, issued only after the candidate work has been frozen into one identifiable, unchanging version. The Critic receives the artifact itself, the acceptance bar, and enough provenance to check it — never the Builder\'s private notes, its own account of what it did, or the Lead\'s workbench.',
-  '5. Critic Verdict — written by the Component Critic, read by the Engineering Lead. States pass, fail, or blocked; the exact identity of what was reviewed and what it depended on; the evidence trail and any checks actually run; a direct side-by-side comparison against the acceptance bar; and exactly one largest remaining gap, or an explicit statement that the bar is fully met. The Critic works out independently whether the bar is met; it may treat Builder-written tests as extra evidence, never as the whole check.',
-  '6. Fresh Integration Critic (assignment and verdict) — written by the Engineering Lead for a different fresh reviewer — not the Component Critic who reviewed the pieces, not the Lead who assembled them. Reviews the complete, assembled result, plus whether every component verdict it still relies on remains current rather than stale.',
-  '7. Consolidated Return Packet — the Engineering Lead\'s single upward report at the end of the bounded unit of work. Echoes the original brief back in full, states the actual start time and effort actually spent, gives a complete evidence trail and every verdict collected, maps each acceptance-checklist item to how it was satisfied, discloses real engineering decisions made along the way, reports the live state of anything touched, and declares exactly one terminal outcome. This is the Lead\'s only sanctioned handoff upward — nothing it says outside this packet counts as a report.',
-  '8. Orchestrator Receipt — the Orchestrator\'s check of the returned packet\'s envelope: was it actually authorized, is the checklist mapping complete and honest, does the evidence trail match live reality, can every claimed identity actually be resolved. Recorded as SUPPORTED or REJECTED. This is explicitly not a second technical review of the work itself — the Orchestrator checks the packet, not the artifact.',
-  '9. Landing, Disposition, Evidence & Reclamation — a two-phase form. Phase A is read-only inspection that never pre-fills a decision. Only then does the human Owner alone decide to land or discard the result. Only after that explicit decision does Phase B run: preserving evidence, repointing any references, and reclaiming resources the bounded unit of work used. Any unexplained or unrelated artifact found along the way is surfaced to the human, never silently deleted.',
-  '10. Invalid Brief Return — the Engineering Lead\'s minimal, pre-execution response when a Checkpoint Brief is missing, ambiguous, or self-contradictory on any required field: lists every defect found, confirms plainly that nothing was created, edited, or started, and asks for exactly one corrected brief before anything begins. This is a correct, honest refusal — not a failure to route around.',
+  '1. Checkpoint Brief — Orchestrator → Engineering Lead. Contains all eleven fields: target workspace; exactly one authorized checkpoint; exact ratified plan/version/section anchor; expected state labeled as the Orchestrator\'s hypothesis plus the Lead\'s required first observable-state report; observable goal; complete named checklist citation, complete authoritative bar, and verbatim supporting extract; constraints plus a declared GIT_REFERENCE or DECLARED_EQUIVALENT profile covering identity, evidence linkage, dependency-change detection, single-writer isolation, preservation, and reclamation; numeric active-elapsed ceiling; Owner-only actions pre-authorized or explicit NONE; executor/session preconditions; and exactly one stop-and-return instruction. Missing, ambiguous, or contradictory on any field means BRIEF_INVALID before work starts.',
+  '2. Active Workbench — private Engineering Lead scratch state, not an inter-role handoff and never evidence. Records authorization and clock, first observable state, eligible pauses, complete goal/bar, decomposition and repair routing, Builder contexts and seeds, decision-bearing provenance, integration ledger, mandatory surfaces and independent oracles, component-verdict currency, terminal identities, post-verdict/post-stop reads, current topology, and any non-PASS terminal reason. It is never shown to Critics, the Orchestrator, or Owner and is cleared before return after durable facts are extracted into authorized artifacts.',
+  '3. Builder Assignment — Engineering Lead → one Builder. Names brief/checkpoint identity, one piece, observable goal, concrete piece criteria with citations, relevant ratified rules, exact ownership allowlist, required evidence, and return format. It forbids scope expansion, shared-candidate writes, self-grading, and defining/copying/pre-answering the independent Critic oracle. It includes the Lead\'s import check for allowed paths and attributable Builder context/seed.',
+  '4. Component Critic Assignment — Engineering Lead → one fresh Component Critic after the candidate is frozen. Names profile, exact immutable candidate and dependency identities, reviewed paths/surfaces, exact bar and citations, relevant rules, permitted evidence, and prohibited Builder narrative/workbench material. It includes the Critic\'s procedural identity/freshness declaration and instructs independent oracle derivation, read-only review, and a durable verdict.',
+  '5. Critic Verdict — Component or Integration Critic → Engineering Lead. Records result PASS/FAIL/BLOCKED; exact plan/version/bar; reviewer identity and timestamps; exact candidate and reviewed dependencies; what was inspected; exhaustive decision-bearing provenance; commands actually run; expected results and tolerances; independent oracle derivation; criterion-by-criterion bar comparison; exactly one largest remaining gap or explicit BAR_MET; exact next acceptance test; and clearly separated non-blocking observations. It is invalid if it grades an unfrozen candidate, adopts the Builder\'s expected result as its oracle, hides provenance, writes the candidate, or cannot bind the result to exact identities.',
+  '6. Fresh Integration Critic — Engineering Lead → a different fresh Integration Critic, with assignment and verdict. Names exact final candidate, complete bar, reviewer identity/freshness, every relied-on component verdict, decision-bearing provenance, mandatory-surface applicability, and required whole-candidate checks. It independently recomputes staleness for every relied-on verdict against the final candidate and records PASS/FAIL/BLOCKED without becoming the Lead or choosing disposition.',
+  '7. Consolidated Return Packet — Engineering Lead → Orchestrator, and the Lead\'s only sanctioned upward report. Names exactly one terminal result; final candidate and evidence identities; full eleven-field brief echo; actual start state, administrative/active timing and pauses; exhaustive decision-bearing provenance; role/context boundaries and every post-verdict read; Builder contexts and seeds; all component and Integration verdicts with exact identities and computed currency; mandatory surfaces/oracles; complete checklist-to-evidence mapping; engineering decisions; reproduction instructions; open risk or exact Owner action; live topology/resource inventory including branches, worktrees, preservation reachability, unrelated resources, and NOT_CREATED reasons; optional proposed Owner-authored commit message; defense questions; and an explicit stop declaration. It distinguishes final_candidate identity from evidence_tip identity and any evidence-only terminal delta.',
+  '8. Orchestrator Receipt — Orchestrator → existing durable program-state log. It reads only the Return Packet and cited durable evidence, never source/content as a second technical reviewer. It records target/checkpoint/anchor/profile/candidate/evidence identities; universal gates A1–A7; PASS-only gates P1–P6; conditional non-PASS gates N1–N6; exact bounded profile queries with status/output (for Git including git status --porcelain, worktree/branch/tag inspection, identity resolution, lineage, dependency changes, and candidate/evidence delta); and one SUPPORTED or REJECTED result with every failed gate, exact correction required, requested Owner decision, program-state location, and authority declaration. A REJECTED packet returns defects and then stops for case-by-case human direction; it does not prescribe an automatic repair route.',
+  '9. Landing, Disposition, Evidence & Reclamation — lifecycle record with enforced fill order. Phase A records the supported-receipt or abandonment trigger, actual resource inventory, Git/profile topology, identity/preservation/citation inspection, unknown resources, and exact reclamation candidates, then STOPs without mutation. The Owner alone records LAND or DISCARD, exact covered resource, LAND eligibility, retry/change/continuation decisions. Phase B records Owner-only LAND mechanics or evidence-preserving DISCARD, verifies preservation before reclamation, repoints every live citation, reclaims only checkpoint-owned resources, leaves unknown/unrelated resources intact, verifies final identities and inventory, and records CLOSED/NOT_CLOSED in durable state. Continuation always needs a separate Owner decision and new brief.',
+  '10. Invalid Brief Return — Engineering Lead → Orchestrator before execution. Names the brief identity and read-only facts checked, evaluates all eleven brief fields individually, lists every invalidating defect, requests exactly one corrected replacement brief, and confirms no clock, workbench, branch/workspace, candidate, edit, or execution artifact was created. BRIEF_INVALID is a correct refusal, not a technical result and not a receipt-gate packet.',
 ].join('\n\n');
 
 const ROLE_NAMES_NOTE = 'These ten forms carry handoffs between six roles: the human Architect/Owner, and five execution roles — Orchestrator, Engineering Lead, Builder, Component Critic, and Integration Critic. If this project already has ratified role contracts from an earlier step, read them directly for the exact boundaries each role holds here rather than assuming a generic description; if none exist yet, use the writer/reader roles named above as the working definition. Do not invent a role or authority tier beyond these six anywhere in the forms you draft.';
 
 const FRESH_REVIEWER_NOTE = '"Fresh" wherever it appears above means a new conversation or context reset carrying no memory of any prior conversation\'s claims about this work — a cooperative procedural control every participant agrees to follow, not a cryptographic or operating-system-level sandbox. State that plainly in any form template that references it, rather than implying stronger technical isolation than actually exists.';
 
-const NO_NEW_AUTHORITY_LINE = 'These ten handoffs are the complete set. Do not invent an eleventh form, and do not let any form — combined or not — hand one role a decision that belongs to a different role: for example, a combined document must never let a Builder also supply its own acceptance verdict, or let an Orchestrator author findings that only a Critic may independently produce. If streamlining seems to require that, the correct fix is to keep those two handoffs separate, not to blur them.';
+const NO_NEW_AUTHORITY_LINE = 'These ten canonical forms are the complete required operating set: one is private scratch state and one is an alternate pre-execution return, so do not describe them as ten linear handoffs. Project-specific supplemental worksheets are allowed only when they are authority-neutral and do not replace, merge away, weaken, or rename a canonical boundary. Never create a new authority tier or let one role exercise another role\'s decision: a Builder cannot supply its own verdict, a Lead cannot author a Critic\'s finding, and an Orchestrator cannot become a technical reviewer.';
 
 const DECLARED_EQUIVALENT_NOTE = 'When this project\'s deliverable is not a versioned codebase, do not silently assume a Git-based mechanism. Instead define an explicit, documented equivalent naming six things: the target workspace; how a specific candidate version gets an immutable and unique identity; how evidence tied to that identity can be independently found; how a change to anything the candidate depends on gets detected; how only one writer works on a candidate at a time; and how a finished or abandoned candidate\'s resources get preserved or cleaned up. Name that equivalent explicitly inside the Checkpoint Brief form and anywhere else candidate identity or evidence is referenced.';
 
@@ -80,11 +72,10 @@ function formsSourceInstruction(value) {
   return 'Draft all ten forms below close to their definitions, adapting only the surface wording needed to name this project\'s own roles, workspace, and artifacts — do not drop or soften any required field.';
 }
 
-function ceremonyLevelInstruction(value, riskLabel, rolesKeptDistinctLabel) {
+function ceremonyLevelInstruction(value, riskLabel) {
   if (value === DELEGATE_VALUE) {
     const extra = [
       riskLabel ? `The human previously described this project's overall risk tolerance as ${riskLabel}.` : '',
-      rolesKeptDistinctLabel ? `An earlier step recorded that the human wants to keep these roles as genuinely distinct conversations: ${rolesKeptDistinctLabel}.` : '',
     ].filter(Boolean).join(' ');
     return [
       'The human is not sure how much ceremony this project\'s size actually justifies. Investigate the project\'s actual scope, team size, and risk, and propose a ceremony level — all ten forms distinct, or a specific streamlined set — with the tradeoffs of each, before finalizing anything. Default to recommending all ten distinct unless you find a specific, stated reason this project is small enough to justify combining any.',
@@ -128,14 +119,14 @@ export default {
     {
       id: 'formsSource',
       type: 'radio',
-      label: 'How should this project adopt the ten operational forms?',
+      label: 'How should this project adopt the ten canonical operational forms?',
       help: FORMS_SOURCE_HELP,
       required: true,
       allowDelegate: true,
       affectsPrompt: 'Branches the Exact task layer: direct adoption asks the agent to draft all ten forms close to their definitions; light adaptation asks it to reshape wording and fields to this project\'s own terminology while keeping every handoff intact; a non-software artifact tells the agent to define an explicit declared equivalent for identity, evidence, and reclamation instead of assuming Git. Selecting the delegate option tells the agent to investigate what kind of deliverable this project actually produces and recommend an approach with tradeoffs.',
       options: [
         { value: 'adopt-directly', label: 'Adopt this method\'s ten forms directly', description: 'Use all ten forms essentially as defined, adapted only in wording to fit this project\'s own names for things.' },
-        { value: 'adapt-lightly', label: 'Adapt them lightly for this project', description: 'Keep all ten handoffs and their authority boundaries, but reshape specific fields to fit how this project actually works.' },
+        { value: 'adapt-lightly', label: 'Adapt them lightly for this project', description: 'Keep all ten forms, required fields, and authority boundaries, but reshape surface terms to fit the project.' },
         { value: 'from-scratch-non-software', label: 'Need a from-scratch equivalent for a non-software artifact', description: 'This project\'s deliverable is not a versioned codebase, so the forms need an explicitly declared equivalent of identity, evidence, and reclamation instead of assuming Git.' },
       ],
     },
@@ -157,7 +148,7 @@ export default {
       allowDelegate: true,
       affectsPrompt: 'Branches the Exact task and Constraints layers: keeping all ten distinct produces ten separate documents; streamlining tells the agent which specific merges are safe (pairing an assignment with its own verdict) versus dangerous (letting a Builder see the independent acceptance oracle that will judge its piece, or a Lead author its own verdict) and requires every authority boundary to survive the merge explicitly. Selecting the delegate option tells the agent to weigh this project\'s actual size and risk and propose a ceremony level with tradeoffs.',
       options: [
-        { value: 'keep-distinct', label: 'Keep all ten forms distinct', description: 'Ten separate handoffs, ten separate documents or templates.' },
+        { value: 'keep-distinct', label: 'Keep all ten forms distinct', description: 'Ten separate operational artifacts or templates.' },
         { value: 'streamline', label: 'Streamline into fewer combined documents for a small project while keeping every authority boundary intact', description: 'Merge forms where doing so does not blur who writes, who reads, or what each handoff must contain.' },
       ],
     },
@@ -165,9 +156,9 @@ export default {
   freeTextLabel: 'What should the agent understand about your forms or process setup that the structured questions above didn\'t capture?',
   completionGate: [
     { id: 'investigated', label: 'The agent read the project\'s actual current rulebook, role contracts, and any existing forms/templates directly, rather than relying on my summary of them.', kind: 'confirm', required: true },
-    { id: 'formsCreated', label: 'All ten handoffs are represented by an actual document or template in the project — either as ten separate artifacts or as the specific streamlined set I chose — with every authority boundary preserved.', kind: 'confirm', required: true },
+    { id: 'formsCreated', label: 'All ten canonical forms are represented by an actual artifact or template — either separately or in the streamlined document set I chose — with every required field and authority boundary preserved.', kind: 'confirm', required: true },
     { id: 'evidenceReported', label: 'The agent reported what it verified, what it assumed, and any authority boundary it could not confirm was preserved by a merge — not just a claim of success.', kind: 'confirm', required: true },
-    { id: 'reviewed', label: 'I\'ve reviewed the resulting form set myself before treating any of it as ratified.', kind: 'confirm', required: true },
+    { id: 'reviewed', label: 'I reviewed the complete operational form set myself and explicitly ratify it.', kind: 'confirm', required: true },
     { id: 'artifactPath', label: 'Path to the forms/templates (optional)', kind: 'text', required: false },
   ],
   buildLayers(answers, freeText, ctx) {
@@ -177,10 +168,6 @@ export default {
     const orientationAnswers = (ctx.allAnswers && ctx.allAnswers.orientation) || {};
     const riskLabel = { low: 'low stakes', medium: 'medium stakes', high: 'high stakes' }[orientationAnswers.riskTolerance] || '';
 
-    const rolesAnswers = (ctx.allAnswers && ctx.allAnswers.roles) || {};
-    const rolesSelected = Array.isArray(rolesAnswers.rolesNeeded) ? rolesAnswers.rolesNeeded.filter((v) => v !== DELEGATE_VALUE) : [];
-    const rolesKeptDistinctLabel = rolesSelected.length ? rolesSelected.map((v) => ROLE_LABELS[v]).filter(Boolean).join(', ') : '';
-
     const sourceLabel = formsSourceLabel(answers.formsSource);
     const ceremonyLabel = ceremonyLevelLabel(answers.ceremonyLevel);
 
@@ -189,14 +176,13 @@ export default {
       'These forms, once ratified, become part of this project\'s protected process material. No later executing agent, in any role, may quietly skip using them, hollow out a required field, or merge two of them in a way that erases an authority boundary just because it would be faster in the moment.',
     ].join('\n');
 
-    const stageObjective = 'Produce, for this project, a concrete document or template for each of the ten operational handoffs below — either as ten separate artifacts or as the specific streamlined set the human chose — so that every point where one role\'s claim must become another role\'s independently verified fact has a real, findable artifact behind it, without inventing an eleventh form or a new authority tier.';
+    const stageObjective = 'Produce the ten canonical operational forms below — including the Lead\'s private Workbench and the alternate Invalid Brief Return — either as ten separate artifacts or as a deliberately streamlined document set, while preserving every required field and authority boundary. Supplemental authority-neutral worksheets may be added when useful; no new authority tier may be added.';
 
     const humanIntent = [
       quoteHumanInput('How this project should adopt the ten forms', sourceLabel),
       location ? quoteHumanInput('Where the forms/templates should live', location) : '',
       quoteHumanInput('Ceremony level for this project\'s size', ceremonyLabel),
       riskLabel ? quoteHumanInput('Risk tolerance recorded earlier in this process', riskLabel) : '',
-      rolesKeptDistinctLabel ? quoteHumanInput('Roles already decided, in an earlier stage, to be kept as genuinely distinct conversations', rolesKeptDistinctLabel) : '',
       quoteHumanInput('Anything else the human wants understood about their forms or process setup', freeText),
     ].filter(Boolean).join('\n\n');
 
@@ -209,7 +195,7 @@ export default {
       ? [
           'This is a fresh conversation with no memory of any earlier discussion about this project, so verify everything from scratch rather than trusting anything asserted below as already true:',
           '- Read the project\'s ratified rulebook and role contracts (or equivalent governing documents) in full, directly from the repository — do not proceed from a summary or from what this prompt claims about them.',
-          '- Search the repository for any pre-existing form, template, checklist, or process document that already covers one or more of the ten handoffs below, and read each one completely before proposing anything, so you revise deliberately instead of silently duplicating or overwriting prior work.',
+          '- Search the repository for any pre-existing form, template, checklist, or process document that already covers one or more of the ten canonical forms below, and read each one completely before proposing anything.',
           '- Confirm what kind of deliverable this project actually produces — a versioned codebase you can inspect directly, or something else — rather than assuming from the human\'s answer alone; if the human said "adopt directly" or "adapt lightly" but the project turns out not to be a versioned codebase, say so and flag the mismatch rather than drafting a Git-shaped mechanism that does not apply.',
           '- Confirm there is no unratified or ambiguous draft of the rulebook, role contracts, or an existing form set being treated as if it were already governing.',
           'If the rulebook or role contracts cannot be found, are ambiguous, or contradict each other on who fills which role, stop and report that rather than guessing a resolution.',
@@ -225,13 +211,13 @@ export default {
     const precedence = PRECEDENCE_TEXT;
 
     const task = [
-      'This project is adopting a method where a bounded unit of work moves through exactly ten handoffs, each with its own written form so that a claim by one role can be independently checked by whichever role reads it next. Use exactly these ten forms — do not add, rename, or merge in a new one beyond what streamlining below explicitly allows:',
+      'This project is adopting ten canonical operational forms. They are not ten linear handoffs: the Active Workbench is private scratch state and the Invalid Brief Return is an alternate pre-execution exit. Preserve the purpose, writer/reader boundary, required fields, and conditional rules of every form:',
       FORM_DEFINITIONS,
       ROLE_NAMES_NOTE,
       FRESH_REVIEWER_NOTE,
       formsSourceInstruction(answers.formsSource),
-      ceremonyLevelInstruction(answers.ceremonyLevel, riskLabel, rolesKeptDistinctLabel),
-      `Place the drafted forms/templates at ${location ? `"${location}"` : 'a location you propose and confirm with the human — do not guess silently and scatter them'}, somewhere this project's own agents can actually find and reuse them on every future handoff, and include a short index note describing which form maps to which of the ten handoffs above.`,
+      ceremonyLevelInstruction(answers.ceremonyLevel, riskLabel),
+      `Place the drafted forms/templates at ${location ? `"${location}"` : 'a location you propose and confirm with the human — do not guess silently and scatter them'}, somewhere this project's agents can find and reuse them, and include a short index mapping all ten canonical forms to the document or section that implements each one.`,
       NO_NEW_AUTHORITY_LINE,
     ].filter(Boolean).join('\n\n');
 
@@ -242,7 +228,7 @@ export default {
     ].join('\n');
 
     const deliverables = [
-      'All ten handoffs represented as actual documents or templates inside the project — either as ten separate artifacts, or as the specific streamlined set the ceremony-level instruction above calls for — each naming its writer, its reader, and its required content in checkable language.',
+      'All ten canonical forms represented as actual documents or templates inside the project — either as ten separate artifacts, or as the specific streamlined document set above — each preserving its writer/reader or private-state boundary, required fields, conditional gates, and fill order.',
       `Placed at ${location ? `"${location}"` : 'a location proposed and confirmed with the human'}, with a short index describing which form maps to which handoff, so a future agent or human can find the right one without re-deriving this mapping.`,
       'An explicit note, wherever any form was merged or adapted from its base definition, stating which specific authority boundary was preserved and how a reader could still check it.',
     ].join('\n');
@@ -255,7 +241,7 @@ export default {
     ].join('\n');
 
     const prohibitedAssumptions = [
-      'Do not assume this project already has these ten handoffs represented anywhere, even informally, without checking directly — investigate before assuming either a gap or a duplicate.',
+      'Do not assume this project already represents these ten forms anywhere, even informally, without checking directly.',
       'Do not assume a merge is safe just because it saves paperwork; check it against the dangerous-merge list above before combining any two forms.',
       'Do not assume a software-shaped Git mechanism applies just because the project has a repository — a repository that only stores planning notes about a physical or offline artifact still needs a declared equivalent, not an assumed one.',
       NO_NEW_AUTHORITY_LINE,
@@ -266,7 +252,7 @@ export default {
     const approvalBoundary = 'Everything you draft in this stage is a proposal until the human Owner reviews and explicitly ratifies it. Do not treat any form as already in force, do not use a drafted form to justify skipping a real handoff on live work, and do not delete or overwrite an existing form template without the human\'s explicit confirmation in this conversation.';
 
     const terminalReturn = [
-      '"Done" for this stage means: every one of the ten handoffs above is represented by an actual document or template inside the project — whether as ten separate artifacts or the agreed streamlined set — each stating its writer, reader, and required content in checkable language; the forms exist at a named, findable location with an index; and any merge or adaptation states explicitly which authority boundary survived it and how.',
+      '"Done" for this stage means: every canonical form above is represented by an actual artifact or template — separately or in the agreed streamlined document set — with all required fields and boundary rules; the set has a named location and index; and every merge or adaptation states which authority boundary survived and how.',
       'Report exactly what you created or changed (paths), what you verified about the current rulebook, role contracts, and any pre-existing forms and how — not just a claim — any assumptions you made and why, any unresolved conflict with existing governance material, and any authority boundary you could not confirm was preserved. Stop there for the human\'s review rather than treating any form as ready for real use.',
     ].join('\n');
 
@@ -288,7 +274,7 @@ export default {
           'The forms under audit are part of this project\'s protected process material. Your output is a proposed fix, not an applied change, until the human ratifies it.',
         ].join('\n');
 
-        const stageObjective = 'Check every existing form in this project against the canonical required-content list for its handoff below, and report exactly which fields are missing, vague, or were silently dropped — not a general impression of quality, a field-by-field check.';
+        const stageObjective = 'Check every existing form in this project against the exhaustive canonical required-content list below, and report exactly which fields, conditional gates, or fill-order rules are missing, vague, or were silently dropped — not a general impression of quality, a field-by-field check.';
 
         const humanIntent = [
           quoteHumanInput('How this project adopted the ten forms', sourceLabel),
@@ -307,7 +293,7 @@ export default {
               'This is a fresh conversation with no memory of any earlier discussion, so verify everything from scratch:',
               '- Locate and read every existing form or template in the project in full, at whatever location they currently live.',
               '- Read the ratified rulebook and role contracts, so you know which roles actually exist here and can check each form\'s writer/reader claim against them.',
-              '- For each of the ten handoffs named below, confirm whether a corresponding document exists at all before checking its fields — a missing form is itself the largest possible finding, separate from a form with a missing field.',
+              '- For each of the ten canonical forms named below, confirm whether a corresponding document or mapped section exists before checking its fields.',
             ].join('\n')
           : [
               'Even in a continued conversation, re-verify rather than assume:',
@@ -319,7 +305,7 @@ export default {
         const precedence = PRECEDENCE_TEXT;
 
         const task = [
-          'For each of the ten handoffs below, locate the corresponding document in this project (or note plainly that none exists), then check whether every required field named in its definition is actually present, specific, and complete rather than vague or silently omitted:',
+          'For each of the ten canonical forms below, locate the corresponding document in this project (or note plainly that none exists), then check whether every required field and conditional rule named in its definition is actually present, specific, and complete rather than vague or silently omitted:',
           FORM_DEFINITIONS,
           ROLE_NAMES_NOTE,
           FRESH_REVIEWER_NOTE,
@@ -332,10 +318,10 @@ export default {
           'Do not report a stylistic or wording preference as a "missing field" — only report a field that the canonical definition above actually requires and that is genuinely absent or too vague to check.',
         ].join('\n');
 
-        const deliverables = 'A field-by-field gap report: for each of the ten handoffs, whether a form exists, and for each existing form, every required field that is missing or too vague to check, each tied to the specific authority boundary it protects, with a minimal proposed fix labeled PROPOSED, NOT YET RATIFIED. If a genuine check turns up no gaps, an honest statement to that effect instead of a manufactured one.';
+        const deliverables = 'A field-by-field gap report: for each of the ten canonical forms, whether it exists, and every required field, conditional gate, or fill-order rule that is missing or too vague to check, each tied to the authority boundary it protects, with a minimal proposed fix labeled PROPOSED, NOT YET RATIFIED. If a genuine check turns up no gaps, say so honestly.';
 
         const qualityGates = [
-          'The audit covers all ten handoffs, not only the one the human suspects, since a missing field in an unrelated form is easy to miss if only the named one is checked.',
+          'The audit covers all ten canonical forms, not only the one the human suspects.',
           'Every reported gap cites the exact required field from the canonical definition above and the specific authority boundary it protects — not a vague sense that a form "could be clearer."',
           'Every proposed fix is minimal and does not restructure a form beyond what is needed to close the specific gap found.',
         ].join('\n');
@@ -351,7 +337,7 @@ export default {
         const approvalBoundary = 'This audit and its proposed fixes are recommendations until the human Owner reviews and explicitly ratifies any change. Do not apply a fix as if it were already in force, and do not treat an incomplete form as usable in the meantime.';
 
         const terminalReturn = [
-          '"Done" for this recovery means: every one of the ten handoffs was checked for existence and for every required field named in its canonical definition; every gap found is reported with the missing field, the authority boundary it protects, and a minimal proposed fix; and any urgent finding was flagged on its own rather than buried in a longer list.',
+          '"Done" for this recovery means: every canonical form was checked for existence and for every required field, conditional gate, and fill-order rule named in its definition; every gap is tied to the authority boundary it protects and a minimal proposed fix; and any urgent finding was flagged on its own.',
           'Report the full gap list (or an honest "none found" if a genuine check turned up nothing), and stop there for the human\'s review rather than editing any form yourself without confirmation.',
         ].join('\n');
 
@@ -372,7 +358,7 @@ export default {
           'The form you are repairing is part of this project\'s protected process material. Do not let this repair spill into rewriting the rulebook, a role contract, or an unrelated form without explicitly flagging that as a separate, unresolved item.',
         ].join('\n');
 
-        const stageObjective = 'Find the specific merged document where streamlining blurred an authority boundary between two of the ten handoffs, and re-separate only the part that needs to be separate — leaving the rest of the project\'s streamlining decisions intact unless the same problem shows up elsewhere too.';
+        const stageObjective = 'Find the specific merged document where streamlining blurred an authority boundary between canonical forms, and re-separate only the affected material.';
 
         const humanIntent = [
           quoteHumanInput('Ceremony level chosen for this project', ceremonyLabel),
@@ -403,7 +389,7 @@ export default {
 
         const task = [
           'Locate the exact merged document the human means — from their free text, or by finding the document whose combined fields let one role\'s claim substitute for a different role\'s independent check. Quote the entangled section back in your report; do not silently rewrite without showing what was wrong.',
-          'Identify which two (or more) of the ten handoffs below got entangled in that document, and explain concretely, against the dangerous-merge guidance, why this specific combination is unsafe rather than merely unusual:',
+          'Identify which canonical forms got entangled in that document, and explain concretely why the combination is unsafe rather than merely unusual:',
           FORM_DEFINITIONS,
           ROLE_NAMES_NOTE,
           FRESH_REVIEWER_NOTE,
@@ -448,7 +434,7 @@ export default {
     purpose: 'Forms are what make a role boundary something an agent can actually be held to, rather than a sentence in a contract everyone means to follow. A role contract says a Builder never grades its own work; a form is the concrete artifact that makes that true in practice, by keeping the independent acceptance oracle out of the document the Builder reads — the Builder gets its piece\'s own criteria, and a separate fresh Critic derives the judging oracle from the ratified bar. This stage exists to turn the six role contracts from the previous stage into ten real handoff points, each with its own artifact, so "zero trust" is enforced by what documents exist and who can see them, not only by good intentions.',
     problemPrevented: 'Without concrete forms, role separation degrades into a shared conversation where everyone can see everything — a Builder happens to see the acceptance checklist because it was in the same chat, an Engineering Lead\'s private scratch notes get treated as evidence because nobody drew a line around them, a "verdict" turns out to have been written by the same context that built the thing it is judging. None of these look like a violation in the moment; each is just convenient. A named, separate document for each handoff is what makes a later reviewer able to ask "where is the Critic Verdict, and did the Critic that wrote it actually see the Builder\'s private reasoning" and get a checkable answer.',
     judgmentVsInvestigation: 'Which of the three adoption paths fits this project, where the forms should live, and how much ceremony this project\'s size actually justifies are all judgment calls only the human can make — no amount of repository investigation reveals whether a human wants ten separate documents or a leaner combined set, though the delegate option lets the human hand the sizing judgment to the agent\'s investigation when they are genuinely unsure. Everything about whether this project is actually a versioned codebase, whether forms or equivalents already exist, and what the current rulebook and role contracts actually say is investigation the agent must do directly — this stage never asks the human to describe their own repository\'s structure from memory.',
-    promptAnatomy: 'This stage\'s generated prompt inlines the full ten-form definition directly in the Exact task layer, for the same reason the roles stage inlines the six-role definition: the receiving agent may have no access to this method\'s source material, so the prompt has to be self-sufficient. The task layer\'s heaviest lift is the streamlining branch, because "merge for less paperwork" and "merge in a way that erases independent review" look identical on the page and only differ in which specific pair of handoffs got combined — the prompt spells out the safe and dangerous merges explicitly rather than trusting the receiving agent to derive them from general principles under time pressure.',
+    promptAnatomy: 'This stage\'s generated prompt inlines an exhaustive required-field and conditional-rule checklist for all ten forms because the receiving agent may have no access to this repository. It distinguishes canonical forms from linear handoffs, and distinguishes safe document colocation from a merge that erases independent review.',
     authorityBoundary: 'The agent producing these forms holds no authority over the roles that will use them — it is drafting artifacts for the human Owner to ratify, the same way the roles stage\'s agent drafts contracts rather than appointing itself to a role. Once ratified, the forms themselves become part of the project\'s protected process material: no later executing agent, in any role, may skip a required field, merge two handoffs unsafely, or treat its own private workbench as evidence just because a future checkpoint would move faster that way. A genuinely needed change to the form set is a stop condition that returns to the Owner, never a silent self-edit made mid-task.',
     inputsAndSources: 'Inputs are the three structured answers (adoption path, forms location, ceremony level), the free-text field, and — critically — the project\'s own ratified rulebook and role contracts, which the agent must read directly from the repository rather than accept as summarized in this prompt. Cross-stage recall pulls in the risk tolerance recorded during Orientation and the role set recorded during Roles & Agent Configuration, so the ceremony-level judgment is informed by decisions the human already made rather than asked cold. No file, path, or document from outside the human\'s own project is ever a valid source for this stage.',
     outputsAndEvidence: 'The expected output is one document or template per surviving handoff (ten if kept distinct, fewer if streamlined), placed at a findable location with an index mapping each one to its handoff, with evidence being the forms\' own text: a fresh reader should be able to check a specific past action against a specific form\'s writer/reader/required-content and get an unambiguous answer about whether it was in bounds.',
@@ -463,7 +449,7 @@ export default {
       'A form describes what a role usually does, but has no explicit list of what content is required before the handoff counts as complete.',
       'Two forms both seem to let the same role supply the "verdict" on the same piece of work.',
       'The location the forms live at was never confirmed with the human, or is scattered across several different, undocumented places.',
-      'A merged document exists, but nothing in it says which of the original ten handoffs got combined or why the combination is safe.',
+      'A merged document exists, but nothing in it says which canonical forms it implements or why the combination preserves their boundaries.',
     ],
     customization: 'For a genuinely tiny solo project, resist collapsing all ten forms into a single freeform notes file just because it feels like overkill — thin the language and formatting inside each form instead (a short paragraph instead of a formal template) while keeping the handoffs themselves distinct, especially the ones the dangerous-merge guidance calls out. For a project with several people or several concurrent workstreams, consider whether the Builder Assignment needs to become several differently-scoped assignment templates rather than one generic template everyone fills in loosely.',
     whenToStop: 'Pause before ratifying if you cannot point to which specific document a future Critic should read to derive the acceptance oracle for a piece of work, and which different document holds the verdict on whether it was met — if the oracle lives anywhere a Builder would read while still working, the set is not done yet, however complete it looks. Also pause if a merged document exists with no explanation of which original handoffs it combines; that omission makes the merge unauditable even if it happens to be safe.',

@@ -19,7 +19,7 @@ const GOVERNING_ARTIFACTS = [
   '6. The set of operational forms or templates this project adopted (the checkpoint brief, builder assignment, critic assignment and verdict, return packet, receipt, and disposition forms it will actually use once real work starts).',
 ].join('\n');
 
-const ANTI_SELF_RATIFICATION_LINE = 'Ratified is not the same thing as drafted, complete-looking, or something you personally feel good about. Do not infer ratification from a document\'s existence, from a "DRAFT" label having been removed, from your own or a prior agent\'s claim that a document is "ready," from the human\'s silence, or from the human having merely permitted you to inspect a file. The only acceptable evidence of ratification is an explicit record of the human Architect/Owner actually approving that specific document — a dated sign-off note, an explicit statement in the project\'s own history, or the human saying so directly in this conversation. If you cannot find that evidence for an artifact, treat it as drafted-but-not-ratified and say so plainly, however far along it otherwise looks.';
+const ANTI_SELF_RATIFICATION_LINE = 'Ratified is not the same thing as drafted, complete-looking, or something an agent feels good about. Do not infer ratification from existence, polish, a removed DRAFT label, silence, or a prior agent\'s claim. Accept only an explicit Owner record or direct Owner statement. This prompt\'s OWNER-REPORTED DECISION LEDGER is such a direct statement because the human intentionally handed you the prompt after recording each decision; it is not proof that the artifact matches the decision. Reconcile each entry with the exact file, cite it as Owner-reported, and materialize it in the project\'s designated durable decision record. If the ledger is missing, ambiguous, broader than the named artifact, or conflicts with the repository, stop and ask instead of inferring ratification.';
 
 const FIT_DEFINITIONS = [
   '- FIT: this project has a real, versioned artifact worth defending, an acceptance condition specific enough that a reasonable person could disagree about whether it was met, and a genuine cost to getting it wrong. The governance this project has assembled is proportionate to what it protects.',
@@ -43,7 +43,7 @@ function investigationText(fresh, confidenceLevel) {
 
   if (fresh) {
     return [
-      'This is a fresh conversation with no memory of any earlier stage of this process. Verify everything below from scratch — do not trust any claim in this prompt about what a document says or whether it was ratified.' + huntNote + unsureNote,
+      'This is a fresh conversation with no memory of any earlier stage. Verify every artifact from scratch. The OWNER-REPORTED DECISION LEDGER is a direct statement of what the human says they decided, but not proof of what any file contains; reconcile it with the exact artifacts rather than trusting either side blindly.' + huntNote + unsureNote,
       'Locate and read, in full, directly from the project\'s own files, each of the six governing artifacts listed below in the Exact task layer. Do not proceed from a summary, a table of contents, or a partial read of any of them.',
       'For each artifact, determine whether it was actually ratified by the human Owner, using the anti-self-ratification standard given below — not whether it looks finished.',
       'Cross-read every pair of artifacts for contradiction: does the Rulebook\'s precedence order match the source-of-truth document\'s declared order? Does the roadmap\'s proposed first checkpoint respect the Capstone\'s stated non-goals and acceptance bar? Do the role contracts introduce a role beyond the six the method defines? Does the adopted forms set actually cover what the roadmap\'s first checkpoint will need (a checkpoint brief, a builder assignment, a critic verdict, a return packet, at minimum)?',
@@ -54,7 +54,7 @@ function investigationText(fresh, confidenceLevel) {
   return [
     'Even though this continues the conversation that helped produce some of these artifacts, that familiarity is not evidence of ratification or of internal consistency — this stage exists specifically to check both, and a favorable impression formed while drafting does not survive as evidence here.' + huntNote + unsureNote,
     'Re-open and re-read the actual current, saved content of each of the six governing artifacts listed below in the Exact task layer, directly from the project\'s files — not from your memory of drafting them.',
-    'Confirm ratification the same way a fresh reviewer would: look for explicit evidence of the human\'s approval, per the anti-self-ratification standard below, not for your own recollection of the human seeming satisfied.',
+    'Confirm ratification the same way a fresh reviewer would: reconcile the prompt\'s Owner-reported ledger and any durable Owner approval record with the exact artifact, never your recollection of the human seeming satisfied.',
     'Still cross-read every pair of artifacts for contradiction, and still verify the project\'s actual current repository and versioning state directly rather than assuming nothing has changed since you last looked.',
   ].join('\n');
 }
@@ -157,6 +157,7 @@ export default {
       GOVERNING_ARTIFACTS,
       '',
       `2. For each artifact, determine and report whether it is actually ratified. ${ANTI_SELF_RATIFICATION_LINE}`,
+      'After reconciling the Owner-reported decision ledger with the exact artifacts, append only those explicit decisions — stage, artifact identity/path, decision meaning, Owner-reported source, and recorded time — to the existing durable decision/ratification log named by the source-of-truth map. This is an administrative record of what the Owner already decided, not authority to edit the artifact or invent a missing approval. If no designated durable log exists, report that as blocking instead of creating a new source of truth by guesswork.',
       '',
       '3. Cross-check the six artifacts against each other for contradiction. At minimum: confirm the precedence order stated in the rulebook matches the one named in the source-of-truth map; confirm the roadmap\'s checkpoints do not contradict the Capstone\'s stated scope, non-goals, or acceptance bar; confirm the role contracts name only the six roles this method defines (Architect/Owner, Orchestrator, Engineering Lead, Builder, Component Critic, Integration Critic) and introduce no coordinating role beyond them; confirm the adopted forms actually cover what the roadmap\'s first checkpoint will need to run (at minimum something serving as a checkpoint brief, a builder assignment, a critic verdict, and a return packet). List every contradiction you find, quoting the conflicting language from each side — do not silently resolve a contradiction yourself; report it.',
       '',
@@ -173,7 +174,7 @@ export default {
     ].join('\n');
 
     const constraints = [
-      'Do not draft, edit, or "clean up" any of the six governing artifacts in this stage, even if you notice a small error while reading one — report what you found; fixing it is a separate, explicit step the human decides whether to authorize.',
+      'Do not draft, edit, or "clean up" any of the six governing artifacts in this stage. The sole permitted administrative write is appending reconciled, explicit Owner decisions to the already-designated durable decision/ratification log; it may not alter artifact content or expand an approval.',
       'Do not treat a FIT_WITH_REDUCED_PROFILE finding as license to quietly invent the non-Git equivalent yourself — name specifically what the Git-shaped mechanism assumed that this project cannot provide, and describe what a documented equivalent would need to cover, but leave adopting it as a decision for the human and a later stage.',
       'Do not soften a NOT_FIT result into something that sounds more encouraging. If the honest finding is that this project\'s risk does not justify this operating system, say that plainly — that is a correct and useful outcome of this stage, not a failure to be managed.',
       'Do not propose more than one first eligible checkpoint, and do not begin any actual checkpoint work, regardless of how confident the fit result is.',
@@ -181,6 +182,7 @@ export default {
 
     const deliverables = [
       'A written fit-check-and-self-audit report, saved inside the project, covering: the ratification status of each of the six governing artifacts with the evidence behind each determination; every contradiction found between artifacts (or an honest statement that a genuine search found none); and one explicit fit result stated as exactly FIT, FIT_WITH_REDUCED_PROFILE, or NOT_FIT.',
+      'The existing durable decision/ratification log updated with the reconciled Owner-reported decisions, or an explicit blocking finding that no designated log exists or a ledger entry conflicts with the named artifact.',
       'If the result is FIT or FIT_WITH_REDUCED_PROFILE, the report also names exactly one proposed first eligible checkpoint and the reasoning behind proposing it.',
       'If the result is FIT_WITH_REDUCED_PROFILE, the report names precisely what non-Git equivalent this project still needs to document before that first checkpoint can run.',
     ].join('\n');

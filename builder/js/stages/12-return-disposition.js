@@ -102,8 +102,11 @@ export default {
   completionGate: [
     { id: 'terminalStated', label: 'The report states one explicit terminal result — PASS, BLOCKED, PLATEAU, or BUDGET_EXHAUSTED — not a vague "mostly done."', kind: 'confirm', required: true },
     { id: 'receiptChecked', label: 'The report was checked against real evidence by an agent that did not run the checkpoint — I ran the receipt prompt in a separate conversation, rather than letting the executing agent vouch for its own report.', kind: 'confirm', required: true },
-    { id: 'receiptBounded', label: 'That checking agent gave a plain supported-or-rejected finding, naming any failed check — it did not quietly re-review the work itself.', kind: 'confirm', required: true },
+    { id: 'receiptSupported', label: 'The bounded receipt result is SUPPORTED, not REJECTED. If it was REJECTED, I stopped here and handled it case by case with the Orchestrator instead of accepting this stage.', kind: 'confirm', required: true },
+    { id: 'receiptBounded', label: 'The checking agent stayed inside the receipt envelope and did not quietly become a second technical reviewer.', kind: 'confirm', required: true },
     { id: 'evidenceReported', label: 'I can see what still exists (branches, evidence, open items) well enough to decide LAND or DISCARD, or to understand why the checkpoint did not reach PASS.', kind: 'confirm', required: true },
+    { id: 'ownerDisposition', label: 'After the supported receipt, I made one explicit Owner decision: LAND (only for a supported PASS) or DISCARD. I did not treat PASS, SUPPORTED, or silence as that decision.', kind: 'confirm', required: true },
+    { id: 'lifecycleClosed', label: 'The lifecycle record is CLOSED: evidence was preserved where it existed, live citations were repointed, only checkpoint-owned resources were reclaimed, and unknown resources were left for human judgment.', kind: 'confirm', required: true },
     { id: 'ownPublish', label: 'I understand that LAND, or any publish, deploy, or merge-to-main action, is mine to perform by hand — the agent did not do it for me.', kind: 'confirm', required: true },
     { id: 'artifactPath', label: 'Path to the return report (optional)', kind: 'text', required: false },
   ],
@@ -149,8 +152,8 @@ export default {
       ? [
           'This is a fresh conversation with no memory of any earlier work on this checkpoint, so verify everything from scratch:',
           '- Locate the checkpoint brief that authorized this work and the acceptance bar it named.',
-          '- Locate every Critic verdict produced for this checkpoint (component and integration) and confirm each one is durably recorded, names an exact reviewed artifact version, and is still current against the final result — not stale because something it depended on changed afterward.',
-          '- Determine the actual terminal result directly from what exists: did a fresh, independent final review actually pass the complete bar? Is there a real blocker, a genuine plateau, or a real time limit reached? Do not accept a self-reported "PASS" without matching evidence.',
+          '- Locate every Critic verdict the packet cites and confirm each record resolves, names an exact reviewed artifact version, and carries a recorded currency determination. Do not open source/content or rerun its technical checks.',
+          '- Determine whether the packet\'s stated terminal result is supported by the cited durable records. Do not independently rederive technical PASS, the blocker, the plateau, or the metric; this is an envelope check, not another Critic pass.',
           '- Inventory what actually exists right now: branches, worktrees, evidence records, and anything left over from this checkpoint — including anything unexplained. Report it rather than silently cleaning it up.',
           '- Confirm no work on a later, unauthorized checkpoint happened under this one.',
         ].join('\n')
@@ -236,7 +239,7 @@ export default {
     const terminalReturn = fresh
       ? [
         '"Done" for this stage means an independently checked report is in front of the human, with one clear terminal result and one clear receipt finding — not that a decision has been made.',
-        'Report the terminal result, the checklist mapping, your finding (supported or rejected) with every failed check named, the live-resource inventory, and — explicitly — that no LAND, publish, deploy, or resource reclamation has happened yet and awaits the human\'s decision.',
+        'Report the terminal result, the checklist mapping, your finding (supported or rejected) with every failed check named, the live-resource inventory, and — explicitly — that no LAND, publish, deploy, or resource reclamation has happened yet and awaits the human\'s decision. If the finding is REJECTED, return only the gate defects and stop for case-by-case human direction; do not prescribe or begin a repair route.',
       ].join('\n\n')
       : [
         '"Done" for this prompt means one complete, honest report exists and you have stopped — not that the checkpoint is closed, and not that the result has been accepted by anyone.',
@@ -249,40 +252,44 @@ export default {
   recoveryPrompts: [
     {
       id: 'resolve-rejected-receipt',
-      label: 'Resolve a REJECTED receipt check',
-      description: 'Use instead of the primary prompt when the report\'s own honesty/completeness check already came back rejected — some claim in it did not hold up against real evidence — and it needs to be fixed before the human ever sees it as ready.',
+      label: 'Prepare a REJECTED receipt for human decision',
+      description: 'Use when a receipt is REJECTED and you need a precise decision packet for the human. This does not repair the report, rerun the receipt, or choose a route; every rejected case returns to the human and Orchestrator on its own facts.',
       buildLayers(answers, freeText, ctx) {
         const fresh = ctx.mode === 'fresh';
 
-        const roleAndAuthority = 'You are repairing one return report that already failed its own honesty/completeness check. Your job is to find exactly what was wrong and fix the report — or state plainly what still cannot be confirmed — not to re-litigate the technical work itself.';
-        const stageObjective = 'Identify every specific defect that caused this report to be rejected, correct what can honestly be corrected against real evidence, and produce a report that either passes the same check cleanly or states exactly what remains unresolved.';
+        const roleAndAuthority = 'You are the Orchestrator presenting one REJECTED receipt to the human Owner. You may explain the failed gates and the choices they create. You may not repair the Return Packet, modify engineering artifacts, rerun the receipt, choose a route, reclaim resources, or continue the checkpoint without a new explicit human decision.';
+        const stageObjective = 'Turn the REJECTED receipt into a concise, evidence-linked decision packet so the human can discuss this specific case with you and decide what, if anything, to authorize next.';
         const humanIntent = [
           quoteHumanInput('How the human wants to review this', answers.reviewDepth === 'summary' ? 'Focus on the checklist mapping and the largest remaining gaps first' : 'Read the full report closely'),
           quoteHumanInput('Anything else the human wants understood', freeText),
         ].filter(Boolean).join('\n\n');
         const operatingMode = fresh
-          ? 'You are a fresh agent with no memory of any earlier conversation about this project, and you are expected to be running with direct read access to it from its root. Everything you need is in the repository, not in this prompt: the human\'s project documents were deliberately not pasted in here, so read them yourself rather than asking for them. If you cannot read the project\'s files, stop and say so rather than working from a description alone.'
-          : 'Continue in the same conversation, but re-verify every defect directly rather than trusting your earlier assessment of why the report was rejected.';
+          ? 'You are a fresh Orchestrator context with direct read access to the project. Read only the rejected receipt entry, the Return Packet, and the durable evidence records the receipt cites. Do not expand into source/content review.'
+          : 'Continue in the Orchestrator conversation that recorded the rejection. Re-read the saved receipt and cited records; do not rely on memory, and do not expand your authority because the human is now present.';
         const investigation = fresh
           ? [
               'Fresh conversation — verify from scratch:',
               '- Read the rejected report and, separately, the specific list of defects that caused rejection.',
-              '- For each defect, go check the actual evidence it concerns (a verdict record, a commit, a live branch) directly, rather than accepting either the report\'s or the rejection\'s account of it.',
+              '- For each failed gate, confirm the cited record and exact mismatch within the receipt\'s bounded evidence scope. Do not inspect source/content or rerun a technical test.',
             ].join('\n')
           : [
               'Re-verify rather than assume, even in a continued conversation:',
               '- Re-read the current, saved text of the report and the exact defects cited.',
-              '- Re-check each defect against real evidence directly.',
+              '- Re-check each failed gate against only the packet and cited durable evidence.',
             ].join('\n');
-        const precedence = 'The checkpoint\'s acceptance bar and its cited plan anchor remain controlling. A defect in the report\'s honesty does not change what the bar requires — it only means the report did not yet describe reality accurately.';
-        const task = 'For each cited defect, state what was wrong, what you verified directly, and either the corrected value or an explicit statement that it cannot be honestly resolved. Re-run the full receipt-style check afterward — a report is not fixed until it passes cleanly or states its remaining gaps plainly.';
-        const constraints = 'Do not paper over an unresolved defect with confident-sounding language. Do not perform LAND, DISCARD, or any resource reclamation as part of this repair.';
-        const deliverables = 'A defect-by-defect account of what was wrong and what changed, plus a corrected report (or an honest statement of what remains unresolved) covering the five meanings of "done":\n\n' + DONE_MEANINGS;
-        const qualityGates = 'The corrected report must pass the same checks the original failed: honest terminal result, complete and traceable checklist mapping, verdicts confirmed current, live-resource inventory matching reality.';
-        const prohibitedAssumptions = 'Do not assume the original rejection was itself fully correct — verify the underlying evidence yourself rather than taking the rejection\'s account at face value, while still taking every cited defect seriously.';
-        const stopConditions = 'Stop and report unresolved if a defect concerns something that genuinely cannot be confirmed one way or the other from available evidence — do not force a resolution that outruns what you can actually verify.';
-        const approvalBoundary = 'This repair produces a corrected report for the human\'s review — it does not itself constitute LAND, DISCARD, or any decision.';
-        const terminalReturn = 'Report every original defect, what you verified to address each one, and whether the report now passes cleanly or still carries an explicit, named gap.';
+        const precedence = 'The ratified checkpoint brief and the bounded receipt rules remain controlling. Rejection changes no bar and grants no repair authority; it only says the packet cannot yet support disposition.';
+        const task = [
+          'List every failed receipt gate separately. For each: quote the exact packet claim, name the cited evidence or missing evidence, state the precise mismatch, and classify it as documentary, evidentiary, identity/provenance, authorization, live-resource, or unresolved.',
+          'State the real decision now in front of the human. Offer only options genuinely supported by this case — for example request a corrected packet, authorize a bounded investigation, discard the attempt, change direction, or leave the checkpoint stopped — with the authority and risk tradeoff of each. Do not select or execute an option.',
+          'End with one answerable question to the human. The human may discuss, reject, refine, or authorize a next action case by case; no generic route follows from REJECTED.',
+        ].join('\n\n');
+        const constraints = 'Do not edit the packet or any artifact. Do not rerun the receipt. Do not convert REJECTED into SUPPORTED with caveats. Do not perform LAND, DISCARD, cleanup, retry, or continuation. Do not present a recommended option as though it were already authorized.';
+        const deliverables = 'A read-only REJECTED decision packet: failed-gate table, evidence links, classification, bounded options with tradeoffs, current resource hold state, and one explicit question for the human.';
+        const qualityGates = 'Every failed gate remains visible; every option names the new authority it would require; no option is preselected; and resources remain untouched while the human decides.';
+        const prohibitedAssumptions = 'Do not assume the packet should be repaired, the checkpoint should be retried, or the attempt should be discarded. Do not assume the rejection itself authorizes a new task.';
+        const stopConditions = 'Stop after delivering the decision packet. Wait for the human\'s case-specific direction; if their answer is ambiguous about scope or authority, ask again rather than acting.';
+        const approvalBoundary = 'Only the human may choose what follows this REJECTED receipt. Their next message must explicitly authorize any new bounded action; discussion alone is not authorization.';
+        const terminalReturn = 'Return the failed-gate decision packet and end with the exact human decision requested. State plainly: REJECTED remains in force, no repair route has been selected, and no state was mutated.';
 
         return { roleAndAuthority, stageObjective, humanIntent, operatingMode, investigation, precedence, task, constraints, deliverables, qualityGates, prohibitedAssumptions, stopConditions, approvalBoundary, terminalReturn };
       },
@@ -303,7 +310,7 @@ export default {
         const investigation = fresh
           ? 'Fresh conversation — read the actual non-PASS report directly, and independently confirm the blocker or plateau condition still holds right now rather than accepting the report\'s account unchecked.'
           : 'Re-confirm directly that the blocker or plateau condition still holds right now — do not assume it is unchanged from earlier in this conversation.';
-        const precedence = 'The checkpoint\'s ratified acceptance bar remains unchanged by a BLOCKED or PLATEAU result — neither status lowers the bar, and neither implies the checkpoint should be abandoned rather than unblocked and continued under a corrected brief.';
+        const precedence = 'The checkpoint\'s ratified acceptance bar remains unchanged by a BLOCKED or PLATEAU result — neither status lowers the bar or chooses what happens next. Retry, a corrected brief, changed direction, DISCARD, or leaving the checkpoint stopped are case-specific human decisions.';
         const task = 'Restate the blocker or plateau condition in the smallest, most concrete terms possible: exactly what is missing, contradictory, or no longer improving, and exactly what would need to change — a decision, a credential, a corrected brief, a different approach — for the checkpoint to have a real path to PASS again.';
         const constraints = 'Do not propose weakening the acceptance bar as a way to resolve the blocker. Do not silently continue technical work while producing this clarification.';
         const deliverables = 'A precise statement of the blocking or plateau condition, the smallest exact next decision or resource needed, and what — if anything — remains preserved and usable from work already done.';

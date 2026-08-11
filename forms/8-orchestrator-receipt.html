@@ -533,6 +533,30 @@ hr {
   color: inherit;
 }
 
+.builder-cta {
+  position: fixed;
+  z-index: 10;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: inline-flex;
+  gap: .45rem;
+  align-items: center;
+  padding: .62rem .85rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 68%, var(--rule));
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 .55rem 1.6rem rgb(20 14 10 / 20%);
+  color: var(--surface-raised);
+  font: 750 .75rem/1 var(--sans);
+  letter-spacing: .015em;
+  text-decoration: none;
+}
+
+.builder-cta:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
 @media (max-width: 42rem) {
   .site-header__inner,
   .site-footer__inner {
@@ -597,6 +621,12 @@ hr {
   .hierarchy-diagram figcaption {
     padding-inline: .75rem;
   }
+
+  .builder-cta {
+    right: max(.65rem, env(safe-area-inset-right));
+    bottom: max(.65rem, env(safe-area-inset-bottom));
+    padding: .58rem .75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -635,7 +665,8 @@ hr {
 
   .site-header,
   .skip-link,
-  .diagram-navigation {
+  .diagram-navigation,
+  .builder-cta {
     display: none;
   }
 
@@ -681,6 +712,7 @@ hr {
         <a href="../index.html">Article</a>
         <a href="../RULEBOOK.html">Rulebook</a>
         <a href="index.html" aria-current="page">Forms</a>
+        <a href="../builder/index.html">Builder</a>
         <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
       </nav>
     </div>
@@ -782,31 +814,34 @@ hr {
 <span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="in">git cat-file -e &lt;every_cited_sha&gt;</span></span>
 <span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="in">-&gt;</span></span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="fu">### Declared equivalent profile</span></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Universal query <span class="pp">|</span> Exact finite query named in form 1 <span class="pp">|</span> Status/output <span class="pp">|</span></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Resolve candidate/evidence/source identity <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Verify candidate/evidence linkage <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Verify valid candidate lineage <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Detect changes to reviewed dependencies <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inspect preservation state <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inspect live checkpoint resources <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="fu">## E. Receipt decision</span></span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>result: SUPPORTED | REJECTED</span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>every failed gate and exact correction required:</span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>packet&#39;s terminal reason accepted as honest: yes / no / not applicable</span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>technical PASS eligible for Owner disposition consideration: yes / no</span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact Owner decision or action now requested:</span>
-<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>program-state entry written at:</span>
-<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="fu">## Authority declaration</span></span>
-<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>I did not inspect or evaluate source/content as a second reviewer, rerun a test, reproduce a metric,</span>
-<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>review a generated technical output, inspect a Builder workspace, read the Engineering Lead&#39;s</span>
-<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>workbench, choose LAND or DISCARD, or authorize another checkpoint.</span></code></pre></div>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="in">git status --porcelain</span></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="in">-&gt;</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">### Declared equivalent profile</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Universal query <span class="pp">|</span> Exact finite query named in form 1 <span class="pp">|</span> Status/output <span class="pp">|</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Resolve candidate/evidence/source identity <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Verify candidate/evidence linkage <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Verify valid candidate lineage <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Detect changes to reviewed dependencies <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inspect preservation state <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inspect live checkpoint resources <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="fu">## E. Receipt decision</span></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>result: SUPPORTED | REJECTED</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>every failed gate and exact correction required:</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>packet&#39;s terminal reason accepted as honest: yes / no / not applicable</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>technical PASS eligible for Owner disposition consideration: yes / no</span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exact Owner decision or action now requested:</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>program-state entry written at:</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="fu">## Authority declaration</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>I did not inspect or evaluate source/content as a second reviewer, rerun a test, reproduce a metric,</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>review a generated technical output, inspect a Builder workspace, read the Engineering Lead&#39;s</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>workbench, choose LAND or DISCARD, or authorize another checkpoint.</span></code></pre></div>
 <h2 id="result-routing">Result routing</h2>
 <ul>
 <li>A <strong>supported PASS</strong> is eligible for separate human judgment and disposition. It is not yet LAND, lifecycle closure, or permission to continue.</li>
@@ -818,6 +853,7 @@ hr {
 </ul>
     </article>
   </main>
+  <a class="builder-cta" href="../builder/index.html" aria-label="Open Gauntlet Builder">Build yours <span aria-hidden="true">→</span></a>
   <footer class="site-footer">
     <div class="site-footer__inner">
       <p>Written by Yarden Viktor Dejorno. Licensed under <a href="../LICENSE">CC BY 4.0</a>.</p>

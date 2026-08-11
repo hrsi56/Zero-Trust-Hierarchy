@@ -291,9 +291,98 @@ if ((breakout.match(/---END OWNER INPUT---/g) || []).length !== 1) {
   }
 }
 
+// Human ratification decisions must cross the browser/agent boundary. Without this ledger, Stage
+// 9 correctly rejects every artifact as unratified because the prior Accept clicks lived only in
+// localStorage and were invisible to the receiving agent.
+{
+  const s9 = stages.find((s) => s.id === 'bootstrap');
+  const answers = {};
+  for (const q of s9.questions) answers[q.id] = sampleAnswerFor(q);
+  const gates = {};
+  for (const stageId of ['capstone', 'capstone-ratification', 'roadmap', 'source-of-truth', 'rulebook', 'roles', 'forms']) {
+    gates[stageId] = { disposition: 'accepted', completedAt: '2026-01-01T00:00:00.000Z', artifactPath: `docs/${stageId}.md` };
+  }
+  const ctx = buildPromptCtx('fresh', { answers: { bootstrap: answers }, gates });
+  const compiled = compilePrompt(
+    s9.buildLayers(answers, '', ctx),
+    { stageTitle: s9.title, stageNumber: s9.number, stageId: s9.id },
+    ctx,
+  );
+  if (!/OWNER-REPORTED DECISION LEDGER/.test(compiled)
+      || !/Capstone DRAFT for independent challenge\. It is not yet ratified/.test(compiled)
+      || !/explicitly ratified the challenged Capstone/.test(compiled)
+      || !/materialize or update the project's durable ratification\/decision record/.test(compiled)) {
+    fail('Owner decisions are not carried into Stage 9 with precise draft/ratification semantics');
+  } else {
+    pass('Owner decisions cross into Stage 9 with precise ratification semantics');
+  }
+}
+
+// Core authority seams are not a risk-calibrated menu. Risk may reduce ceremony; it may not let
+// a project delete a function, let a Builder grade itself, or let an Orchestrator become Critic.
+{
+  const checks = [
+    ['rulebook', /six roles\/functions arranged across four authority tiers/, /ratified Rulebook is locked/],
+    ['roles', /All five execution functions require contracts/, /Integration Critic is a different fresh context/],
+  ];
+  for (const [stageId, first, second] of checks) {
+    const stage = stages.find((s) => s.id === stageId);
+    const answers = {};
+    for (const q of stage.questions) answers[q.id] = sampleAnswerFor(q);
+    const ctx = buildPromptCtx('fresh', { answers: { [stageId]: answers }, gates: {} });
+    const compiled = compilePrompt(stage.buildLayers(answers, '', ctx), { stageTitle: stage.title, stageNumber: stage.number, stageId }, ctx);
+    if (!first.test(compiled) || !second.test(compiled)) fail(`${stageId}: compiled prompt can lose a core authority seam`);
+  }
+  pass('Rulebook and role prompts preserve the four-tier/six-function authority seams');
+}
+
+// The Forms prompt must be self-contained enough to reproduce the real protocol, not a ten-line
+// summary that quietly omits provenance, staleness, conditional receipt gates, or lifecycle order.
+{
+  const stage = stages.find((s) => s.id === 'forms');
+  const answers = {};
+  for (const q of stage.questions) answers[q.id] = sampleAnswerFor(q);
+  const ctx = buildPromptCtx('fresh', { answers: { forms: answers }, gates: {} });
+  const compiled = compilePrompt(stage.buildLayers(answers, '', ctx), { stageTitle: stage.title, stageNumber: stage.number, stageId: stage.id }, ctx);
+  const required = [
+    /all eleven fields/i,
+    /expected results and tolerances/i,
+    /independent oracle derivation/i,
+    /full eleven-field brief echo/i,
+    /PASS-only gates P1–P6/i,
+    /conditional non-PASS gates N1–N6/i,
+    /git status --porcelain/,
+    /preservation before reclamation/i,
+    /Active Workbench is private scratch state/i,
+  ];
+  const missing = required.filter((pattern) => !pattern.test(compiled));
+  if (missing.length) fail(`Forms prompt omits ${missing.length} canonical field/gate invariant(s)`);
+  else pass('Forms prompt carries the canonical fields, conditional gates, and lifecycle order');
+}
+
+// REJECTED has no automatic repair route. It returns the failed gates to the human and waits for
+// a case-specific decision; only a later, explicit authorization can create a new bounded task.
+{
+  const stage = stages.find((s) => s.id === 'return-disposition');
+  const answers = {};
+  for (const q of stage.questions) answers[q.id] = sampleAnswerFor(q);
+  const recovery = stage.recoveryPrompts.find((p) => p.id === 'resolve-rejected-receipt');
+  const ctx = buildPromptCtx('fresh', { answers: { [stage.id]: answers }, gates: {} });
+  const compiled = compilePrompt(recovery.buildLayers(answers, '', ctx), { stageTitle: recovery.label, stageNumber: stage.number, stageId: stage.id }, ctx);
+  const gateIds = new Set(stage.completionGate.map((g) => g.id));
+  if (!/no generic route follows from REJECTED/.test(compiled)
+      || !/Stop after delivering the decision packet/.test(compiled)
+      || !/no repair route has been selected/.test(compiled)
+      || !['receiptSupported', 'ownerDisposition', 'lifecycleClosed'].every((id) => gateIds.has(id))) {
+    fail('REJECTED can still auto-route, or Stage 12 can complete before supported receipt/disposition/closure');
+  } else {
+    pass('REJECTED stops for case-specific human direction and cannot complete Stage 12');
+  }
+}
+
 // Import validation must drop wrong-typed inner values rather than accept them.
 {
-  const hostile = JSON.stringify({
+const hostile = JSON.stringify({
     schemaVersion: 1,
     answers: { orientation: { good: 'yes', bad: { nested: true } } },
     gates: { orientation: 12345, roadmap: { disposition: 'accepted', prereqSnapshot: 7 } },
@@ -310,6 +399,18 @@ if ((breakout.match(/---END OWNER INPUT---/g) || []).length !== 1) {
     && Object.keys(j.promptEdits).length === 0;
   if (!ok) fail(`Import validation accepted wrong-typed inner values: ${JSON.stringify(j)}`);
   else pass('Import validation coerces or drops wrong-typed inner values');
+}
+
+// Legacy V1 bare-string prompt edits are preserved, but without a known base prompt they must be
+// marked stale rather than silently treated as current.
+{
+  const legacy = parseImportedExport(JSON.stringify({ schemaVersion: 1, promptEdits: { 'capstone::same': 'my old edit' } }));
+  const edit = legacy.journey?.promptEdits?.['capstone::same'];
+  if (!legacy.ok || edit?.text !== 'my old edit' || edit?.basePrompt !== null) {
+    fail('Legacy prompt edit was lost or incorrectly treated as current');
+  } else {
+    pass('Legacy prompt edits survive import as visibly stale edits');
+  }
 }
 
 // --- completion-state model ---
@@ -334,10 +435,10 @@ if ((breakout.match(/---END OWNER INPUT---/g) || []).length !== 1) {
 
   // Changing stage 1 must invalidate stage 2 *and* stage 3, not only the immediate successor.
   store.setAnswer(s1.id, s1.questions[0].id, 'changed-by-the-test');
-  if (computeStageStatus(s2) !== 'needs_review' || computeStageStatus(s3) !== 'needs_review') {
-    fail(`Editing stage 1 did not cascade: stage2=${computeStageStatus(s2)} stage3=${computeStageStatus(s3)}`);
+  if (computeStageStatus(s1) !== 'needs_review' || computeStageStatus(s2) !== 'needs_review' || computeStageStatus(s3) !== 'needs_review') {
+    fail(`Editing stage 1 did not invalidate itself and cascade: stage1=${computeStageStatus(s1)} stage2=${computeStageStatus(s2)} stage3=${computeStageStatus(s3)}`);
   } else {
-    pass('Editing an early answer cascades "needs review" down the whole chain');
+    pass('Editing an accepted stage invalidates itself and cascades "needs review" downstream');
   }
 
   // A non-accepting disposition must not complete a stage or unlock the next one.

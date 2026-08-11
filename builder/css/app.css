@@ -113,9 +113,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus
   .app-shell { grid-template-columns: 1fr; }
   .journey-nav {
     position: static;
-    max-height: none;
+    max-height: min(38vh, 20rem);
+    overflow-y: auto;
     padding: var(--space-3) 0;
     border-bottom: 1px solid var(--rule);
+    overscroll-behavior: contain;
+    scrollbar-color: var(--rule-strong) transparent;
   }
 }
 
