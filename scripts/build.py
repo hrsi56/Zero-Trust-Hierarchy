@@ -34,8 +34,8 @@ TITLE = "Zero-Trust Hierarchy"
 STANDFIRST = "No success claim promotes itself. A distributed verification system for agent work."
 DESCRIPTION = STANDFIRST
 AUTHOR = "Yarden Viktor Dejorno"
-PUBLIC_URL = "https://hrsi56.github.io/gauntlet-hierarchy/"
-REPOSITORY_URL = "https://github.com/hrsi56/gauntlet-hierarchy"
+PUBLIC_URL = "https://hrsi56.github.io/Zero-Trust-Hierarchy/"
+REPOSITORY_URL = "https://github.com/hrsi56/Zero-Trust-Hierarchy"
 
 PANDOC_VERSION = "3.6.4"
 
@@ -369,18 +369,10 @@ def diagram_figure(svg: str, native_width: float) -> str:
     width = math.ceil(native_width * 1000) / 1000
     return "\n".join(
         [
-            '<figure class="hierarchy-diagram" aria-labelledby="hierarchy-diagram-caption">',
-            '  <nav class="diagram-navigation" aria-label="Diagram positions">',
-            '    <a href="#ztx-owner">Governance</a>',
-            '    <a href="#ztx-human">Human control point</a>',
-            '    <a href="#ztx-gauntlet">Gauntlet loop</a>',
-            "  </nav>",
+            '<figure class="hierarchy-diagram">',
             f'  <div class="diagram-frame" tabindex="0" role="region" aria-label="Scrollable hierarchy diagram" style="--diagram-native-width: {width:g}px">',
             inline_svg(svg),
             "  </div>",
-            '  <figcaption id="hierarchy-diagram-caption">',
-            "    Authority and evidence flow in Zero-Trust Hierarchy. The same human appears at both control points. Use the position links or scroll the focused diagram to inspect every node.",
-            "  </figcaption>",
             "</figure>",
         ]
     )
@@ -529,19 +521,12 @@ class GeneratedPageScanner(HTMLParser):
 def validate_generated_page(output: Path, page: str) -> GeneratedPageScanner:
     scanner = GeneratedPageScanner()
     scanner.feed(page)
-    for tag in ("html", "head", "body", "header", "main", "article", "footer", "h1"):
+    for tag in ("html", "head", "body", "header", "main", "article", "footer", "h1", "nav"):
         if scanner.counts.get(tag, 0) != 1:
             raise BuildError(
                 f"{output.relative_to(ROOT)} must contain exactly one <{tag}>; "
                 f"found {scanner.counts.get(tag, 0)}"
             )
-    expected_navs = 2 if output == ARTICLE_OUTPUT else 1
-    if scanner.counts.get("nav", 0) != expected_navs:
-        raise BuildError(
-            f"{output.relative_to(ROOT)} must contain exactly {expected_navs} <nav> "
-            f"element{'s' if expected_navs != 1 else ''}; "
-            f"found {scanner.counts.get('nav', 0)}"
-        )
     if scanner.document_titles != 1:
         raise BuildError(
             f"{output.relative_to(ROOT)} must contain exactly one document <title>; "

@@ -11,9 +11,9 @@
   <meta property="og:title" content="Zero-Trust Hierarchy rulebook">
   <meta property="og:description" content="The complete operating contract for Zero-Trust Hierarchy.">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://hrsi56.github.io/gauntlet-hierarchy/RULEBOOK.html">
+  <meta property="og:url" content="https://hrsi56.github.io/Zero-Trust-Hierarchy/RULEBOOK.html">
   <meta name="twitter:card" content="summary">
-  <link rel="canonical" href="https://hrsi56.github.io/gauntlet-hierarchy/RULEBOOK.html">
+  <link rel="canonical" href="https://hrsi56.github.io/Zero-Trust-Hierarchy/RULEBOOK.html">
   <link rel="icon" href="data:,">
   <style>
 :root {
@@ -482,14 +482,15 @@ hr {
   max-height: min(70vh, 44rem);
   padding: clamp(.45rem, 1.2vw, .85rem);
   overflow: auto;
-  border: 1px solid color-mix(in srgb, var(--rule) 56%, transparent);
+  border: none;
   border-radius: .55rem;
   background: transparent;
-  box-shadow: var(--diagram-shadow);
+  box-shadow: none;
   overscroll-behavior: contain;
   scrollbar-color: var(--diagram-line) transparent;
 }
 
+/* Frameless at rest; the ring appears only for keyboard focus. */
 .diagram-frame:focus-visible {
   outline: .2rem solid var(--focus);
   outline-offset: .2rem;
@@ -713,7 +714,7 @@ hr {
         <a href="RULEBOOK.html" aria-current="page">Rulebook</a>
         <a href="forms/index.html">Forms</a>
         <a href="builder/index.html">Builder</a>
-        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
+        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/Zero-Trust-Hierarchy">Source</a>
       </nav>
     </div>
   </header>

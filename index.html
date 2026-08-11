@@ -11,9 +11,9 @@
   <meta property="og:title" content="Zero-Trust Hierarchy">
   <meta property="og:description" content="No success claim promotes itself. A distributed verification system for agent work.">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://hrsi56.github.io/gauntlet-hierarchy/">
+  <meta property="og:url" content="https://hrsi56.github.io/Zero-Trust-Hierarchy/">
   <meta name="twitter:card" content="summary">
-  <link rel="canonical" href="https://hrsi56.github.io/gauntlet-hierarchy/">
+  <link rel="canonical" href="https://hrsi56.github.io/Zero-Trust-Hierarchy/">
   <link rel="icon" href="data:,">
   <style>
 :root {
@@ -490,8 +490,10 @@ hr {
   scrollbar-color: var(--diagram-line) transparent;
 }
 
+/* Frameless at rest; the ring appears only for keyboard focus. */
 .diagram-frame:focus-visible {
-  outline: none;
+  outline: .2rem solid var(--focus);
+  outline-offset: .2rem;
 }
 
 .diagram-frame svg {
@@ -712,7 +714,7 @@ hr {
         <a href="RULEBOOK.html">Rulebook</a>
         <a href="forms/index.html">Forms</a>
         <a href="builder/index.html">Builder</a>
-        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/gauntlet-hierarchy">Source</a>
+        <a rel="external noopener noreferrer" href="https://github.com/hrsi56/Zero-Trust-Hierarchy">Source</a>
       </nav>
     </div>
   </header>
@@ -727,8 +729,8 @@ hr {
 <p>Zero-Trust Hierarchy breaks that chain. It assigns each decision to a distinct authority, requires a purpose-built artifact at every seam, and limits each receiver to the claims it is qualified to verify. The question is not “Do we trust this agent?” It is “What must be true before this claim is allowed to change anything above it?”</p>
 <h2 id="2-authority-goes-down-evidence-comes-back-up">2. Authority goes down; evidence comes back up</h2>
 <p>The hierarchy is asymmetric. The Architect / Owner ratifies purpose and governing documents. The Orchestrator authorizes one bounded unit. The Engineering Lead chooses how to execute it. A replaceable inner method returns reviewed work. Evidence then travels back through orchestration to human judgment.</p>
-<figure class="hierarchy-diagram" aria-labelledby="hierarchy-diagram-caption" style="outline: none !important; border: none !important; box-shadow: none !important;">
-  <div class="diagram-frame" tabindex="0" role="region" aria-label="Scrollable hierarchy diagram" style="--diagram-native-width: 1180px; outline: none;">
+<figure class="hierarchy-diagram">
+  <div class="diagram-frame" tabindex="0" role="region" aria-label="Scrollable hierarchy diagram" style="--diagram-native-width: 1180px">
 <svg xmlns="http://www.w3.org/2000/svg" id="ztx-diagram" viewBox="0 0 1180 470"
      width="100%" role="group" aria-labelledby="ztx-title" aria-describedby="ztx-desc"
      style="background-color: transparent;">
