@@ -48,7 +48,11 @@ export function renderStage(container, stage, allStages, nav) {
   // A single mutable hook lets the form column trigger a live prompt recompile without the two
   // columns needing to fully re-render each other — that would blow away focus mid-keystroke.
   let refreshPrompt = () => {};
-  const onAnswerChanged = () => { refreshPrompt(); nav.onAnswersChanged(); };
+  let refreshRecovery = () => {};
+  // The recovery section is gated on the same answers as the prompt, so it has to refresh with
+  // them — otherwise it keeps showing "answer the required questions first" after they are
+  // answered, until the stage happens to re-render for some other reason.
+  const onAnswerChanged = () => { refreshPrompt(); refreshRecovery(); nav.onAnswersChanged(); };
 
   const grid = el('div', { class: 'stage-grid stage-grid--split' });
   grid.appendChild(renderFormColumn(stage, onAnswerChanged));
@@ -57,7 +61,10 @@ export function renderStage(container, stage, allStages, nav) {
   grid.appendChild(promptColEl);
   container.appendChild(grid);
 
-  container.appendChild(renderRecoverySection(stage));
+  const recoveryHost = el('div', {});
+  refreshRecovery = () => { clear(recoveryHost); recoveryHost.appendChild(renderRecoverySection(stage)); };
+  refreshRecovery();
+  container.appendChild(recoveryHost);
   container.appendChild(renderAdvancedSection(stage));
   container.appendChild(renderCompletionGate(stage, allStages, nav));
   container.appendChild(renderStageNav(stage, allStages, nav));
@@ -193,7 +200,8 @@ function renderPromptColumn(stage) {
   // ("The human is trusting your engineering judgment…"). That is the one thing this product
   // must never do, so an incomplete questionnaire withholds the prompt instead of inventing
   // the missing judgement.
-  const missingBanner = el('div', { class: 'banner banner--warning', role: 'status', hidden: true });
+  const missingBannerId = `missing-${stage.id}`;
+  const missingBanner = el('div', { class: 'banner banner--warning', role: 'status', id: missingBannerId, hidden: true });
 
   function currentCompiled() {
     const currentMode = store.getMode(stage.id);
@@ -223,6 +231,11 @@ function renderPromptColumn(stage) {
     copyBtn.disabled = blocked;
     downloadBtn.disabled = blocked;
     textarea.readOnly = blocked;
+    // A disabled button is not focusable, so a screen-reader user tabbing through would meet a
+    // dead end with no stated reason. Pointing the textarea at the banner means the explanation
+    // is read out when focus reaches the prompt itself.
+    if (blocked) textarea.setAttribute('aria-describedby', missingBannerId);
+    else textarea.removeAttribute('aria-describedby');
 
     const edited = store.getPromptEdit(stage.id, currentMode);
     textarea.value = blocked
@@ -284,6 +297,22 @@ function renderRecoverySection(stage) {
   const acc = accordion('Need a recovery prompt instead?', false);
   const body = acc.querySelector('.accordion__panel');
   body.appendChild(text('p', 'Use one of these instead of the primary prompt above when the primary case does not fit.'));
+
+  // Recovery prompts read the same answers the primary prompt does — 21 of the 24 change their
+  // text based on them — so they need the same guard. Without it this accordion is a way around
+  // the questionnaire: open it with everything blank and copy a prompt that states decisions the
+  // human never made.
+  const missing = missingRequiredAnswers(stage, store.getAnswers(stage.id));
+  if (missing.length) {
+    body.appendChild(el('div', { class: 'banner banner--warning', role: 'status' }, [
+      el('div', {}, [
+        text('strong', 'These are unavailable until the required decisions above are answered.'),
+        text('p', 'A recovery prompt is built from the same answers as the main prompt. Generating one now would put a guess at your judgement in front of your agent, which is the one thing this guide will not do.', { style: 'margin:.4rem 0 0' }),
+      ]),
+    ]));
+    return acc;
+  }
+
   for (const rp of stage.recoveryPrompts) {
     const sub = el('div', { class: 'question' });
     sub.appendChild(text('h3', rp.label));

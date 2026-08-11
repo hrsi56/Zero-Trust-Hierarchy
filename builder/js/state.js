@@ -199,15 +199,22 @@ export function computeStageStatus(stage, allStages = allStagesDefault, seen = n
   if (gate.disposition === 'stopped') return 'paused';
   if (snapshotPrereqs(stage) !== gate.prereqSnapshot) return 'needs_review';
 
-  // Guard against a malformed prerequisite cycle in imported or future stage data rather than
-  // recursing forever — an unresolvable chain is exactly the case that deserves a review flag.
+  // `seen` is the current recursion PATH, not everything visited: it is removed again on the way
+  // back out. That distinction matters as soon as a stage declares two prerequisites that share an
+  // ancestor — a permanent visited-set would meet that ancestor a second time down the other
+  // branch and wrongly report a cycle, marking a perfectly complete stage as needing review. The
+  // stages ship as a linear chain today, but they are data a future editor is meant to change.
   if (seen.has(stage.id)) return 'needs_review';
   seen.add(stage.id);
-  for (const preId of stage.prerequisites) {
-    const pre = allStages.find((s) => s.id === preId);
-    if (!pre || computeStageStatus(pre, allStages, seen) !== 'complete') return 'needs_review';
+  try {
+    for (const preId of stage.prerequisites) {
+      const pre = allStages.find((s) => s.id === preId);
+      if (!pre || computeStageStatus(pre, allStages, seen) !== 'complete') return 'needs_review';
+    }
+    return 'complete';
+  } finally {
+    seen.delete(stage.id);
   }
-  return 'complete';
 }
 
 /** True when every listed prerequisite stage is itself 'complete' (not merely started). */

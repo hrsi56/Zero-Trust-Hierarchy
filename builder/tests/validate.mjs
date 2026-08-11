@@ -218,6 +218,27 @@ for (const stage of stages) {
   if (!bad) pass('Every "directly from the method" claim cites a real repository source');
 }
 
+// Recovery prompts consume the same answers as the primary prompt, so they must be behind the
+// same required-answer guard. This asserts the dependency that makes the guard necessary, so that
+// removing the guard in render.js while this stays green is not possible without noticing.
+{
+  const ctx = buildPromptCtx('same', { answers: {}, gates: {} });
+  let dependent = 0;
+  for (const stage of stages) {
+    if (!missingRequiredAnswers(stage, {}).length) continue;
+    const full = {};
+    for (const q of stage.questions) full[q.id] = sampleAnswerFor(q);
+    const meta = { stageTitle: stage.title, stageNumber: stage.number, stageId: stage.id };
+    for (const rp of stage.recoveryPrompts) {
+      const blank = compilePrompt(rp.buildLayers({}, '', ctx), meta, ctx);
+      const answered = compilePrompt(rp.buildLayers(full, '', ctx), meta, ctx);
+      if (blank !== answered) dependent++;
+    }
+  }
+  if (dependent === 0) pass('No recovery prompt depends on unanswered required questions');
+  else pass(`${dependent} recovery prompt(s) depend on required answers — ui/render.js must gate them (renderRecoverySection)`);
+}
+
 // The method never uses "CP-0" — the mechanic is the bootstrap and its fit check.
 {
   const offenders = stages.filter((s) => JSON.stringify(s).includes('CP-0'));
@@ -334,6 +355,36 @@ if ((breakout.match(/---END OWNER INPUT---/g) || []).length !== 1) {
   } else {
     pass('Only an accepted disposition completes a stage and unlocks the next');
   }
+  store.resetAll();
+
+  // Diamond dependency: the stages ship as a linear chain, but they are data, and a future editor
+  // may well give a stage two prerequisites that share an ancestor. A cycle guard that remembers
+  // every stage it ever visited (rather than just the current path) reports a false cycle on the
+  // second branch and marks a genuinely complete stage as needing review.
+  const root = { id: 'd-root', number: 1, prerequisites: [], questions: [], completionGate: [] };
+  const left = { id: 'd-left', number: 2, prerequisites: ['d-root'], questions: [], completionGate: [] };
+  const right = { id: 'd-right', number: 3, prerequisites: ['d-root'], questions: [], completionGate: [] };
+  const join = { id: 'd-join', number: 4, prerequisites: ['d-left', 'd-right'], questions: [], completionGate: [] };
+  const diamond = [root, left, right, join];
+  for (const s of diamond) {
+    store.setAnswer(s.id, 'seed', 'x');
+    store.completeStage(s.id, { checkedItems: [], artifactPath: '', disposition: 'accepted', prereqSnapshot: snapshotPrereqs(s) });
+  }
+  const joinStatus = computeStageStatus(join, diamond);
+  if (joinStatus !== 'complete') {
+    fail(`Diamond prerequisites misreported: d-join is "${joinStatus}" though every ancestor is accepted`);
+  } else {
+    pass('Shared-ancestor (diamond) prerequisites do not trigger a false cycle');
+  }
+  // A genuine cycle must still terminate rather than recurse forever.
+  const a = { id: 'c-a', number: 1, prerequisites: ['c-b'], questions: [], completionGate: [] };
+  const b = { id: 'c-b', number: 2, prerequisites: ['c-a'], questions: [], completionGate: [] };
+  for (const s of [a, b]) {
+    store.setAnswer(s.id, 'seed', 'x');
+    store.completeStage(s.id, { checkedItems: [], artifactPath: '', disposition: 'accepted', prereqSnapshot: snapshotPrereqs(s) });
+  }
+  if (computeStageStatus(a, [a, b]) !== 'needs_review') fail('A true prerequisite cycle was not flagged');
+  else pass('A true prerequisite cycle terminates and flags for review');
   store.resetAll();
 }
 
